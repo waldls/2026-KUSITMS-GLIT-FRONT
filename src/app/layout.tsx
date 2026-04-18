@@ -1,12 +1,23 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import "@/app/globals.css";
 
 export const metadata: Metadata = {
   title: "Glit",
   description: "KUSITMS 33rd 밋업 프로젝트 Glit",
+  manifest: "/manifest.webmanifest",
   openGraph: {
     images: ["/og-image.png"],
   },
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "default",
+    title: "Glit",
+  },
+};
+
+export const viewport: Viewport = {
+  themeColor: "#111111",
+  viewportFit: "cover",
 };
 
 export default function RootLayout({
