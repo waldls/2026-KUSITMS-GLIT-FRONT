@@ -1,9 +1,0 @@
-#!/bin/sh
-BRANCH=$(git symbolic-ref --short HEAD)
-JIRA_KEY=$(echo "$BRANCH" | grep -oE '[A-Z]+-[0-9]+')
-
-MSG=$(cat "$1")
-
-if [ -n "$JIRA_KEY" ] && ! echo "$MSG" | grep -q "$JIRA_KEY"; then
-  echo "$JIRA_KEY $MSG" > "$1"
-fi
