@@ -26,7 +26,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="ko">
+    <html lang="ko" className="bg-gray-900">
       <head>
         <link rel="preconnect" href="https://cdn.jsdelivr.net" />
         <link
@@ -35,7 +35,7 @@ export default function RootLayout({
         />
       </head>
       <body className="bg-gray-300">
-        <main className="mx-auto h-dvh w-full max-w-93.75 overflow-hidden bg-gray-900">
+        <main className="mx-auto h-dvh max-w-107.5 min-w-93.75 overflow-hidden bg-gray-900">
           {children}
         </main>
       </body>
