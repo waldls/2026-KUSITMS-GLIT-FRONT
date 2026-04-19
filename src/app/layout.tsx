@@ -8,9 +8,15 @@ export const metadata: Metadata = {
   openGraph: {
     images: ["/og-image.png"],
   },
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "default",
+    title: "Glit",
+  },
 };
 
 export const viewport: Viewport = {
+  themeColor: "#111111",
   viewportFit: "cover",
 };
 
@@ -22,17 +28,14 @@ export default function RootLayout({
   return (
     <html lang="ko">
       <head>
-        <meta name="theme-color" content="#111111" />
-        <meta name="apple-mobile-web-app-capable" content="yes" />
-        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
         <link rel="preconnect" href="https://cdn.jsdelivr.net" />
         <link
           rel="stylesheet"
           href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/variable/pretendardvariable-dynamic-subset.min.css"
         />
       </head>
-      <body className="bg-gray-800">
-        <main className="mx-auto h-dvh max-w-107.5 min-w-93.75 overflow-hidden bg-gray-900">
+      <body className="bg-gray-900">
+        <main className="mx-auto h-dvh max-w-107.5 min-w-93.75 overflow-hidden border border-gray-700">
           {children}
         </main>
       </body>
