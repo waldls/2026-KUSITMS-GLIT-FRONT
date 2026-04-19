@@ -10,7 +10,7 @@ export const metadata: Metadata = {
   },
   appleWebApp: {
     capable: true,
-    statusBarStyle: "default",
+    statusBarStyle: "black",
     title: "Glit",
   },
 };
@@ -26,7 +26,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="ko" className="bg-gray-900">
+    <html lang="ko">
       <head>
         <link rel="preconnect" href="https://cdn.jsdelivr.net" />
         <link
