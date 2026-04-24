@@ -5,6 +5,9 @@
   --font-sans:
     "Pretendard Variable", "Pretendard", "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
 
+  /* =========================
+    Primitive Tokens
+    ========================= */
   /* Warm-yellow */
   --color-yellow-100: #fff9e9;
   --color-yellow-200: #fff3cd;
@@ -53,8 +56,8 @@
   --color-white: #ffffff;
   --color-black: #111111;
 
-  /* Error */
-  --color-error: #e32727;
+  /* Red */
+  --color-red-400: #da4040;
 
   /* Tag */
   --color-tag-100: #fe5401;
@@ -63,7 +66,25 @@
   --color-tag-400: #1fcf6a;
   --color-tag-500: #ff54d0;
 
-  /* Radius */
+  /* =========================
+    Semantic Tokens
+    ========================= */
+  /* Error */
+  --color-error-primary: var(--color-red-400);
+
+  /* Typo */
+  --color-typo-primary: var(--color-gray-900);
+  --color-typo-secondary: var(--color-gray-800);
+  --color-typo-tertiary: var(--color-gray-700);
+  --color-typo-quaternary: var(--color-gray-500);
+
+  /* Divider */
+  --color-divider-primary: var(--color-gray-400);
+  --color-divider-secondary: var(--color-gray-300);
+
+  /* =========================
+    Radius Tokens
+    ========================= */
   --radius-0: 0px;
   --radius-2: 2px;
   --radius-4: 4px;
@@ -72,26 +93,6 @@
   --radius-12: 12px;
   --radius-16: 16px;
   --radius-20: 20px;
-
-  /* Spacing */
-  --spacing-2: 2px;
-  --spacing-4: 4px;
-  --spacing-8: 8px;
-  --spacing-12: 12px;
-  --spacing-16: 16px;
-  --spacing-24: 24px;
-  --spacing-28: 28px;
-  --spacing-32: 32px;
-  --spacing-36: 36px;
-
-  /* Icon Sizing */
-  --icon-16: 16px;
-  --icon-20: 20px;
-  --icon-24: 24px;
-  --icon-28: 28px;
-  --icon-32: 32px;
-  --icon-36: 36px;
-  --icon-44: 44px;
 }
 
 /* 타이포그래피 유틸리티 */
@@ -99,68 +100,68 @@
   font-size: 32px;
   font-weight: 800;
   line-height: 150%;
-  letter-spacing: -0.02em;
+  letter-spacing: -0.025em;
 }
 
 @utility head-2 {
   font-size: 26px;
   font-weight: 600;
   line-height: 140%;
-  letter-spacing: -0.02em;
+  letter-spacing: -0.025em;
 }
 
 @utility head-3 {
   font-size: 20px;
   font-weight: 500;
   line-height: 140%;
-  letter-spacing: -0.02em;
+  letter-spacing: -0.025em;
 }
 
 @utility head-4 {
   font-size: 18px;
   font-weight: 500;
   line-height: 140%;
-  letter-spacing: -0.02em;
+  letter-spacing: -0.025em;
 }
 
 @utility head-5 {
   font-size: 18px;
   font-weight: 600;
   line-height: 140%;
-  letter-spacing: -0.02em;
+  letter-spacing: -0.025em;
 }
 
 @utility body-1 {
   font-size: 18px;
   font-weight: 400;
   line-height: 140%;
-  letter-spacing: -0.02em;
+  letter-spacing: -0.025em;
 }
 
 @utility body-2 {
   font-size: 15px;
   font-weight: 400;
   line-height: 140%;
-  letter-spacing: -0.02em;
+  letter-spacing: -0.025em;
 }
 
 @utility body-3 {
   font-size: 15px;
   font-weight: 600;
   line-height: 140%;
-  letter-spacing: -0.02em;
+  letter-spacing: -0.025em;
 }
 
 @utility body-4 {
   font-size: 12px;
-  font-weight: 400;
-  line-height: 20px;
-  letter-spacing: -0.02em;
+  font-weight: 500;
+  line-height: 165%;
+  letter-spacing: -0.025em;
 }
 
 @utility caption-s {
   font-size: 15px;
   font-weight: 400;
   line-height: 140%;
-  letter-spacing: -0.02em;
+  letter-spacing: -0.025em;
 }
