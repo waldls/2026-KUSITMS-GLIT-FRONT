@@ -27,7 +27,7 @@ const Tag = ({
         VARIANT_STYLES[variant],
         className,
       )}>
-      <div className="body-4 flex items-center gap-0.75 px-px [&_svg]:size-[14.939px]">
+      <div className="body-4 flex items-center gap-0.75 px-px [&_svg]:block [&_svg]:size-4 [&_svg]:shrink-0">
         {children}
       </div>
     </div>
