@@ -165,3 +165,30 @@
   line-height: 140%;
   letter-spacing: -0.025em;
 }
+
+@utility bg-cta-gradient {
+  background: radial-gradient(
+    135.44% 102.65% at 14.37% 11%,
+    var(--color-offwhite-100, #fefefe) 0%,
+    #bcfff6 19.71%,
+    var(--color-sea-blue-300, #aefaff) 38.46%,
+    #dffdff 57.69%,
+    #c0fcff 77.4%,
+    #26eaf1 97.12%
+  );
+}
+
+@utility bg-cta-gradient-tap {
+  border-radius: var(--radius-12, 12px);
+  background:
+    linear-gradient(0deg, rgba(151, 151, 151, 0.22) 0%, rgba(151, 151, 151, 0.22) 100%),
+    radial-gradient(
+      135.44% 102.65% at 14.37% 11%,
+      var(--color-offwhite-100, #fefefe) 0%,
+      #bcfff6 19.71%,
+      var(--color-sea-blue-300, #aefaff) 38.46%,
+      #dffdff 57.69%,
+      #c0fcff 77.4%,
+      #26eaf1 97.12%
+    );
+}
