@@ -1,36 +1,10 @@
 import type { Meta, StoryObj } from "@storybook/nextjs";
 
+import DownloadIcon from "@/assets/icons/icon_download.svg";
+import PlusIcon from "@/assets/icons/icon_plus.svg";
+import SearchIcon from "@/assets/icons/icon_search.svg";
+import WriteIcon from "@/assets/icons/icon_write.svg";
 import Button from "@/components/common/Button";
-
-type ButtonState = "default" | "pressed" | "tap";
-
-const SwatchIcon = ({ size = "md" }: { size?: "lg" | "md" }) => (
-  <span
-    className={
-      size === "lg"
-        ? "rounded-2 bg-sea-blue-500 block size-6"
-        : "rounded-2 bg-sea-blue-500 block size-4"
-    }
-  />
-);
-
-const STATE_CLASS_NAMES: Record<ButtonState, string | undefined> = {
-  default: undefined,
-  pressed: "bg-sea-blue-400/[.93]",
-  tap: "bg-gray-400/40 text-offwhite-500",
-};
-
-const ButtonPreview = ({ size, state }: { size: "lg" | "md"; state: ButtonState }) => (
-  <Button
-    variant="default"
-    size={size}
-    fullWidth={size === "lg"}
-    className={STATE_CLASS_NAMES[state]}
-    leftIcon={<SwatchIcon size={size} />}
-    rightIcon={<SwatchIcon size={size} />}>
-    텍스트 입력하기
-  </Button>
-);
 
 const meta = {
   title: "Common/Button",
@@ -73,48 +47,187 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
+// ─── Playground ────────────────────────────────────────────────────────────
+
+export const Playground: Story = {};
+
+// ─── Size · State (텍스트 전용) ────────────────────────────────────────────
+
 export const LgDefault: Story = {
-  render: () => <ButtonPreview size="lg" state="default" />,
+  name: "Lg — Default",
+  args: { size: "lg", fullWidth: true },
 };
 
 export const LgPressed: Story = {
-  render: () => <ButtonPreview size="lg" state="pressed" />,
+  name: "Lg — Pressed",
+  args: { size: "lg", fullWidth: true, className: "bg-sea-blue-400/[.93]" },
 };
 
-export const LgTap: Story = {
-  render: () => <ButtonPreview size="lg" state="tap" />,
+export const LgDisabled: Story = {
+  name: "Lg — Disabled",
+  args: { size: "lg", fullWidth: true, disabled: true },
 };
 
 export const MdDefault: Story = {
-  render: () => <ButtonPreview size="md" state="default" />,
+  name: "Md — Default",
+  args: { size: "md" },
 };
 
 export const MdPressed: Story = {
-  render: () => <ButtonPreview size="md" state="pressed" />,
+  name: "Md — Pressed",
+  args: { size: "md", className: "bg-sea-blue-400/[.93]" },
 };
 
-export const MdTap: Story = {
-  render: () => <ButtonPreview size="md" state="tap" />,
+export const MdDisabled: Story = {
+  name: "Md — Disabled",
+  args: { size: "md", disabled: true },
 };
+
+// ─── 아이콘 있는 버전 ─────────────────────────────────────────────────────
+
+export const LgLeftIcon: Story = {
+  name: "Lg — Left Icon",
+  args: {
+    size: "lg",
+    fullWidth: true,
+    leftIcon: <SearchIcon />,
+    children: "경로 검색하기",
+  },
+};
+
+export const LgRightIcon: Story = {
+  name: "Lg — Right Icon",
+  args: {
+    size: "lg",
+    fullWidth: true,
+    rightIcon: <DownloadIcon />,
+    children: "경로 저장하기",
+  },
+};
+
+export const LgBothIcons: Story = {
+  name: "Lg — Both Icons",
+  args: {
+    size: "lg",
+    fullWidth: true,
+    leftIcon: <PlusIcon />,
+    rightIcon: <DownloadIcon />,
+    children: "경로 추가 저장",
+  },
+};
+
+export const MdLeftIcon: Story = {
+  name: "Md — Left Icon",
+  args: {
+    size: "md",
+    leftIcon: <WriteIcon />,
+    children: "후기 작성하기",
+  },
+};
+
+export const MdRightIcon: Story = {
+  name: "Md — Right Icon",
+  args: {
+    size: "md",
+    rightIcon: <SearchIcon />,
+    children: "검색하기",
+  },
+};
+
+export const MdBothIcons: Story = {
+  name: "Md — Both Icons",
+  args: {
+    size: "md",
+    leftIcon: <PlusIcon />,
+    rightIcon: <DownloadIcon />,
+    children: "추가 저장",
+  },
+};
+
+// ─── 아이콘 · Disabled ─────────────────────────────────────────────────────
+
+export const LgLeftIconDisabled: Story = {
+  name: "Lg — Left Icon · Disabled",
+  args: {
+    size: "lg",
+    fullWidth: true,
+    leftIcon: <SearchIcon />,
+    children: "경로 검색하기",
+    disabled: true,
+  },
+};
+
+export const MdLeftIconDisabled: Story = {
+  name: "Md — Left Icon · Disabled",
+  args: {
+    size: "md",
+    leftIcon: <WriteIcon />,
+    children: "후기 작성하기",
+    disabled: true,
+  },
+};
+
+// ─── 전체 변형 모음 ────────────────────────────────────────────────────────
 
 export const AllVariants: Story = {
-  parameters: {
-    layout: "fullscreen",
-  },
+  name: "전체 변형 모음",
+  parameters: { layout: "fullscreen" },
   render: () => (
     <div className="min-h-screen bg-black p-10">
-      <div className="rounded-8 border-sea-blue-300 mx-auto flex w-[888px] max-w-full flex-col border border-dashed p-11">
-        <div className="flex flex-col gap-6">
-          <ButtonPreview size="lg" state="default" />
-          <ButtonPreview size="lg" state="pressed" />
-          <ButtonPreview size="lg" state="tap" />
-        </div>
+      <div className="rounded-8 border-sea-blue-300 mx-auto flex w-[888px] max-w-full flex-col gap-12 border border-dashed p-11">
+        {/* Lg */}
+        <section className="flex flex-col gap-4">
+          <p className="body-3 text-offwhite-300">Lg</p>
+          <div className="flex flex-col gap-3">
+            <Button size="lg" fullWidth>
+              텍스트 입력하기
+            </Button>
+            <Button size="lg" fullWidth className="bg-sea-blue-400/[.93]">
+              텍스트 입력하기 (pressed)
+            </Button>
+            <Button size="lg" fullWidth disabled>
+              텍스트 입력하기 (disabled)
+            </Button>
+            <Button size="lg" fullWidth leftIcon={<SearchIcon />}>
+              경로 검색하기
+            </Button>
+            <Button size="lg" fullWidth rightIcon={<DownloadIcon />}>
+              경로 저장하기
+            </Button>
+            <Button size="lg" fullWidth leftIcon={<PlusIcon />} rightIcon={<DownloadIcon />}>
+              경로 추가 저장
+            </Button>
+            <Button size="lg" fullWidth leftIcon={<SearchIcon />} disabled>
+              경로 검색하기 (disabled)
+            </Button>
+          </div>
+        </section>
 
-        <div className="mt-22 flex flex-col items-start gap-3">
-          <ButtonPreview size="md" state="default" />
-          <ButtonPreview size="md" state="pressed" />
-          <ButtonPreview size="md" state="tap" />
-        </div>
+        {/* Md */}
+        <section className="flex flex-col gap-4">
+          <p className="body-3 text-offwhite-300">Md</p>
+          <div className="flex flex-wrap gap-3">
+            <Button size="md">텍스트 입력하기</Button>
+            <Button size="md" className="bg-sea-blue-400/[.93]">
+              텍스트 입력하기 (pressed)
+            </Button>
+            <Button size="md" disabled>
+              텍스트 입력하기 (disabled)
+            </Button>
+            <Button size="md" leftIcon={<WriteIcon />}>
+              후기 작성하기
+            </Button>
+            <Button size="md" rightIcon={<SearchIcon />}>
+              검색하기
+            </Button>
+            <Button size="md" leftIcon={<PlusIcon />} rightIcon={<DownloadIcon />}>
+              추가 저장
+            </Button>
+            <Button size="md" leftIcon={<WriteIcon />} disabled>
+              후기 작성하기 (disabled)
+            </Button>
+          </div>
+        </section>
       </div>
     </div>
   ),

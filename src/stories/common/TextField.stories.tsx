@@ -1,5 +1,9 @@
 import type { Meta, StoryObj } from "@storybook/nextjs";
 
+import ErrorIcon from "@/assets/icons/icon_error.svg";
+import EyeClosedIcon from "@/assets/icons/icon_eye_closed.svg";
+import EyeOpenIcon from "@/assets/icons/icon_eye_open.svg";
+import SearchIcon from "@/assets/icons/icon_search.svg";
 import TextField from "@/components/common/TextField";
 
 const meta = {
@@ -14,55 +18,121 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
+/** 빈 칸, 포커스 없음 — placeholder·밑줄 gray-800 */
 export const Default: Story = {
   args: {
     placeholder: "내용 입력",
   },
 };
 
-export const WithRightIcon: Story = {
+/** 빈 칸, 포커스 없음 + 아이콘 */
+export const DefaultWithIcon: Story = {
   args: {
-    placeholder: "내용 입력",
-    rightIcon: <div className="bg-sea-blue-500 size-6 rounded-sm" />,
+    placeholder: "검색어를 입력하세요",
+    rightIcon: <SearchIcon />,
   },
 };
 
+/** 입력 후 손 뗌 — 글자·밑줄 gray-500 */
+export const FilledBlurred: Story = {
+  args: {
+    placeholder: "내용 입력",
+    defaultValue: "입력된 텍스트",
+  },
+};
+
+/** 입력 후 손 뗌 + 아이콘 */
+export const FilledBlurredWithIcon: Story = {
+  args: {
+    placeholder: "비밀번호 입력",
+    defaultValue: "mypassword123",
+    rightIcon: <EyeOpenIcon />,
+  },
+};
+
+/** 입력 중 (포커스) — 글자·밑줄 gray-300 */
+export const FilledFocused: Story = {
+  args: {
+    placeholder: "내용 입력",
+    defaultValue: "입력된 텍스트",
+    autoFocus: true,
+  },
+};
+
+/** 입력 중 (포커스) + 아이콘 */
+export const FilledFocusedWithIcon: Story = {
+  args: {
+    placeholder: "비밀번호 입력",
+    defaultValue: "mypassword123",
+    autoFocus: true,
+    rightIcon: <EyeClosedIcon />,
+  },
+};
+
+/** 에러 상태 */
 export const ErrorState: Story = {
   args: {
     variant: "error",
-    placeholder: "내용 입력",
-    errorMessage: "내용 입력",
-    rightIcon: <div className="bg-sea-blue-500 size-6 rounded-sm" />,
+    id: "email-error",
+    placeholder: "이메일 입력",
+    errorMessage: "이메일 형식이 올바르지 않습니다",
+    rightIcon: <ErrorIcon />,
   },
 };
 
+/** 전체 상태 한눈에 보기 */
 export const AllStates: Story = {
   render: () => (
     <div className="mt-12 flex flex-col gap-12">
       <div className="flex flex-col gap-2">
-        <label className="body-4 text-gray-600">기본 상태</label>
+        <label className="body-4 text-gray-600">빈 칸 (포커스 없음)</label>
+        <TextField placeholder="내용 입력" />
+      </div>
+
+      <div className="flex flex-col gap-2">
+        <label className="body-4 text-gray-600">빈 칸 (포커스 없음) + 아이콘</label>
+        <TextField placeholder="검색어를 입력하세요" rightIcon={<SearchIcon />} />
+      </div>
+
+      <div className="flex flex-col gap-2">
+        <label className="body-4 text-gray-600">입력 후 손 뗌 — 글자·밑줄 gray-500</label>
+        <TextField placeholder="내용 입력" defaultValue="입력된 텍스트" />
+      </div>
+
+      <div className="flex flex-col gap-2">
+        <label className="body-4 text-gray-600">입력 후 손 뗌 + 아이콘 — 글자·밑줄 gray-500</label>
         <TextField
-          placeholder="내용 입력"
-          rightIcon={<div className="bg-sea-blue-500 size-6 rounded-sm" />}
+          placeholder="비밀번호 입력"
+          defaultValue="mypassword123"
+          rightIcon={<EyeOpenIcon />}
         />
       </div>
 
       <div className="flex flex-col gap-2">
-        <label className="body-4 text-gray-600">포커스(탭) 상태 - 탭해보세요!</label>
+        <label className="body-4 text-gray-600">입력 중 (포커스) — 글자·밑줄 gray-300</label>
+        <TextField placeholder="내용 입력" defaultValue="입력된 텍스트" autoFocus />
+      </div>
+
+      <div className="flex flex-col gap-2">
+        <label className="body-4 text-gray-600">
+          입력 중 (포커스) + 아이콘 — 글자·밑줄 gray-300
+        </label>
         <TextField
-          placeholder="내용 입력"
+          placeholder="비밀번호 입력"
+          defaultValue="mypassword123"
           autoFocus
-          rightIcon={<div className="bg-sea-blue-500 size-6 rounded-sm" />}
+          rightIcon={<EyeClosedIcon />}
         />
       </div>
 
       <div className="flex flex-col gap-2">
         <label className="body-4 text-gray-600">에러 상태</label>
         <TextField
+          id="email-field"
           variant="error"
-          placeholder="내용 입력"
-          errorMessage="내용 입력"
-          rightIcon={<div className="bg-sea-blue-500 size-6 rounded-sm" />}
+          placeholder="이메일 입력"
+          errorMessage="이메일 형식이 올바르지 않습니다"
+          rightIcon={<ErrorIcon />}
         />
       </div>
     </div>

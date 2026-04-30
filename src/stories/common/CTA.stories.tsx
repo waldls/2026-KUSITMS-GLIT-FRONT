@@ -1,16 +1,10 @@
 import type { Meta, StoryObj } from "@storybook/nextjs";
 
+import DownloadIcon from "@/assets/icons/icon_download.svg";
+import SearchIcon from "@/assets/icons/icon_search.svg";
+import StarIcon from "@/assets/icons/icon_star_01.svg";
+import WriteIcon from "@/assets/icons/icon_write.svg";
 import CTA from "@/components/common/CTA";
-
-const SwatchIcon = ({ size = "md" }: { size?: "lg" | "md" }) => (
-  <span
-    className={
-      size === "lg"
-        ? "rounded-2 bg-sea-blue-500 block size-6"
-        : "rounded-2 bg-sea-blue-500 block size-4"
-    }
-  />
-);
 
 const meta = {
   title: "Common/CTA",
@@ -37,32 +31,57 @@ type Story = StoryObj<typeof meta>;
 export const Default: Story = {
   args: {
     variant: "default",
-    leftIcon: <SwatchIcon size="lg" />,
-    children: "텍스트 입력하기",
+    children: "경로 저장하기",
+  },
+};
+
+export const DefaultWithIcon: Story = {
+  name: "Default (아이콘 있음)",
+  args: {
+    variant: "default",
+    leftIcon: <DownloadIcon />,
+    children: "경로 저장하기",
   },
 };
 
 export const Tap: Story = {
   args: {
     variant: "tap",
-    leftIcon: <SwatchIcon size="lg" />,
-    children: "텍스트 입력하기",
+    children: "경로 저장하기",
+  },
+};
+
+export const TapWithIcon: Story = {
+  name: "Tap (아이콘 있음)",
+  args: {
+    variant: "tap",
+    leftIcon: <StarIcon />,
+    children: "즐겨찾기 추가",
   },
 };
 
 export const AllVariants: Story = {
+  name: "전체 변형 모음",
   parameters: {
     layout: "fullscreen",
   },
   render: () => (
     <div className="bg-black p-10">
-      <div className="rounded-8 border-sea-blue-300 mx-auto w-100 border border-dashed p-7">
+      <div className="rounded-8 border-sea-blue-300 mx-auto w-fit border border-dashed p-7">
         <div className="flex flex-col items-center gap-6">
-          <CTA variant="default" leftIcon={<SwatchIcon size="lg" />}>
-            텍스트 입력하기
+          <CTA variant="default">경로 저장하기</CTA>
+          <CTA variant="default" leftIcon={<DownloadIcon />}>
+            경로 저장하기
           </CTA>
-          <CTA variant="tap" leftIcon={<SwatchIcon size="lg" />}>
-            텍스트 입력하기
+          <CTA variant="default" leftIcon={<SearchIcon />}>
+            경로 검색하기
+          </CTA>
+          <CTA variant="tap">경로 저장하기</CTA>
+          <CTA variant="tap" leftIcon={<StarIcon />}>
+            즐겨찾기 추가
+          </CTA>
+          <CTA variant="tap" leftIcon={<WriteIcon />}>
+            후기 작성하기
           </CTA>
         </div>
       </div>

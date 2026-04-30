@@ -179,7 +179,6 @@
 }
 
 @utility bg-cta-gradient-tap {
-  border-radius: var(--radius-12, 12px);
   background:
     linear-gradient(0deg, rgba(151, 151, 151, 0.22) 0%, rgba(151, 151, 151, 0.22) 100%),
     radial-gradient(

@@ -1,5 +1,6 @@
-import { cn } from "@/lib/utils";
 import { forwardRef } from "react";
+
+import { cn } from "@/lib/utils";
 
 type ButtonVariant = "default" | "gray";
 export type ButtonSize = "lg" | "md";
@@ -11,7 +12,7 @@ const VARIANT_STYLES: Record<ButtonVariant, string> = {
 
 const SIZE_STYLES: Record<ButtonSize, string> = {
   lg: "h-13 w-83.75 py-3 px-6 rounded-12 gap-1 body-3 [&_svg]:size-6",
-  md: "h-10 w-34.5 py-2.5 px-3.5 rounded-8 gap-0.5 body-4 [&_svg]:size-4",
+  md: "h-10 w-fit py-2.5 px-3.5 rounded-8 gap-0.5 body-4 [&_svg]:size-4",
 };
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
@@ -59,7 +60,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
             {leftIcon}
           </span>
         )}
-        <span className="truncate pt-0.5 text-center">{children}</span>
+        <span className="truncate text-center">{children}</span>
         {rightIcon && (
           <span className="flex shrink-0 items-center justify-center [&_svg]:block">
             {rightIcon}
