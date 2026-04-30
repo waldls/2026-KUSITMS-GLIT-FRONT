@@ -1,9 +1,5 @@
 const page = () => {
-  return (
-    <>
-      <p className="head-1 text-error-primary">Glit</p>
-    </>
-  );
+  return <div className="text-sea-blue-600 head-1">글릿</div>;
 };
 
 export default page;

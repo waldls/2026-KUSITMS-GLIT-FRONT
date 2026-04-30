@@ -2,8 +2,8 @@ import type { Metadata, Viewport } from "next";
 import "@/app/globals.css";
 
 export const metadata: Metadata = {
-  title: "Glit",
-  description: "KUSITMS 33rd 밋업 프로젝트 Glit",
+  title: "글릿",
+  description: "KUSITMS 33rd 밋업 프로젝트 글릿",
   manifest: "/manifest.webmanifest",
   openGraph: {
     images: ["/og-image.png"],
@@ -11,7 +11,7 @@ export const metadata: Metadata = {
   appleWebApp: {
     capable: true,
     statusBarStyle: "default",
-    title: "Glit",
+    title: "글릿",
   },
 };
 

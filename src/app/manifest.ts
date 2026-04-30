@@ -2,9 +2,9 @@ import type { MetadataRoute } from "next";
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: "Glit",
-    short_name: "Glit",
-    description: "KUSITMS 33rd 밋업 프로젝트 Glit",
+    name: "글릿",
+    short_name: "글릿",
+    description: "KUSITMS 33rd 밋업 프로젝트 글릿",
     start_url: "/",
     display: "standalone",
     background_color: "#111111",
