@@ -35,8 +35,10 @@ export default function RootLayout({
           href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/variable/pretendardvariable-dynamic-subset.min.css"
         />
       </head>
-      <body className="bg-gray-900">
-        <main className="mx-auto h-dvh max-w-107.5 min-w-93.75 overflow-hidden">{children}</main>
+      <body className="bg-gray-300">
+        <main className="mx-auto h-dvh max-w-107.5 min-w-93.75 overflow-hidden bg-gray-900">
+          {children}
+        </main>
       </body>
     </html>
   );
