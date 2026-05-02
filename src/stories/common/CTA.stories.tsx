@@ -1,9 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/nextjs";
 
-import DownloadIcon from "@/assets/icons/icon_download.svg";
-import SearchIcon from "@/assets/icons/icon_search.svg";
-import StarIcon from "@/assets/icons/icon_star_01.svg";
-import WriteIcon from "@/assets/icons/icon_write.svg";
+import { DownloadIcon, SearchIcon, StarOneIcon, WriteIcon } from "@/assets/icons";
 import CTA from "@/components/common/CTA";
 
 const meta = {
@@ -55,7 +52,7 @@ export const TapWithIcon: Story = {
   name: "Tap (아이콘 있음)",
   args: {
     variant: "tap",
-    leftIcon: <StarIcon />,
+    leftIcon: <StarOneIcon />,
     children: "즐겨찾기 추가",
   },
 };
@@ -77,7 +74,7 @@ export const AllVariants: Story = {
             경로 검색하기
           </CTA>
           <CTA variant="tap">경로 저장하기</CTA>
-          <CTA variant="tap" leftIcon={<StarIcon />}>
+          <CTA variant="tap" leftIcon={<StarOneIcon />}>
             즐겨찾기 추가
           </CTA>
           <CTA variant="tap" leftIcon={<WriteIcon />}>

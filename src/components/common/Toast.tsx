@@ -1,5 +1,4 @@
-import CancelIcon from "@/assets/icons/icon_cancel.svg";
-import ErrorIcon from "@/assets/icons/icon_error.svg";
+import { CancelIcon, ErrorIcon } from "@/assets/icons";
 import { cn } from "@/lib/utils";
 
 const MAX_LENGTH = 31;

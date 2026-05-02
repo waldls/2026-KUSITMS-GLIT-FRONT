@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/nextjs";
 
-import Settings from "@/assets/icons/icon_settings.svg";
+import { SettingsIcon } from "@/assets/icons";
 import Header from "@/components/common/Header";
 
 const meta = {
@@ -42,7 +42,7 @@ export const WithRightLabel: Story = {
 export const WithRightIcon: Story = {
   args: {
     title: "헤더명 입력",
-    rightIcon: <Settings className="size-6 text-gray-100" />,
+    rightIcon: <SettingsIcon className="size-6 text-gray-100" />,
   },
 };
 
@@ -50,7 +50,7 @@ export const WithRightLabelAndIcon: Story = {
   args: {
     title: "헤더명 입력",
     rightLabel: "완료",
-    rightIcon: <Settings className="size-6 text-gray-100" />,
+    rightIcon: <SettingsIcon className="size-6 text-gray-100" />,
   },
 };
 
@@ -59,11 +59,11 @@ export const AllVariants: Story = {
     <div className="flex flex-col">
       <Header title="타이틀만" />
       <Header title="완료 텍스트" rightLabel="완료" />
-      <Header title="오른쪽 아이콘" rightIcon={<Settings className="size-6 text-gray-100" />} />
+      <Header title="오른쪽 아이콘" rightIcon={<SettingsIcon className="size-6 text-gray-100" />} />
       <Header
         title="텍스트 + 아이콘"
         rightLabel="완료"
-        rightIcon={<Settings className="size-6 text-gray-100" />}
+        rightIcon={<SettingsIcon className="size-6 text-gray-100" />}
       />
     </div>
   ),

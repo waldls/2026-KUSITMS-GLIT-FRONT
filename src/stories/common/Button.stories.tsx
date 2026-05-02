@@ -1,9 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/nextjs";
 
-import DownloadIcon from "@/assets/icons/icon_download.svg";
-import PlusIcon from "@/assets/icons/icon_plus.svg";
-import SearchIcon from "@/assets/icons/icon_search.svg";
-import WriteIcon from "@/assets/icons/icon_write.svg";
+import { DownloadIcon, PlusIcon, SearchIcon, WriteIcon } from "@/assets/icons";
 import Button from "@/components/common/Button";
 
 const meta = {

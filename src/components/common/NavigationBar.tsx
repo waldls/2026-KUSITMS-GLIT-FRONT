@@ -3,11 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-import CalendarIcon from "@/assets/icons/icon_calendar.svg";
-import HomeIcon from "@/assets/icons/icon_home.svg";
-import MypageIcon from "@/assets/icons/icon_mypage.svg";
-import ReportIcon from "@/assets/icons/icon_report.svg";
-import WriteIcon from "@/assets/icons/icon_write.svg";
+import { CalendarIcon, HomeIcon, MyPageIcon, ReportIcon, WriteIcon } from "@/assets/icons";
 import { cn } from "@/lib/utils";
 
 interface NavItem {
@@ -22,7 +18,7 @@ const NAV_ITEMS: NavItem[] = [
   { href: "/calendar", label: "캘린더", icon: CalendarIcon },
   { href: "/record", label: "기록", icon: WriteIcon },
   { href: "/report", label: "리포트", icon: ReportIcon, iconClassName: "size-8" },
-  { href: "/my", label: "마이", icon: MypageIcon },
+  { href: "/my", label: "마이", icon: MyPageIcon },
 ];
 
 interface NavigationBarProps {

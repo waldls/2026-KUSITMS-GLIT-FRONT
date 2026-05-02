@@ -21,6 +21,24 @@ const nextConfig: NextConfig = {
       },
       {
         test: /\.svg$/i,
+        include: /src[\\/]assets[\\/]icons/,
+        issuer: fileLoaderRule?.issuer,
+        resourceQuery: { not: [...(fileLoaderRule?.resourceQuery?.not ?? []), /url/] },
+        use: [
+          {
+            loader: "@svgr/webpack",
+            options: {
+              dimensions: false,
+              svgoConfig: {
+                plugins: [{ name: "convertColors", params: { currentColor: true } }],
+              },
+            },
+          },
+        ],
+      },
+      {
+        test: /\.svg$/i,
+        exclude: /src[\\/]assets[\\/]icons/,
         issuer: fileLoaderRule?.issuer,
         resourceQuery: { not: [...(fileLoaderRule?.resourceQuery?.not ?? []), /url/] },
         use: [{ loader: "@svgr/webpack", options: { dimensions: false } }],

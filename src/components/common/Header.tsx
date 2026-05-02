@@ -1,4 +1,4 @@
-import ChevronLeft from "@/assets/icons/icon_chevron_left.svg";
+import { ChevronLeftIcon } from "@/assets/icons";
 import { cn } from "@/lib/utils";
 
 interface HeaderProps {
@@ -24,7 +24,7 @@ const Header = ({
   className,
 }: HeaderProps) => {
   const renderLeftIcon =
-    leftIcon === undefined ? <ChevronLeft className="size-7 text-gray-100" /> : leftIcon;
+    leftIcon === undefined ? <ChevronLeftIcon className="size-7 text-gray-100" /> : leftIcon;
 
   return (
     <header

@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/nextjs";
 
-import EyeOpenIcon from "@/assets/icons/icon_eye_open.svg";
+import { OpenEyeIcon } from "@/assets/icons";
 import Tag from "@/components/common/Tag";
 
 const meta = {
@@ -56,27 +56,27 @@ export const WithIcon: Story = {
   render: () => (
     <div className="flex flex-wrap gap-2">
       <Tag variant="gray">
-        <EyeOpenIcon />
+        <OpenEyeIcon />
         역량 없음
       </Tag>
       <Tag variant="tag100">
-        <EyeOpenIcon />
+        <OpenEyeIcon />
         발견·분석
       </Tag>
       <Tag variant="tag200">
-        <EyeOpenIcon />
+        <OpenEyeIcon />
         기획·실행
       </Tag>
       <Tag variant="tag300">
-        <EyeOpenIcon />
+        <OpenEyeIcon />
         협업·조율
       </Tag>
       <Tag variant="tag400">
-        <EyeOpenIcon />
+        <OpenEyeIcon />
         문제해결·개선
       </Tag>
       <Tag variant="tag500">
-        <EyeOpenIcon />
+        <OpenEyeIcon />
         성찰·성장
       </Tag>
     </div>
