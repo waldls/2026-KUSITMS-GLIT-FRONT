@@ -1,4 +1,4 @@
-import React, { forwardRef } from "react";
+import React, { forwardRef, useState } from "react";
 
 import { cn } from "@/lib/utils";
 
@@ -22,11 +22,37 @@ export interface TextFieldProps extends Omit<
   variant?: TextFieldVariant;
   rightIcon?: React.ReactNode;
   errorMessage?: string;
+  showCount?: boolean;
 }
 
 const TextField = forwardRef<HTMLInputElement, TextFieldProps>(
-  ({ variant = "default", rightIcon, errorMessage, className, id, ...props }, ref) => {
+  (
+    {
+      variant = "default",
+      rightIcon,
+      errorMessage,
+      showCount,
+      className,
+      id,
+      maxLength,
+      onChange,
+      ...props
+    },
+    ref,
+  ) => {
     const errorId = variant === "error" && errorMessage && id ? `${id}-error` : undefined;
+    const [count, setCount] = useState(0);
+
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+      if (maxLength !== undefined && e.target.value.length > maxLength) {
+        e.target.value = e.target.value.slice(0, maxLength);
+      }
+      setCount(e.target.value.length);
+      onChange?.(e);
+    };
+
+    const hasBottom =
+      (variant === "error" && !!errorMessage) || (showCount && maxLength !== undefined);
 
     return (
       <div className="mx-auto flex w-full flex-col">
@@ -38,6 +64,7 @@ const TextField = forwardRef<HTMLInputElement, TextFieldProps>(
           <input
             ref={ref}
             id={id}
+            maxLength={maxLength}
             aria-invalid={variant === "error" ? true : undefined}
             aria-describedby={errorId}
             className={cn(
@@ -45,6 +72,7 @@ const TextField = forwardRef<HTMLInputElement, TextFieldProps>(
               TEXTFIELD_VARIANT_STYLES[variant],
               className,
             )}
+            onChange={handleChange}
             {...props}
           />
           {rightIcon && (
@@ -53,10 +81,21 @@ const TextField = forwardRef<HTMLInputElement, TextFieldProps>(
             </div>
           )}
         </div>
-        {variant === "error" && errorMessage && (
-          <p id={errorId} className="text-error-primary body-4 mt-1">
-            {errorMessage}
-          </p>
+        {hasBottom && (
+          <div className="mt-1.5 flex items-start justify-between">
+            {variant === "error" && errorMessage ? (
+              <p id={errorId} className="body-4 text-error-primary">
+                {errorMessage}
+              </p>
+            ) : (
+              <span />
+            )}
+            {showCount && maxLength !== undefined && (
+              <p className="body-4 shrink-0 text-white">
+                {count}/{maxLength}
+              </p>
+            )}
+          </div>
         )}
       </div>
     );

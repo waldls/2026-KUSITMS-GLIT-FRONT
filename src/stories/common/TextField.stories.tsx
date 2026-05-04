@@ -66,6 +66,52 @@ export const FilledFocusedWithIcon: Story = {
   },
 };
 
+/** 글자수 카운트 */
+export const DefaultWithCount: Story = {
+  args: {
+    placeholder: "내용 입력",
+    showCount: true,
+    maxLength: 12,
+  },
+};
+
+/** 글자수 카운트 + 아이콘 */
+export const DefaultWithCountAndIcon: Story = {
+  args: {
+    placeholder: "내용 입력",
+    rightIcon: <SearchIcon />,
+    showCount: true,
+    maxLength: 12,
+  },
+};
+
+/** 글자수 카운트 + 에러 */
+export const ErrorStateWithCount: Story = {
+  args: {
+    id: "count-error",
+    variant: "error",
+    placeholder: "내용 입력",
+    defaultValue: "입력된 텍스트입니다",
+    errorMessage: "내용이 올바르지 않습니다",
+    showCount: true,
+    maxLength: 12,
+  },
+};
+
+/** 글자수 카운트 + 아이콘 + 에러 */
+export const ErrorStateWithCountAndIcon: Story = {
+  args: {
+    id: "count-icon-error",
+    variant: "error",
+    placeholder: "내용 입력",
+    defaultValue: "입력된 텍스트입니다",
+    errorMessage: "내용이 올바르지 않습니다",
+    rightIcon: <ErrorIcon />,
+    showCount: true,
+    maxLength: 12,
+  },
+};
+
 /** 에러 상태 */
 export const ErrorState: Story = {
   args: {
@@ -130,6 +176,41 @@ export const AllStates: Story = {
           placeholder="이메일 입력"
           errorMessage="이메일 형식이 올바르지 않습니다"
           rightIcon={<ErrorIcon />}
+        />
+      </div>
+
+      <div className="flex flex-col gap-2">
+        <label className="body-4 text-gray-600">글자 수 카운트</label>
+        <TextField placeholder="내용 입력" showCount maxLength={12} />
+      </div>
+
+      <div className="flex flex-col gap-2">
+        <label className="body-4 text-gray-600">글자 수 카운트 + 아이콘</label>
+        <TextField placeholder="내용 입력" rightIcon={<SearchIcon />} showCount maxLength={12} />
+      </div>
+
+      <div className="flex flex-col gap-2">
+        <label className="body-4 text-gray-600">글자 수 카운트 + 에러</label>
+        <TextField
+          id="count-error-field"
+          variant="error"
+          placeholder="내용 입력"
+          errorMessage="내용이 올바르지 않습니다"
+          showCount
+          maxLength={12}
+        />
+      </div>
+
+      <div className="flex flex-col gap-2">
+        <label className="body-4 text-gray-600">글자 수 카운트 + 아이콘 + 에러</label>
+        <TextField
+          id="count-icon-error-field"
+          variant="error"
+          placeholder="내용 입력"
+          errorMessage="내용이 올바르지 않습니다"
+          rightIcon={<ErrorIcon />}
+          showCount
+          maxLength={12}
         />
       </div>
     </div>

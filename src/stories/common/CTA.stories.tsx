@@ -7,7 +7,7 @@ const meta = {
   title: "Common/CTA",
   component: CTA,
   parameters: {
-    layout: "centered",
+    layout: "padded",
   },
   tags: ["autodocs"],
   args: {
@@ -57,6 +57,24 @@ export const TapWithIcon: Story = {
   },
 };
 
+export const Disabled: Story = {
+  args: {
+    variant: "default",
+    children: "경로 저장하기",
+    disabled: true,
+  },
+};
+
+export const DisabledWithIcon: Story = {
+  name: "Disabled (아이콘 있음)",
+  args: {
+    variant: "default",
+    leftIcon: <DownloadIcon />,
+    children: "경로 저장하기",
+    disabled: true,
+  },
+};
+
 export const AllVariants: Story = {
   name: "전체 변형 모음",
   parameters: {
@@ -64,7 +82,7 @@ export const AllVariants: Story = {
   },
   render: () => (
     <div className="bg-black p-10">
-      <div className="rounded-8 border-sea-blue-300 mx-auto w-fit border border-dashed p-7">
+      <div className="rounded-8 border-sea-blue-300 mx-auto border border-dashed p-7">
         <div className="flex flex-col items-center gap-6">
           <CTA variant="default">경로 저장하기</CTA>
           <CTA variant="default" leftIcon={<DownloadIcon />}>
@@ -79,6 +97,12 @@ export const AllVariants: Story = {
           </CTA>
           <CTA variant="tap" leftIcon={<WriteIcon />}>
             후기 작성하기
+          </CTA>
+          <CTA variant="default" disabled>
+            경로 저장하기
+          </CTA>
+          <CTA variant="default" leftIcon={<DownloadIcon />} disabled>
+            경로 저장하기
           </CTA>
         </div>
       </div>

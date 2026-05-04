@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/nextjs";
 
-import { OpenEyeIcon } from "@/assets/icons";
+import { StarOneIcon } from "@/assets/icons";
 import Tag from "@/components/common/Tag";
 
 const meta = {
@@ -17,24 +17,96 @@ export const Gray: Story = {
   args: { variant: "gray", children: "태그" },
 };
 
+export const GrayWithIcon: Story = {
+  args: {
+    variant: "gray",
+    children: (
+      <>
+        <StarOneIcon />
+        태그
+      </>
+    ),
+  },
+};
+
 export const Tag100: Story = {
   args: { variant: "tag100", children: "태그" },
+};
+
+export const Tag100WithIcon: Story = {
+  args: {
+    variant: "tag100",
+    children: (
+      <>
+        <StarOneIcon />
+        태그
+      </>
+    ),
+  },
 };
 
 export const Tag200: Story = {
   args: { variant: "tag200", children: "태그" },
 };
 
+export const Tag200WithIcon: Story = {
+  args: {
+    variant: "tag200",
+    children: (
+      <>
+        <StarOneIcon />
+        태그
+      </>
+    ),
+  },
+};
+
 export const Tag300: Story = {
   args: { variant: "tag300", children: "태그" },
+};
+
+export const Tag300WithIcon: Story = {
+  args: {
+    variant: "tag300",
+    children: (
+      <>
+        <StarOneIcon />
+        태그
+      </>
+    ),
+  },
 };
 
 export const Tag400: Story = {
   args: { variant: "tag400", children: "태그" },
 };
 
+export const Tag400WithIcon: Story = {
+  args: {
+    variant: "tag400",
+    children: (
+      <>
+        <StarOneIcon />
+        태그
+      </>
+    ),
+  },
+};
+
 export const Tag500: Story = {
   args: { variant: "tag500", children: "태그" },
+};
+
+export const Tag500WithIcon: Story = {
+  args: {
+    variant: "tag500",
+    children: (
+      <>
+        <StarOneIcon />
+        태그
+      </>
+    ),
+  },
 };
 
 export const AllVariants: Story = {
@@ -51,32 +123,32 @@ export const AllVariants: Story = {
   ),
 };
 
-export const WithIcon: Story = {
+export const AllVariantsWithIcon: Story = {
   args: { children: null },
   render: () => (
     <div className="flex flex-wrap gap-2">
       <Tag variant="gray">
-        <OpenEyeIcon />
+        <StarOneIcon />
         역량 없음
       </Tag>
       <Tag variant="tag100">
-        <OpenEyeIcon />
+        <StarOneIcon />
         발견·분석
       </Tag>
       <Tag variant="tag200">
-        <OpenEyeIcon />
+        <StarOneIcon />
         기획·실행
       </Tag>
       <Tag variant="tag300">
-        <OpenEyeIcon />
+        <StarOneIcon />
         협업·조율
       </Tag>
       <Tag variant="tag400">
-        <OpenEyeIcon />
+        <StarOneIcon />
         문제해결·개선
       </Tag>
       <Tag variant="tag500">
-        <OpenEyeIcon />
+        <StarOneIcon />
         성찰·성장
       </Tag>
     </div>
