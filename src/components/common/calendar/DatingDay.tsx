@@ -1,0 +1,58 @@
+import { type ComponentProps } from "react";
+import { type Day, type DayButton } from "react-day-picker";
+
+import { cn } from "@/lib/utils";
+
+const datingDayStyle = {
+  default: "size-7.5 rounded-full text-white",
+  outside: "text-gray-600",
+  disabled: "text-gray-600",
+  selected: "bg-sea-blue-400 text-black",
+  otherSelected: "bg-gray-500 text-black",
+  scrum:
+    "after:absolute after:top-full after:h-0.75 after:w-7.5 after:rounded-full after:bg-yellow-500",
+};
+
+const DatingDayContent = ({
+  children,
+  modifiers,
+}: Pick<ComponentProps<typeof Day>, "children" | "modifiers">) => (
+  <span
+    className={cn(
+      "relative flex items-center justify-center",
+      datingDayStyle.default,
+      modifiers.outside && datingDayStyle.outside,
+      modifiers.disabled && datingDayStyle.disabled,
+      modifiers.selected && datingDayStyle.selected,
+      modifiers.otherSelected && datingDayStyle.otherSelected,
+      modifiers.scrum && datingDayStyle.scrum,
+    )}>
+    {children}
+  </span>
+);
+
+const DatingDay = ({ className, children, ...props }: ComponentProps<typeof Day>) => (
+  <td className={cn(className, "body-2 p-0 text-center")} {...props}>
+    {children}
+  </td>
+);
+
+const DatingDayButton = ({
+  className,
+  children,
+  modifiers,
+  ...props
+}: ComponentProps<typeof DayButton>) => (
+  <button
+    type="button"
+    className={cn(
+      className,
+      "body-2 flex aspect-square w-full cursor-pointer items-center justify-center disabled:cursor-default",
+    )}
+    {...props}>
+    <DatingDayContent modifiers={modifiers}>{children}</DatingDayContent>
+  </button>
+);
+
+export { DatingDay };
+export default DatingDayButton;
