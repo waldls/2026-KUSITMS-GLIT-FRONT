@@ -21,6 +21,8 @@ export interface TextFieldProps extends Omit<
 > {
   variant?: TextFieldVariant;
   rightIcon?: React.ReactNode;
+  rightIconClassName?: string;
+  onRightIconClick?: () => void;
   errorMessage?: string;
   showCount?: boolean;
 }
@@ -30,24 +32,30 @@ const TextField = forwardRef<HTMLInputElement, TextFieldProps>(
     {
       variant = "default",
       rightIcon,
+      rightIconClassName,
+      onRightIconClick,
       errorMessage,
       showCount,
       className,
       id,
       maxLength,
       onChange,
+      value,
       ...props
     },
     ref,
   ) => {
     const errorId = variant === "error" && errorMessage && id ? `${id}-error` : undefined;
-    const [count, setCount] = useState(0);
+    const [internalCount, setInternalCount] = useState(
+      typeof value === "string" ? value.length : 0,
+    );
+    const count = value !== undefined ? String(value).length : internalCount;
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       if (maxLength !== undefined && e.target.value.length > maxLength) {
         e.target.value = e.target.value.slice(0, maxLength);
       }
-      setCount(e.target.value.length);
+      setInternalCount(e.target.value.length);
       onChange?.(e);
     };
 
@@ -65,6 +73,7 @@ const TextField = forwardRef<HTMLInputElement, TextFieldProps>(
             ref={ref}
             id={id}
             maxLength={maxLength}
+            value={value}
             aria-invalid={variant === "error" ? true : undefined}
             aria-describedby={errorId}
             className={cn(
@@ -76,7 +85,12 @@ const TextField = forwardRef<HTMLInputElement, TextFieldProps>(
             {...props}
           />
           {rightIcon && (
-            <div className="ml-2 flex shrink-0 cursor-pointer items-center text-white [&_svg]:size-6">
+            <div
+              className={cn(
+                "ml-2 flex shrink-0 cursor-pointer items-center [&_svg]:size-6",
+                rightIconClassName ?? "text-white",
+              )}
+              onClick={onRightIconClick}>
               {rightIcon}
             </div>
           )}

@@ -28,10 +28,7 @@ const Header = ({
 
   return (
     <header
-      className={cn(
-        "grid w-full grid-cols-[1fr_auto_1fr] items-center bg-gray-900 px-4.25 py-4.5",
-        className,
-      )}>
+      className={cn("grid w-full grid-cols-[1fr_auto_1fr] items-center px-4.25 py-4.5", className)}>
       <div>
         {renderLeftIcon && (
           <button
