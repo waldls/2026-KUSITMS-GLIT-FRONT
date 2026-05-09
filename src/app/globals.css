@@ -167,6 +167,36 @@
   letter-spacing: -0.025em;
 }
 
+@utility drop-panel {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 400ms ease-out;
+}
+
+@utility drop-panel-open {
+  grid-template-rows: 1fr;
+}
+
+@utility drop-list {
+  min-height: 0;
+  margin-top: 0;
+  overflow: hidden;
+  pointer-events: none;
+  opacity: 0;
+  transform: translateY(-0.5rem);
+  transition:
+    opacity 400ms ease-out,
+    transform 400ms ease-out,
+    margin-top 400ms ease-out;
+}
+
+@utility drop-list-open {
+  margin-top: var(--drop-list-open-margin-top, 0.5rem);
+  pointer-events: auto;
+  opacity: 1;
+  transform: translateY(0);
+}
+
 @utility bg-cta-gradient {
   background: radial-gradient(
     135.44% 102.65% at 14.37% 11%,

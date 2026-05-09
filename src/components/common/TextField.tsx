@@ -87,7 +87,8 @@ const TextField = forwardRef<HTMLInputElement, TextFieldProps>(
           {rightIcon && (
             <div
               className={cn(
-                "ml-2 flex shrink-0 cursor-pointer items-center [&_svg]:size-6",
+                "ml-2 flex shrink-0 items-center [&_svg]:size-6",
+                onRightIconClick && "cursor-pointer",
                 rightIconClassName ?? "text-white",
               )}
               onClick={onRightIconClick}>

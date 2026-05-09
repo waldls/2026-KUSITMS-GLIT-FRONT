@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "eslint . --ext .js,.ts,.tsx --fix",
     "prepare": "husky install",
-    "prettier": "prettier --write .",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
     "chromatic": "chromatic"

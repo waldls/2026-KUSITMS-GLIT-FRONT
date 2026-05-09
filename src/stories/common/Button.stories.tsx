@@ -14,7 +14,6 @@ const meta = {
     children: "텍스트 입력하기",
     variant: "default",
     size: "md",
-    fullWidth: false,
     disabled: false,
   },
   argTypes: {
@@ -25,9 +24,6 @@ const meta = {
     size: {
       control: "radio",
       options: ["lg", "md"],
-    },
-    fullWidth: {
-      control: "boolean",
     },
     disabled: {
       control: "boolean",
@@ -52,17 +48,17 @@ export const Playground: Story = {};
 
 export const LgDefault: Story = {
   name: "Lg — Default",
-  args: { size: "lg", fullWidth: true },
+  args: { size: "lg", className: "w-full" },
 };
 
 export const LgPressed: Story = {
   name: "Lg — Pressed",
-  args: { size: "lg", fullWidth: true, className: "bg-sea-blue-400/[.93]" },
+  args: { size: "lg", className: "w-full bg-sea-blue-400/[.93]" },
 };
 
 export const LgDisabled: Story = {
   name: "Lg — Disabled",
-  args: { size: "lg", fullWidth: true, disabled: true },
+  args: { size: "lg", className: "w-full", disabled: true },
 };
 
 export const MdDefault: Story = {
@@ -86,7 +82,7 @@ export const LgLeftIcon: Story = {
   name: "Lg — Left Icon",
   args: {
     size: "lg",
-    fullWidth: true,
+    className: "w-full",
     leftIcon: <SearchIcon />,
     children: "경로 검색하기",
   },
@@ -96,7 +92,7 @@ export const LgRightIcon: Story = {
   name: "Lg — Right Icon",
   args: {
     size: "lg",
-    fullWidth: true,
+    className: "w-full",
     rightIcon: <DownloadIcon />,
     children: "경로 저장하기",
   },
@@ -106,7 +102,7 @@ export const LgBothIcons: Story = {
   name: "Lg — Both Icons",
   args: {
     size: "lg",
-    fullWidth: true,
+    className: "w-full",
     leftIcon: <PlusIcon />,
     rightIcon: <DownloadIcon />,
     children: "경로 추가 저장",
@@ -147,7 +143,7 @@ export const LgLeftIconDisabled: Story = {
   name: "Lg — Left Icon · Disabled",
   args: {
     size: "lg",
-    fullWidth: true,
+    className: "w-full",
     leftIcon: <SearchIcon />,
     children: "경로 검색하기",
     disabled: true,
@@ -176,25 +172,29 @@ export const AllVariants: Story = {
         <section className="flex flex-col gap-4">
           <p className="body-3 text-offwhite-300">Lg</p>
           <div className="flex flex-col gap-3">
-            <Button size="lg" fullWidth>
+            <Button size="lg" className="w-full">
               텍스트 입력하기
             </Button>
-            <Button size="lg" fullWidth className="bg-sea-blue-400/[.93]">
+            <Button size="lg" className="bg-sea-blue-400/[.93] w-full">
               텍스트 입력하기 (pressed)
             </Button>
-            <Button size="lg" fullWidth disabled>
+            <Button size="lg" className="w-full" disabled>
               텍스트 입력하기 (disabled)
             </Button>
-            <Button size="lg" fullWidth leftIcon={<SearchIcon />}>
+            <Button size="lg" className="w-full" leftIcon={<SearchIcon />}>
               경로 검색하기
             </Button>
-            <Button size="lg" fullWidth rightIcon={<DownloadIcon />}>
+            <Button size="lg" className="w-full" rightIcon={<DownloadIcon />}>
               경로 저장하기
             </Button>
-            <Button size="lg" fullWidth leftIcon={<PlusIcon />} rightIcon={<DownloadIcon />}>
+            <Button
+              size="lg"
+              className="w-full"
+              leftIcon={<PlusIcon />}
+              rightIcon={<DownloadIcon />}>
               경로 추가 저장
             </Button>
-            <Button size="lg" fullWidth leftIcon={<SearchIcon />} disabled>
+            <Button size="lg" className="w-full" leftIcon={<SearchIcon />} disabled>
               경로 검색하기 (disabled)
             </Button>
           </div>
