@@ -1,5 +1,5 @@
 import { CancelIcon, ErrorIcon } from "@/assets/icons";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/utils/cn";
 
 const MAX_LENGTH = 31;
 

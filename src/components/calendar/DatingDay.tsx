@@ -1,7 +1,7 @@
 import { type ComponentProps } from "react";
 import { type Day, type DayButton } from "react-day-picker";
 
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/utils/cn";
 
 const datingDayStyle = {
   default: "size-7.5 rounded-full text-white",

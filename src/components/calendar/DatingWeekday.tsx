@@ -1,6 +1,6 @@
 import type { ThHTMLAttributes } from "react";
 
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/utils/cn";
 
 const DatingWeekday = ({ className, ...props }: ThHTMLAttributes<HTMLTableCellElement>) => (
   <th

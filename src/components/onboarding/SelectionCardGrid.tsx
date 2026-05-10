@@ -1,5 +1,5 @@
 import SelectionCard from "@/components/onboarding/SelectionCard";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/utils/cn";
 
 interface SelectionOption {
   value: string;

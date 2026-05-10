@@ -2,7 +2,7 @@
 
 import { useId, useState } from "react";
 
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/utils/cn";
 
 interface GuidanceProps extends React.PropsWithChildren<
   Omit<React.HTMLAttributes<HTMLDivElement>, "onClick">

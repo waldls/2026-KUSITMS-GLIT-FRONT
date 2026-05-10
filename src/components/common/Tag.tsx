@@ -1,4 +1,4 @@
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/utils/cn";
 
 type TagVariant = "gray" | "tag100" | "tag200" | "tag300" | "tag400" | "tag500";
 

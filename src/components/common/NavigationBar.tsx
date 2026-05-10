@@ -4,7 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 import { CalendarIcon, HomeIcon, MyPageIcon, ReportIcon, WriteIcon } from "@/assets/icons";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/utils/cn";
 
 interface NavItem {
   href: string;

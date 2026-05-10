@@ -1,7 +1,7 @@
 import type { HTMLAttributes, MouseEventHandler } from "react";
 
 import { ChevronLeftIcon, ChevronRightIcon } from "@/assets/icons";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/utils/cn";
 
 type DatingMonthNavProps = {
   onPreviousClick?: MouseEventHandler<HTMLButtonElement>;

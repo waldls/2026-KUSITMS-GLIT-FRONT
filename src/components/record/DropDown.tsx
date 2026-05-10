@@ -6,7 +6,7 @@ import { CancelIcon, ChevronDownIcon, ChevronUpIcon, EditIcon, PlusIcon } from "
 import Button from "@/components/common/Button";
 import Chip from "@/components/common/Chip";
 import TextField from "@/components/common/TextField";
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/utils/cn";
 
 const chipLeadingIcon = (node: React.ReactNode) => (
   <span className="inline-flex shrink-0 [&_svg]:size-[16px]!">{node}</span>
@@ -135,7 +135,6 @@ const DropDown = ({
               <Chip
                 key={`${tag}-${index}`}
                 disabled={!isOpen}
-                selected
                 className="border-[0.6px] border-solid border-gray-800 bg-gray-800/54">
                 {tag}
               </Chip>
@@ -143,7 +142,6 @@ const DropDown = ({
 
             <Chip
               disabled={!isOpen}
-              selected
               leftIcon={chipLeadingIcon(<PlusIcon />)}
               className="overflow-hidden border-[0.6px] border-solid border-gray-800 bg-transparent">
               {addProjectLabel}
@@ -151,7 +149,6 @@ const DropDown = ({
 
             <Chip
               disabled={!isOpen}
-              selected
               leftIcon={chipLeadingIcon(<EditIcon />)}
               className="overflow-hidden border-[0.6px] border-solid border-gray-800 bg-transparent">
               {editTagsLabel}
