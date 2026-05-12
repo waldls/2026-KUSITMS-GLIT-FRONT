@@ -2,6 +2,8 @@ import "@/app/globals.css";
 
 import type { Metadata, Viewport } from "next";
 
+import Providers from "@/providers/Providers";
+
 export const metadata: Metadata = {
   title: "글릿",
   description: "KUSITMS 33rd 밋업 프로젝트 글릿",
@@ -36,9 +38,11 @@ export default function RootLayout({
         />
       </head>
       <body className="bg-gray-300">
-        <main className="relative mx-auto h-dvh max-w-107.5 min-w-93.75 overflow-hidden bg-gray-900">
-          {children}
-        </main>
+        <Providers>
+          <main className="relative mx-auto h-dvh max-w-107.5 min-w-93.75 overflow-hidden bg-gray-900">
+            {children}
+          </main>
+        </Providers>
       </body>
     </html>
   );
