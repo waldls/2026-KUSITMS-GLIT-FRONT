@@ -209,6 +209,22 @@
   );
 }
 
+@utility radar-polygon {
+  opacity: 0.91;
+}
+
+@utility bg-card {
+  border: 0.3px solid var(--color-offwhite-800);
+  background: linear-gradient(126deg, rgba(17, 17, 17, 0.2) 6.6%, rgba(173, 173, 173, 0.2) 106.5%);
+}
+
+@utility scrollbar-hide {
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
 @utility bg-cta-gradient-tap {
   background:
     linear-gradient(0deg, rgba(151, 151, 151, 0.22) 0%, rgba(151, 151, 151, 0.22) 100%),
