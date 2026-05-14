@@ -1,5 +1,22 @@
 @import "tailwindcss";
 
+.app-viewport-bg {
+  --app-shell-width: min(100vw, 26.875rem);
+  background-color: var(--color-gray-300);
+}
+
+.app-viewport-bg::before {
+  position: fixed;
+  inset: 0 auto;
+  left: 50%;
+  z-index: 0;
+  width: var(--app-shell-width);
+  pointer-events: none;
+  content: "";
+  background-color: var(--color-gray-900);
+  transform: translateX(-50%);
+}
+
 /* Tailwind 디자인 시스템 토큰 */
 @theme inline {
   --font-sans:
@@ -61,11 +78,11 @@
   --color-red-400: #da4040;
 
   /* Tag */
-  --color-tag-100: #fe5401;
-  --color-tag-200: #684bf0;
-  --color-tag-300: #fdf145;
-  --color-tag-400: #1fcf6a;
-  --color-tag-500: #ff54d0;
+  --color-tag-100: #e0705060;
+  --color-tag-200: #7b72d860;
+  --color-tag-300: #deb84a60;
+  --color-tag-400: #3cccd260;
+  --color-tag-500: #d8689860;
 
   /* =========================
     Semantic Tokens
@@ -197,7 +214,7 @@
   transform: translateY(0);
 }
 
-@utility bg-cta-gradient {
+@utility bg-gradient-100 {
   background: radial-gradient(
     135.44% 102.65% at 14.37% 11%,
     var(--color-offwhite-100, #fefefe) 0%,
@@ -207,6 +224,114 @@
     #c0fcff 77.4%,
     #26eaf1 97.12%
   );
+}
+
+@utility bg-star-complete-gradient {
+  background:
+    radial-gradient(
+      90% 35% at 50% 0%,
+      color-mix(in srgb, var(--color-sea-blue-600) 54%, var(--color-white) 10%) 0%,
+      color-mix(in srgb, var(--color-sea-blue-600) 32%, transparent) 45%,
+      transparent 100%
+    ),
+    radial-gradient(
+      90% 35% at 50% 100%,
+      color-mix(in srgb, var(--color-sea-blue-600) 54%, var(--color-white) 10%) 0%,
+      color-mix(in srgb, var(--color-sea-blue-600) 32%, transparent) 45%,
+      transparent 100%
+    ),
+    linear-gradient(180deg, var(--color-gray-900) 0%, var(--color-gray-900) 100%);
+}
+
+@utility animate-slide-in-right {
+  animation: slide-in-right 250ms ease-out both;
+}
+
+@utility animate-slide-in-left {
+  animation: slide-in-left 250ms ease-out both;
+}
+
+@utility animate-slide-in-up {
+  animation: slide-in-up 250ms ease-out both;
+}
+
+@utility animate-slide-out-down {
+  animation: slide-out-down 250ms ease-out both;
+}
+
+@utility animate-slide-out-left {
+  animation: slide-out-left 250ms ease-out both;
+}
+
+@utility animate-slide-out-right {
+  animation: slide-out-right 250ms ease-out both;
+}
+
+@utility bg-cta-gradient {
+  background:
+    radial-gradient(90% 95% at 16% 9%, rgba(255, 255, 255, 0.96) 0%, rgba(255, 255, 255, 0) 42%),
+    radial-gradient(120% 100% at 72% 48%, rgba(240, 255, 255, 0.7) 0%, rgba(240, 255, 255, 0) 50%),
+    linear-gradient(90deg, #bffffd 0%, #cffffe 45%, #2ce4e5 100%);
+}
+
+@keyframes slide-in-right {
+  from {
+    transform: translateX(100%);
+  }
+
+  to {
+    transform: translateX(0);
+  }
+}
+
+@keyframes slide-in-left {
+  from {
+    transform: translateX(-100%);
+  }
+
+  to {
+    transform: translateX(0);
+  }
+}
+
+@keyframes slide-in-up {
+  from {
+    transform: translateY(100%);
+  }
+
+  to {
+    transform: translateY(0);
+  }
+}
+
+@keyframes slide-out-down {
+  from {
+    transform: translateY(0);
+  }
+
+  to {
+    transform: translateY(100%);
+  }
+}
+
+@keyframes slide-out-left {
+  from {
+    transform: translateX(0);
+  }
+
+  to {
+    transform: translateX(-100%);
+  }
+}
+
+@keyframes slide-out-right {
+  from {
+    transform: translateX(0);
+  }
+
+  to {
+    transform: translateX(100%);
+  }
 }
 
 @utility radar-polygon {
@@ -228,13 +353,7 @@
 @utility bg-cta-gradient-tap {
   background:
     linear-gradient(0deg, rgba(151, 151, 151, 0.22) 0%, rgba(151, 151, 151, 0.22) 100%),
-    radial-gradient(
-      135.44% 102.65% at 14.37% 11%,
-      var(--color-offwhite-100, #fefefe) 0%,
-      #bcfff6 19.71%,
-      var(--color-sea-blue-300, #aefaff) 38.46%,
-      #dffdff 57.69%,
-      #c0fcff 77.4%,
-      #26eaf1 97.12%
-    );
+    radial-gradient(90% 95% at 16% 9%, rgba(255, 255, 255, 0.96) 0%, rgba(255, 255, 255, 0) 42%),
+    radial-gradient(120% 100% at 72% 48%, rgba(240, 255, 255, 0.7) 0%, rgba(240, 255, 255, 0) 50%),
+    linear-gradient(90deg, #bffffd 0%, #cffffe 45%, #2ce4e5 100%);
 }

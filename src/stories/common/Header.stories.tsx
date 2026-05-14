@@ -8,6 +8,7 @@ const meta = {
   component: Header,
   parameters: {
     layout: "fullscreen",
+    nextjs: { appDirectory: true },
   },
   decorators: [
     Story => (

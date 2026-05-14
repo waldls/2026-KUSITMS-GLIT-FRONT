@@ -20,6 +20,13 @@ export const Default: Story = {
   },
 };
 
+export const Success: Story = {
+  args: {
+    contents: "변경되었어요",
+    variant: "success",
+  },
+};
+
 export const WithoutLeftIcon: Story = {
   args: {
     contents: "내용 입력",

@@ -7,8 +7,8 @@ const datingDayStyle = {
   default: "size-7.5 rounded-full text-white",
   outside: "text-gray-600",
   disabled: "text-gray-600",
-  selected: "bg-sea-blue-400 text-black",
-  otherSelected: "bg-gray-500 text-black",
+  selected: "bg-gray-300 text-gray-900",
+  otherSelected: "bg-gray-600 text-gray-850/50",
   scrum:
     "after:absolute after:top-full after:h-0.75 after:w-7.5 after:rounded-full after:bg-yellow-500",
 };
@@ -24,7 +24,7 @@ const DatingDayContent = ({
       modifiers.outside && datingDayStyle.outside,
       modifiers.disabled && datingDayStyle.disabled,
       modifiers.selected && datingDayStyle.selected,
-      modifiers.otherSelected && datingDayStyle.otherSelected,
+      modifiers.otherSelected && !modifiers.selected && datingDayStyle.otherSelected,
       modifiers.scrum && datingDayStyle.scrum,
     )}>
     {children}

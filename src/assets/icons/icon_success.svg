@@ -4,6 +4,16 @@
 <path d="M8.5 12L11 14.5L16 9.5" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 </mask>
 <g mask="url(#mask0_1188_6255)">
-<path d="M0 0H24V24H0V0Z" fill="currentColor"/>
+<path d="M0 0H24V24H0V0Z" fill="url(#success_gradient_100)"/>
 </g>
+<defs>
+<radialGradient id="success_gradient_100" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(3.4488 2.64) rotate(33.6901) scale(32.5088 33.4899)">
+<stop stop-color="var(--Offwhite-100, #FEFEFE)"/>
+<stop offset="0.1971" stop-color="#BCFFF6"/>
+<stop offset="0.3846" stop-color="var(--Sea-blue-300, #AEFAFF)"/>
+<stop offset="0.5769" stop-color="#DFFDFF"/>
+<stop offset="0.774" stop-color="#C0FCFF"/>
+<stop offset="0.9712" stop-color="#26EAF1"/>
+</radialGradient>
+</defs>
 </svg>

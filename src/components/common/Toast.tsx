@@ -1,10 +1,10 @@
-import { CancelIcon, ErrorIcon } from "@/assets/icons";
+import { CancelIcon, ErrorIcon, SuccessIcon } from "@/assets/icons";
 import { cn } from "@/lib/utils/cn";
-
-const MAX_LENGTH = 31;
 
 interface ToastProps {
   contents: string;
+  variant?: "error" | "success";
+  leftIcon?: React.ReactNode;
   showLeftIcon?: boolean;
   showCloseButton?: boolean;
   onClose?: () => void;
@@ -13,20 +13,32 @@ interface ToastProps {
 
 const Toast = ({
   contents,
+  variant = "error",
+  leftIcon,
   showLeftIcon = true,
   showCloseButton = true,
   onClose,
   className,
 }: ToastProps) => {
+  const defaultLeftIcon =
+    variant === "success" ? (
+      <SuccessIcon className="-mt-0.5 size-6" />
+    ) : (
+      <ErrorIcon className="-mt-0.5 size-6 text-yellow-500" />
+    );
+
   return (
     <div
       className={cn(
-        "rounded-8 inline-flex items-center gap-18.5 bg-[rgba(43,43,43,0.95)] p-3",
+        "rounded-8 inline-flex max-w-[calc(100vw-40px)] items-center bg-gray-800/95 p-3",
+        showCloseButton && "gap-18.5",
         className,
       )}>
-      <div className="flex items-center gap-2">
-        {showLeftIcon && <ErrorIcon className="-mt-0.5 size-6 text-yellow-500" />}
-        <span className="body-4 text-gray-100">{contents.slice(0, MAX_LENGTH)}</span>
+      <div className="flex min-w-0 items-center gap-2">
+        {showLeftIcon && (leftIcon ?? defaultLeftIcon)}
+        <span className="body-4 truncate whitespace-nowrap text-gray-100">
+          {contents.slice(0, 31)}
+        </span>
       </div>
       {showCloseButton && (
         <button

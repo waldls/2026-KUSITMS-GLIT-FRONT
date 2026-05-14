@@ -1,0 +1,73 @@
+import Image from "next/image";
+
+import HeartImage from "@/assets/images/record/hearts-3.png";
+import CTA from "@/components/common/CTA";
+import Tag from "@/components/common/Tag";
+
+interface StarTask {
+  id: number;
+  title: string;
+  projectId: number;
+  projectTag: string;
+  projectTitle: string;
+  skillId: number;
+}
+
+interface StarTaskCompleteProps {
+  completedTaskNumber: number;
+  nextTask: StarTask;
+  onNextTaskClick: () => void;
+}
+
+const KOREAN_ORDINALS = [
+  "첫",
+  "두",
+  "세",
+  "네",
+  "다섯",
+  "여섯",
+  "일곱",
+  "여덟",
+  "아홉",
+  "열",
+  "열한",
+  "열두",
+  "열세",
+  "열네",
+  "열다섯",
+  "열여섯",
+  "열일곱",
+  "열여덟",
+  "열아홉",
+  "스무",
+] as const;
+
+const StarTaskComplete = ({
+  completedTaskNumber,
+  nextTask,
+  onNextTaskClick,
+}: StarTaskCompleteProps) => {
+  const completedTaskOrdinal =
+    KOREAN_ORDINALS[completedTaskNumber - 1] ?? `${completedTaskNumber}번째`;
+
+  return (
+    <section className="flex min-h-0 flex-1 flex-col items-center justify-center">
+      <div className="flex flex-1 flex-col items-center justify-center">
+        <Image src={HeartImage} alt="첫 번째 기록 완료" width={128} height={128} priority />
+        <p className="head-4 mt-3.75 text-white">{completedTaskOrdinal} 번째 기록 완료!</p>
+        <div className="rounded-8 bg-gray-850/60 mt-3 flex flex-col items-center p-3">
+          <p className="body-4 text-sea-blue-400">다음 기록 목록</p>
+          <div className="mt-1.5 flex items-center gap-2">
+            <Tag variant="gray">{nextTask.projectTag}</Tag>
+            <span className="body-4 text-gray-200">{nextTask.title}</span>
+          </div>
+        </div>
+      </div>
+      <div className="w-full shrink-0 py-4">
+        <CTA onClick={onNextTaskClick}>다음 기록하기</CTA>
+      </div>
+    </section>
+  );
+};
+
+export default StarTaskComplete;

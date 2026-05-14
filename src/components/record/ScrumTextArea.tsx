@@ -6,17 +6,26 @@ import { cn } from "@/lib/utils/cn";
 
 const MAX_ITEMS = 5;
 const MAX_CHARS = 50;
-const TOTAL_MAX = MAX_ITEMS * MAX_CHARS;
 
 interface ScrumTextAreaProps {
   className?: string;
+  value?: string[];
   onChange?: (items: string[]) => void;
+  maxItems?: number;
 }
 
-const ScrumTextArea = ({ className, onChange }: ScrumTextAreaProps) => {
-  const [items, setItems] = useState<string[]>([]);
+const ScrumTextArea = ({
+  className,
+  value,
+  onChange,
+  maxItems = MAX_ITEMS,
+}: ScrumTextAreaProps) => {
+  const [internalItems, setInternalItems] = useState<string[]>([]);
   const refs = useRef<(HTMLTextAreaElement | null)[]>([]);
   const pendingFocus = useRef<number | null>(null);
+  const items = value ?? internalItems;
+  const itemLimit = Math.max(1, Math.min(MAX_ITEMS, maxItems));
+  const totalMax = itemLimit * MAX_CHARS;
 
   const totalChars = items.reduce((acc, s) => acc + s.length, 0);
 
@@ -36,15 +45,17 @@ const ScrumTextArea = ({ className, onChange }: ScrumTextAreaProps) => {
   const activate = (e: React.MouseEvent<HTMLDivElement>) => {
     if (items.length === 0) {
       pendingFocus.current = 0;
-      setItems([""]);
+      update([""]);
     } else if (!(e.target as HTMLElement).closest("textarea")) {
       refs.current[items.length - 1]?.focus();
     }
   };
 
   const update = (next: string[]) => {
-    setItems(next);
-    onChange?.(next.filter(Boolean));
+    if (value === undefined) {
+      setInternalItems(next);
+    }
+    onChange?.(next);
   };
 
   const handleChange = (i: number, e: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -59,7 +70,7 @@ const ScrumTextArea = ({ className, onChange }: ScrumTextAreaProps) => {
     if (e.nativeEvent.isComposing) return;
     if (e.key === "Enter") {
       e.preventDefault();
-      if (i < MAX_ITEMS - 1) {
+      if (i < itemLimit - 1) {
         pendingFocus.current = i + 1;
         const next = items.length > i + 1 ? [...items] : [...items, ""];
         update(next);
@@ -81,7 +92,7 @@ const ScrumTextArea = ({ className, onChange }: ScrumTextAreaProps) => {
   return (
     <div
       className={cn(
-        "rounded-6 bg-gray-850 flex h-50.25 w-full flex-col justify-between p-4",
+        "rounded-6 bg-gray-850 flex h-50.25 w-full flex-col justify-between border-1 border-gray-800 p-4",
         className,
       )}
       onBlur={handleContainerBlur}>
@@ -90,7 +101,7 @@ const ScrumTextArea = ({ className, onChange }: ScrumTextAreaProps) => {
         onClick={e => activate(e)}>
         {items.length === 0 ? (
           <div className="flex flex-col">
-            {Array.from({ length: MAX_ITEMS }, (_, i) => (
+            {Array.from({ length: itemLimit }, (_, i) => (
               <div key={i} className="flex items-start gap-1">
                 <span className="body-2 shrink-0 pt-px text-gray-800 select-none">{i + 1}.</span>
                 {i === 0 && <span className="body-2 text-gray-800">어드민 페이지 화면 작업</span>}
@@ -120,7 +131,7 @@ const ScrumTextArea = ({ className, onChange }: ScrumTextAreaProps) => {
       </div>
       <div className="flex justify-end">
         <span className="body-4 text-gray-700">
-          {totalChars}/{TOTAL_MAX}
+          {totalChars}/{totalMax}
         </span>
       </div>
     </div>

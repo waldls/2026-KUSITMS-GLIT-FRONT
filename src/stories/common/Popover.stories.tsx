@@ -2,7 +2,6 @@ import type { Meta, StoryObj } from "@storybook/nextjs";
 import { useState } from "react";
 
 import Popover from "@/components/common/Popover";
-import { COMPETENCE_ITEMS } from "@/constants/competence";
 
 const meta = {
   title: "Common/Popover",
@@ -17,9 +16,9 @@ type Story = StoryObj<typeof meta>;
 export const Default: Story = {
   args: {
     items: [
-      { label: "항목 1", dotColor: "#ffc022" },
-      { label: "항목 2", dotColor: "#ffc022" },
-      { label: "항목 3", dotColor: "#ffc022" },
+      { label: "항목 1", dotClassName: "bg-tag-300" },
+      { label: "항목 2", dotClassName: "bg-tag-300" },
+      { label: "항목 3", dotClassName: "bg-tag-300" },
     ],
   },
 };
@@ -27,9 +26,9 @@ export const Default: Story = {
 export const WithSelectedItem: Story = {
   args: {
     items: [
-      { label: "항목 1", dotColor: "#ffc022", selected: true },
-      { label: "항목 2", dotColor: "#ffc022" },
-      { label: "항목 3", dotColor: "#ffc022" },
+      { label: "항목 1", dotClassName: "bg-tag-300", selected: true },
+      { label: "항목 2", dotClassName: "bg-tag-300" },
+      { label: "항목 3", dotClassName: "bg-tag-300" },
     ],
   },
 };
@@ -41,7 +40,15 @@ export const WithoutDot: Story = {
 };
 
 export const Competence: Story = {
-  args: { items: COMPETENCE_ITEMS },
+  args: {
+    items: [
+      { label: "발견/분석", dotClassName: "bg-tag-100" },
+      { label: "기획/실행", dotClassName: "bg-tag-200" },
+      { label: "협업/조율", dotClassName: "bg-tag-300" },
+      { label: "문제해결/개선", dotClassName: "bg-tag-400" },
+      { label: "성찰/성장", dotClassName: "bg-tag-500" },
+    ],
+  },
   render: args => {
     const [selected, setSelected] = useState<number | null>(null);
     return (

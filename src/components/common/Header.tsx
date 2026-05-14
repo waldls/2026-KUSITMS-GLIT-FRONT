@@ -1,3 +1,7 @@
+"use client";
+
+import { useRouter } from "next/navigation";
+
 import { ChevronLeftIcon } from "@/assets/icons";
 import { cn } from "@/lib/utils/cn";
 
@@ -9,7 +13,9 @@ interface HeaderProps {
   rightIcon?: React.ReactNode;
   rightLabel?: string;
   onRightClick?: () => void;
+  rightDisabled?: boolean;
   rightButtonAriaLabel?: string;
+  rightLabelClassName?: string;
   className?: string;
 }
 
@@ -21,10 +27,28 @@ const Header = ({
   rightIcon,
   rightLabel,
   onRightClick,
+  rightDisabled = false,
+  rightButtonAriaLabel,
+  rightLabelClassName,
   className,
 }: HeaderProps) => {
+  const router = useRouter();
   const renderLeftIcon =
     leftIcon === undefined ? <ChevronLeftIcon className="size-7 text-gray-100" /> : leftIcon;
+  const hasRightContent = rightLabel !== undefined || rightIcon !== undefined;
+
+  const handleLeftClick = () => {
+    if (onLeftClick) {
+      onLeftClick();
+      return;
+    }
+
+    router.back();
+  };
+
+  const handleRightClick = () => {
+    onRightClick?.();
+  };
 
   return (
     <header
@@ -33,18 +57,30 @@ const Header = ({
         {renderLeftIcon && (
           <button
             type="button"
-            onClick={onLeftClick}
-            disabled={!onLeftClick}
+            onClick={handleLeftClick}
             aria-label={leftButtonAriaLabel}
-            className="flex cursor-pointer items-center justify-center transition-opacity hover:opacity-80 disabled:cursor-not-allowed">
+            className="flex cursor-pointer items-center justify-center transition-opacity hover:opacity-80">
             {renderLeftIcon}
           </button>
         )}
       </div>
       {title && <h1 className="head-4 truncate text-center text-white">{title}</h1>}
-      <div className="flex cursor-pointer items-center justify-end gap-1" onClick={onRightClick}>
-        {rightLabel && <span className="body-2 text-gray-700">{rightLabel}</span>}
-        {rightIcon && <span className="flex size-6 items-center justify-center">{rightIcon}</span>}
+      <div className="flex justify-end">
+        {hasRightContent && (
+          <button
+            type="button"
+            disabled={rightDisabled}
+            aria-label={rightButtonAriaLabel}
+            className="flex cursor-pointer items-center justify-end gap-1 disabled:cursor-default"
+            onClick={handleRightClick}>
+            {rightLabel && (
+              <span className={cn("body-2 text-gray-700", rightLabelClassName)}>{rightLabel}</span>
+            )}
+            {rightIcon && (
+              <span className="flex size-6 items-center justify-center">{rightIcon}</span>
+            )}
+          </button>
+        )}
       </div>
     </header>
   );

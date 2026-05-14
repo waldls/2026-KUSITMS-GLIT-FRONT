@@ -23,6 +23,7 @@ export interface TextFieldProps extends Omit<
   rightIcon?: React.ReactNode;
   rightIconClassName?: string;
   onRightIconClick?: () => void;
+  wrapperClassName?: string;
   errorMessage?: string;
   showCount?: boolean;
 }
@@ -34,6 +35,7 @@ const TextField = forwardRef<HTMLInputElement, TextFieldProps>(
       rightIcon,
       rightIconClassName,
       onRightIconClick,
+      wrapperClassName,
       errorMessage,
       showCount,
       className,
@@ -68,6 +70,7 @@ const TextField = forwardRef<HTMLInputElement, TextFieldProps>(
           className={cn(
             "relative flex w-full items-center border-b-[1.6px] pb-1.5 transition-colors",
             WRAPPER_VARIANT_STYLES[variant],
+            wrapperClassName,
           )}>
           <input
             ref={ref}

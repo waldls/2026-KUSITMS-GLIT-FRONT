@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import { cn } from "@/lib/utils/cn";
 
@@ -27,6 +27,9 @@ interface ChipDefaultProps extends ChipBaseProps, React.ButtonHTMLAttributes<HTM
 interface ChipInputProps extends ChipBaseProps {
   state: "input";
   onConfirm?: (value: string) => void;
+  onCancel?: () => void;
+  autoFocus?: boolean;
+  confirmOnBlur?: boolean;
   inputClassName?: string;
 }
 
@@ -36,9 +39,24 @@ const ChipInput = ({
   leftIcon,
   className,
   onConfirm,
+  onCancel,
+  autoFocus = false,
+  confirmOnBlur = false,
   inputClassName,
 }: Omit<ChipInputProps, "state">) => {
   const [value, setValue] = useState("");
+  const inputRef = useRef<HTMLInputElement | null>(null);
+  const skipBlurConfirm = useRef(false);
+
+  useEffect(() => {
+    if (autoFocus) {
+      inputRef.current?.focus();
+    }
+  }, [autoFocus]);
+
+  const confirm = () => {
+    onConfirm?.(value);
+  };
 
   const baseClass = cn(
     "body-4 rounded-6 inline-flex w-fit cursor-pointer items-center border-[0.6px] px-2 py-2.5 transition",
@@ -50,7 +68,15 @@ const ChipInput = ({
     if (e.nativeEvent.isComposing) return;
     if (e.key === "Enter") {
       e.preventDefault();
-      onConfirm?.(value);
+      skipBlurConfirm.current = true;
+      confirm();
+    }
+
+    if (e.key === "Escape") {
+      e.preventDefault();
+      skipBlurConfirm.current = true;
+      setValue("");
+      onCancel?.();
     }
   };
 
@@ -59,9 +85,18 @@ const ChipInput = ({
       <div className="flex items-center gap-0.75 px-px [&_svg]:block [&_svg]:size-4 [&_svg]:shrink-0">
         {leftIcon}
         <input
+          ref={inputRef}
           type="text"
           value={value}
           onChange={e => setValue(e.target.value)}
+          onBlur={() => {
+            if (skipBlurConfirm.current) {
+              skipBlurConfirm.current = false;
+              return;
+            }
+
+            if (confirmOnBlur) confirm();
+          }}
           onKeyDown={handleKeyDown}
           className={cn(
             "body-4 [field-sizing:content] min-w-4 bg-transparent text-white caret-white outline-none",
@@ -80,6 +115,9 @@ const Chip = (props: ChipProps) => {
         leftIcon={props.leftIcon}
         className={props.className}
         onConfirm={props.onConfirm}
+        onCancel={props.onCancel}
+        autoFocus={props.autoFocus}
+        confirmOnBlur={props.confirmOnBlur}
         inputClassName={props.inputClassName}
       />
     );
