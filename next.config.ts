@@ -37,6 +37,14 @@ const nextConfig: NextConfig = {
       },
     },
   },
+  images: {
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "cdn.groute.app",
+      },
+    ],
+  },
 };
 
 export default nextConfig;
