@@ -6,7 +6,7 @@ import { mockUserProfile } from "@/data/user/user";
 
 const page = () => {
   return (
-    <div className="flex h-full flex-col">
+    <div className="flex h-full w-full flex-col">
       <Header title="마이페이지" leftIcon={null} />
 
       <div className="scrollbar-hide mt-2 flex-1 overflow-y-auto px-5">
