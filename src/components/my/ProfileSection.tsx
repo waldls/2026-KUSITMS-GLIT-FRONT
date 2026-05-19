@@ -2,9 +2,12 @@ import Image from "next/image";
 
 import type { UserProfile } from "@/types/user/user";
 
-type Props = Pick<UserProfile, "profileImage" | "nickname" | "jobRole" | "userStatus">;
+interface Props {
+  profile: UserProfile | null;
+}
 
-const ProfileSection = ({ profileImage, nickname, jobRole, userStatus }: Props) => {
+const ProfileSection = ({ profile }: Props) => {
+  const { profileImage, nickname, jobRole, userStatus } = profile ?? {};
   return (
     <div className="flex flex-col items-center gap-3">
       {profileImage ? (
@@ -15,6 +18,7 @@ const ProfileSection = ({ profileImage, nickname, jobRole, userStatus }: Props) 
             width={124}
             height={124}
             className="size-full object-cover"
+            priority
           />
         </div>
       ) : (
@@ -22,9 +26,9 @@ const ProfileSection = ({ profileImage, nickname, jobRole, userStatus }: Props) 
       )}
       <div className="flex flex-col items-center gap-0.5">
         <p className="head-5 text-white">{nickname}</p>
-        <p className="body-2 text-gray-700">
-          {jobRole}, {userStatus}
-        </p>
+        {(jobRole || userStatus) && (
+          <p className="body-2 text-gray-700">{[jobRole, userStatus].filter(Boolean).join(", ")}</p>
+        )}
       </div>
     </div>
   );

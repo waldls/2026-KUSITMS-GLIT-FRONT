@@ -43,6 +43,10 @@ const nextConfig: NextConfig = {
         protocol: "https",
         hostname: "cdn.groute.app",
       },
+      {
+        protocol: "https",
+        hostname: "avatars.githubusercontent.com",
+      },
     ],
   },
 };

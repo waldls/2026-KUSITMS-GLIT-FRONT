@@ -1,13 +1,15 @@
 import ProfileForm from "@/components/my/ProfileForm";
-import { mockUserProfile } from "@/data/user/user";
+import { getMe } from "@/lib/apis/user/getMe";
 
-const Page = () => {
+const Page = async () => {
+  const profile = await getMe();
+
   return (
     <ProfileForm
       initialProfile={{
-        nickname: mockUserProfile.nickname,
-        jobRole: mockUserProfile.jobRole,
-        userStatus: mockUserProfile.userStatus,
+        nickname: profile!.nickname,
+        jobRole: profile!.jobRole,
+        userStatus: profile!.userStatus,
       }}
     />
   );

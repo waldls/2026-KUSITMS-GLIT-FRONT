@@ -3,6 +3,7 @@
 import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense, useEffect } from "react";
 
+import { getOnboardingStatus } from "@/lib/apis/user/getOnboardingStatus";
 import { useAuthStore } from "@/store/authStore";
 
 const CallbackHandler = () => {
@@ -20,8 +21,17 @@ const CallbackHandler = () => {
       return;
     }
 
-    setTokens(accessToken, refreshToken);
-    router.replace("/");
+    const handleCallback = async () => {
+      setTokens(accessToken, refreshToken);
+      try {
+        const status = await getOnboardingStatus();
+        router.replace(status?.isOnboardingCompleted ? "/" : "/onboarding");
+      } catch {
+        router.replace("/auth");
+      }
+    };
+
+    handleCallback();
   }, [searchParams, setTokens, router]);
 
   return null;

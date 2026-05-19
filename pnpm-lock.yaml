@@ -22,6 +22,9 @@ importers:
       lottie-react:
         specifier: ^2.4.1
         version: 2.4.1(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
+      ky:
+        specifier: ^2.0.2
+        version: 2.0.2
       next:
         specifier: 16.2.2
         version: 16.2.2(@babel/core@7.29.0)(babel-plugin-react-compiler@1.0.0)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
@@ -40,6 +43,9 @@ importers:
       recharts:
         specifier: ^3.8.1
         version: 3.8.1(@types/react@19.2.14)(react-dom@19.2.4(react@19.2.4))(react-is@17.0.2)(react@19.2.4)(redux@5.0.1)
+      server-only:
+        specifier: ^0.0.1
+        version: 0.0.1
       swiper:
         specifier: ^12.1.4
         version: 12.1.4
@@ -5414,6 +5420,13 @@ packages:
         integrity: sha512-oxVHkHR/EJf2CNXnWxRLW6mg7JyCCUcG0DtEGmL2ctUo1PNTin1PUil+r/+4r5MpVgC/fn1kjsx7mjSujKqIpw==,
       }
 
+  ky@2.0.2:
+    resolution:
+      {
+        integrity: sha512-/GmXpo9F9W+f8n4Ivr2iH+7h7wL7jLbLKWkMlpflcCRb6kGjBfTlASEXaZ9qUgNTn4VgS0P2pwxxzQ4EM6Ulgg==,
+      }
+    engines: { node: ">=22" }
+
   language-subtag-registry@0.3.23:
     resolution:
       {
@@ -6895,6 +6908,12 @@ packages:
       }
     engines: { node: ">=10" }
     hasBin: true
+
+  server-only@0.0.1:
+    resolution:
+      {
+        integrity: sha512-qepMx2JxAa5jjfzxG79yPPq+8BuFToHd1hm7kI+Z4zAq1ftQiP7HcxMhDDItrbtwVeLg/cY2JnKnrcFkmiswNA==,
+      }
 
   set-function-length@1.2.2:
     resolution:
@@ -11384,6 +11403,8 @@ snapshots:
     dependencies:
       json-buffer: 3.0.1
 
+  ky@2.0.2: {}
+
   language-subtag-registry@0.3.23: {}
 
   language-tags@1.0.9:
@@ -12264,6 +12285,8 @@ snapshots:
   semver@6.3.1: {}
 
   semver@7.7.4: {}
+
+  server-only@0.0.1: {}
 
   set-function-length@1.2.2:
     dependencies:
