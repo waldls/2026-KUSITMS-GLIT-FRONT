@@ -6,16 +6,33 @@ import { cn } from "@/lib/utils/cn";
 
 interface TextAreaProps {
   className?: string;
+  textareaClassName?: string;
   placeholder?: string;
   maxLength?: number;
   value?: string;
   defaultValue?: string;
   disabled?: boolean;
+  showCount?: boolean;
   onChange?: (value: string) => void;
+  onBlur?: () => void;
 }
 
 const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>(
-  ({ className, placeholder, maxLength = 300, value, defaultValue, disabled, onChange }, ref) => {
+  (
+    {
+      className,
+      placeholder,
+      maxLength = 300,
+      value,
+      defaultValue,
+      disabled,
+      showCount = true,
+      onChange,
+      onBlur,
+      textareaClassName,
+    },
+    ref,
+  ) => {
     const [internalValue, setInternalValue] = useState(defaultValue ?? "");
     const count = value !== undefined ? value.length : internalValue.length;
 
@@ -39,13 +56,19 @@ const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>(
           maxLength={maxLength}
           disabled={disabled}
           onChange={handleChange}
-          className="body-2 h-34.5 w-full resize-none overflow-y-auto bg-transparent text-gray-200 caret-white outline-none [scrollbar-width:none] placeholder:text-gray-800 [&::-webkit-scrollbar]:hidden"
+          onBlur={onBlur}
+          className={cn(
+            "body-2 h-34.5 w-full resize-none overflow-y-auto bg-transparent text-gray-200 caret-white outline-none [scrollbar-width:none] placeholder:text-gray-800 [&::-webkit-scrollbar]:hidden",
+            textareaClassName,
+          )}
         />
-        <div className="flex justify-end">
-          <span className="body-5 text-gray-700">
-            {count}/{maxLength}
-          </span>
-        </div>
+        {showCount && (
+          <div className="flex justify-end">
+            <span className="body-5 text-gray-700">
+              {count}/{maxLength}
+            </span>
+          </div>
+        )}
       </div>
     );
   },

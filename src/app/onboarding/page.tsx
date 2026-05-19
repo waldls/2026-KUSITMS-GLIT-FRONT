@@ -10,17 +10,11 @@ import ProgressBar from "@/components/common/ProgressBar";
 import TextField from "@/components/common/TextField";
 import OnboardingStepHeader from "@/components/onboarding/OnboardingStepHeader";
 import SelectionCardGrid from "@/components/onboarding/SelectionCardGrid";
-import { NICKNAME_CHARS_REGEX, NICKNAME_REGEX } from "@/constants/regex";
+import { NICKNAME_REGEX } from "@/constants/regex";
 import { JOB_OPTIONS, STATUS_OPTIONS } from "@/data/onboarding";
+import { getNicknameError } from "@/lib/utils/validation";
 
 type Step = 1 | 2 | 3;
-
-const getNicknameError = (value: string): string | undefined => {
-  if (!value) return undefined;
-  if (!NICKNAME_CHARS_REGEX.test(value)) return "한글, 영문, 숫자만 사용할 수 있어요.";
-  if (value.length < 2) return "두 글자 이상 입력해주세요.";
-  return undefined;
-};
 
 const Page = () => {
   const router = useRouter();
