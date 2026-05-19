@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 type PopoverPosition = {
   left: number;
@@ -11,12 +11,12 @@ export const useSkillPopover = () => {
   const [popoverPosition, setPopoverPosition] = useState<PopoverPosition | null>(null);
   const skillTriggerRefs = useRef<Record<number, HTMLDivElement | null>>({});
 
-  const closePopover = useCallback(() => {
+  function closePopover() {
     setOpenedTaskId(null);
     setPopoverPosition(null);
-  }, []);
+  }
 
-  const syncPopoverPosition = useCallback((taskId: number) => {
+  function syncPopoverPosition(taskId: number) {
     const trigger = skillTriggerRefs.current[taskId];
     if (!trigger) return false;
 
@@ -30,7 +30,7 @@ export const useSkillPopover = () => {
     });
 
     return true;
-  }, []);
+  }
 
   const togglePopover = (taskId: number) => {
     if (openedTaskId === taskId) {

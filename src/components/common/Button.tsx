@@ -12,7 +12,7 @@ const VARIANT_STYLES: Record<ButtonVariant, string> = {
 
 const SIZE_STYLES: Record<ButtonSize, string> = {
   lg: "h-13 py-3 px-6 rounded-12 gap-1 body-3 [&_svg]:size-6",
-  md: "h-10 py-2.5 px-3.5 rounded-8 gap-0.5 body-4 [&_svg]:size-4",
+  md: "h-10 py-2.5 px-3.5 rounded-8 gap-0.5 body-5 [&_svg]:size-4",
 };
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {

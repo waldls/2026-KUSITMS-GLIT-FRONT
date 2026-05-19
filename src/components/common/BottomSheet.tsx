@@ -16,6 +16,7 @@ interface BottomSheetProps {
   textClassName?: string;
   textDisabled?: boolean;
   hasOverlay?: boolean;
+  onOverlayClick?: () => void;
 }
 
 const BottomSheet = ({
@@ -30,6 +31,7 @@ const BottomSheet = ({
   textClassName,
   textDisabled = false,
   hasOverlay = true,
+  onOverlayClick,
 }: BottomSheetProps) => {
   const [shouldRender, setShouldRender] = useState(isOpen);
   const [isClosing, setIsClosing] = useState(false);
@@ -84,7 +86,7 @@ const BottomSheet = ({
       <button
         type="button"
         aria-label="바텀시트 닫기"
-        onClick={onClose}
+        onClick={onOverlayClick ?? onClose}
         className={cn("absolute inset-0 cursor-default", hasOverlay && "bg-gray-900/75")}
       />
       <div

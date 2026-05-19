@@ -144,6 +144,7 @@ const Page = () => {
         isProjectActionEnabled={getIsProjectActionEnabled()}
         maxProjectTasks={5}
         onClose={requestCloseProjectSheet}
+        onOverlayClick={closeProjectSheet}
         onHeaderTextClick={handleProjectSheetHeaderTextClick}
         onSelectProjectTag={toggleSelectedProjectTag}
         onStartProjectTagEdit={startProjectTagEdit}

@@ -58,7 +58,7 @@ const Page = () => {
             ? "심화 기록할 작업을 골라주세요"
             : `${selectedCount}개를 선택했어요`}
         </h2>
-        <p className="body-4 text-center text-gray-500">
+        <p className="body-5 text-center text-gray-500">
           {selectedCount === 0
             ? "1개 이상 선택해주세요"
             : selectedCount === 1

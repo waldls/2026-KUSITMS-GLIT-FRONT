@@ -130,7 +130,7 @@ const ScrumTextArea = ({
         )}
       </div>
       <div className="flex justify-end">
-        <span className="body-4 text-gray-700">
+        <span className="body-5 text-gray-700">
           {totalChars}/{totalMax}
         </span>
       </div>

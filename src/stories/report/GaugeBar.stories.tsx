@@ -71,19 +71,19 @@ export const AllVariants: Story = {
     <div className="min-h-screen bg-gray-900 p-10">
       <div className="mx-auto flex w-80 flex-col gap-6">
         <div className="flex flex-col gap-2">
-          <p className="body-4 text-gray-700">0%</p>
+          <p className="body-5 text-gray-700">0%</p>
           <GaugeBar progressRate={0} isGeneratable={false} />
         </div>
         <div className="flex flex-col gap-2">
-          <p className="body-4 text-gray-700">30%</p>
+          <p className="body-5 text-gray-700">30%</p>
           <GaugeBar progressRate={0.3} isGeneratable={false} />
         </div>
         <div className="flex flex-col gap-2">
-          <p className="body-4 text-gray-700">70%</p>
+          <p className="body-5 text-gray-700">70%</p>
           <GaugeBar progressRate={0.7} isGeneratable={false} />
         </div>
         <div className="flex flex-col gap-2">
-          <p className="body-4 text-sea-blue-400">100% — 생성 가능</p>
+          <p className="body-5 text-sea-blue-400">100% — 생성 가능</p>
           <GaugeBar progressRate={1} isGeneratable={true} />
         </div>
       </div>

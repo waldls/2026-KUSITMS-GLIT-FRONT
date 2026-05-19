@@ -15,15 +15,15 @@ export const RECORD_SKILL_TAGS = [
     textClassName: "text-white",
   },
   {
-    id: 3,
-    label: "협업/조율",
-    colorClassName: "bg-tag-300",
-    textClassName: "text-white",
-  },
-  {
     id: 4,
     label: "문제해결/개선",
     colorClassName: "bg-tag-400",
+    textClassName: "text-white",
+  },
+  {
+    id: 3,
+    label: "협업/조율",
+    colorClassName: "bg-tag-300",
     textClassName: "text-white",
   },
   {

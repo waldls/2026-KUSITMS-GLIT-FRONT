@@ -1,3 +1,7 @@
+"use client";
+
+import { useEffect, useRef } from "react";
+
 import { CancelIcon, PlusIcon } from "@/assets/icons";
 import BottomSheet from "@/components/common/BottomSheet";
 import Button from "@/components/common/Button";
@@ -26,6 +30,7 @@ interface ProjectSheetProps {
   isProjectActionEnabled: boolean;
   maxProjectTasks: number;
   onClose: () => void;
+  onOverlayClick: () => void;
   onHeaderTextClick: () => void;
   onSelectProjectTag: (projectTag: string) => void;
   onStartProjectTagEdit: (projectTag: string) => void;
@@ -41,6 +46,16 @@ interface ProjectSheetProps {
   onChangeProjectTasks: (tasks: string[]) => void;
   onPrevious: () => void;
   onNext: () => void;
+}
+
+function scrollProjectTitleInputIntoView(titleInput: HTMLInputElement | null) {
+  window.setTimeout(() => {
+    titleInput?.scrollIntoView({
+      block: "center",
+      inline: "nearest",
+      behavior: "smooth",
+    });
+  }, 120);
 }
 
 const ProjectSheet = ({
@@ -60,6 +75,7 @@ const ProjectSheet = ({
   isProjectActionEnabled,
   maxProjectTasks,
   onClose,
+  onOverlayClick,
   onHeaderTextClick,
   onSelectProjectTag,
   onStartProjectTagEdit,
@@ -76,10 +92,36 @@ const ProjectSheet = ({
   onPrevious,
   onNext,
 }: ProjectSheetProps) => {
+  const titleInputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (!isOpen || step !== "title") return;
+
+    window.setTimeout(() => {
+      titleInputRef.current?.focus();
+      scrollProjectTitleInputIntoView(titleInputRef.current);
+    }, 260);
+  }, [isOpen, step]);
+
+  useEffect(() => {
+    if (!isOpen || step !== "title" || !window.visualViewport) return;
+
+    function handleVisualViewportResize() {
+      scrollProjectTitleInputIntoView(titleInputRef.current);
+    }
+
+    window.visualViewport.addEventListener("resize", handleVisualViewportResize);
+
+    return () => {
+      window.visualViewport?.removeEventListener("resize", handleVisualViewportResize);
+    };
+  }, [isOpen, step]);
+
   return (
     <BottomSheet
       isOpen={isOpen}
       onClose={onClose}
+      onOverlayClick={onOverlayClick}
       text={step === "tag" ? (isProjectTagEditing ? "완료" : "편집") : undefined}
       onTextClick={onHeaderTextClick}
       textDisabled={step === "tag" && !isProjectTagEditing && !canEditProjectTags}
@@ -98,7 +140,7 @@ const ProjectSheet = ({
             step === "title" && "mb-14",
             step === "task" && "mb-3",
           )}>
-          <h2 className="body-5 text-white">
+          <h2 className="head-5 text-white">
             {step === "tag"
               ? isProjectTagEditing
                 ? "프로젝트 태그 수정"
@@ -107,7 +149,7 @@ const ProjectSheet = ({
                 ? "제목"
                 : "작업"}
           </h2>
-          <p className="body-4 text-gray-400">
+          <p className="body-5 text-gray-400">
             {step === "tag"
               ? "최대 1개만 선택할 수 있어요"
               : step === "title"
@@ -126,7 +168,7 @@ const ProjectSheet = ({
                 return (
                   <label
                     key={projectTag}
-                    className="body-4 rounded-6 border-sea-blue-400 inline-flex w-fit items-center border-[0.6px] bg-gray-800 px-2 py-2.5 text-white">
+                    className="body-5 rounded-6 border-sea-blue-400 inline-flex w-fit items-center border-[0.6px] bg-gray-800 px-2 py-2.5 text-white">
                     <span className="flex items-center gap-0.75 px-px">
                       <button
                         type="button"
@@ -154,7 +196,7 @@ const ProjectSheet = ({
                             onCancelProjectTagEdit();
                           }
                         }}
-                        className="body-4 [field-sizing:content] min-w-4 bg-transparent text-white caret-white outline-none"
+                        className="body-5 [field-sizing:content] min-w-4 bg-transparent text-white caret-white outline-none"
                       />
                     </span>
                   </label>
@@ -197,7 +239,6 @@ const ProjectSheet = ({
               <Chip
                 state="input"
                 leftIcon={<PlusIcon />}
-                autoFocus
                 confirmOnBlur
                 onConfirm={onCommitNewProjectTag}
                 onCancel={onCancelAddingProjectTag}
@@ -233,7 +274,6 @@ const ProjectSheet = ({
               <Chip
                 state="input"
                 leftIcon={<PlusIcon />}
-                autoFocus
                 confirmOnBlur
                 onConfirm={onCommitNewProjectTag}
                 onCancel={onCancelAddingProjectTag}
@@ -252,8 +292,10 @@ const ProjectSheet = ({
           </div>
         ) : step === "title" ? (
           <TextField
+            ref={titleInputRef}
             value={projectTitle}
             onChange={event => onChangeProjectTitle(event.target.value)}
+            onFocus={() => scrollProjectTitleInputIntoView(titleInputRef.current)}
             placeholder="ex. 6/6 기획 작업"
             maxLength={20}
             showCount
@@ -292,7 +334,7 @@ const ProjectSheet = ({
               className={cn(
                 "w-full",
                 isProjectActionEnabled
-                  ? "w-full bg-white text-gray-900"
+                  ? "w-full bg-white text-gray-900 active:bg-white"
                   : "text-offwhite-500 bg-gray-400/40",
               )}>
               {mode === "edit" || step === "task" ? "완료" : "다음"}

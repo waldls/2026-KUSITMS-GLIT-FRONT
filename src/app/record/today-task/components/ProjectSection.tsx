@@ -86,7 +86,7 @@ const ProjectSection = ({
                 }>
                 <ol className="flex flex-col gap-0.5">
                   {project.tasks.map((task, index) => (
-                    <li key={`${project.id}-${task}`} className="body-4 text-gray-400">
+                    <li key={`${project.id}-${task}`} className="body-5 text-gray-400">
                       {index + 1}. {task}
                     </li>
                   ))}
@@ -96,7 +96,7 @@ const ProjectSection = ({
           </div>
         ) : (
           <div className="rounded-8 bg-gray-850/60 flex min-h-29.5 w-full flex-col items-center justify-center">
-            <span className="body-4 text-center text-gray-600">
+            <span className="body-5 text-center text-gray-600">
               아직 프로젝트가 없어요
               <br />
               오늘 경험한 일을 기록해봐요

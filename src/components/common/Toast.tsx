@@ -36,7 +36,7 @@ const Toast = ({
       )}>
       <div className="flex min-w-0 items-center gap-2">
         {showLeftIcon && (leftIcon ?? defaultLeftIcon)}
-        <span className="body-4 truncate whitespace-nowrap text-gray-100">
+        <span className="body-5 truncate whitespace-nowrap text-gray-100">
           {contents.slice(0, 31)}
         </span>
       </div>

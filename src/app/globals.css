@@ -245,20 +245,118 @@
 }
 
 @utility bg-star-complete-gradient {
+  position: relative;
   background:
     radial-gradient(
-      90% 35% at 50% 0%,
-      color-mix(in srgb, var(--color-sea-blue-600) 54%, var(--color-white) 10%) 0%,
-      color-mix(in srgb, var(--color-sea-blue-600) 32%, transparent) 45%,
+      88% 42% at 36% -8%,
+      color-mix(in srgb, var(--color-sea-blue-600) 34%, var(--color-white) 7%) 0%,
+      color-mix(in srgb, var(--color-sea-blue-600) 16%, transparent) 56%,
       transparent 100%
     ),
     radial-gradient(
-      90% 35% at 50% 100%,
-      color-mix(in srgb, var(--color-sea-blue-600) 54%, var(--color-white) 10%) 0%,
-      color-mix(in srgb, var(--color-sea-blue-600) 32%, transparent) 45%,
+      88% 42% at 100% 108%,
+      color-mix(in srgb, var(--color-sea-blue-600) 34%, var(--color-white) 7%) 0%,
+      color-mix(in srgb, var(--color-sea-blue-600) 16%, transparent) 56%,
       transparent 100%
     ),
     linear-gradient(180deg, var(--color-gray-900) 0%, var(--color-gray-900) 100%);
+}
+
+.star-complete-wave {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.star-complete-wave::before,
+.star-complete-wave::after {
+  position: absolute;
+  width: 98%;
+  height: 42%;
+  border: 0;
+  border-radius: 9999px;
+  content: "";
+  background: radial-gradient(
+    86% 72% at 50% 50%,
+    color-mix(in srgb, var(--color-sea-blue-300) 40%, transparent) 0%,
+    color-mix(in srgb, var(--color-sea-blue-600) 16%, transparent) 56%,
+    transparent 88%
+  );
+  filter: blur(7rem);
+  opacity: 0.4;
+  will-change: transform, opacity;
+}
+
+.star-complete-wave::before {
+  top: -14%;
+  left: 0%;
+  animation: star-complete-wave-top 1.8s ease-in-out infinite;
+}
+
+.star-complete-wave::after {
+  right: -36%;
+  bottom: -14%;
+  animation: star-complete-wave-bottom 1.8s ease-in-out 180ms infinite;
+}
+
+.star-analysis-wind {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+  opacity: 0.72;
+}
+
+.star-analysis-wind::before,
+.star-analysis-wind::after {
+  position: absolute;
+  width: 140%;
+  height: 46%;
+  border-radius: 9999px;
+  content: "";
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(248, 113, 113, 0.08) 24%,
+    rgba(248, 113, 113, 0.34) 50%,
+    rgba(248, 113, 113, 0.08) 76%,
+    transparent 100%
+  );
+  filter: blur(3rem);
+  will-change: transform, opacity;
+}
+
+.star-analysis-wind-blue::before,
+.star-analysis-wind-blue::after {
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    color-mix(in srgb, var(--color-sea-blue-600) 8%, transparent) 24%,
+    color-mix(in srgb, var(--color-sea-blue-600) 34%, transparent) 50%,
+    color-mix(in srgb, var(--color-sea-blue-600) 8%, transparent) 76%,
+    transparent 100%
+  );
+}
+
+.star-analysis-wind::before {
+  top: 6%;
+  left: -48%;
+  transform: rotate(-8deg);
+  animation: star-analysis-wind-primary 2.4s ease-in-out infinite;
+}
+
+.star-analysis-wind::after {
+  right: -48%;
+  bottom: 2%;
+  transform: rotate(-8deg);
+  animation: star-analysis-wind-secondary 2.1s ease-in-out 140ms infinite;
+}
+
+@utility animate-star-complete-copy {
+  animation: star-complete-copy 600ms ease-out both;
 }
 
 @utility animate-slide-in-right {
@@ -349,6 +447,109 @@
 
   to {
     transform: translateX(100%);
+  }
+}
+
+@keyframes star-complete-wave-top {
+  0% {
+    opacity: 0.62;
+    border-radius: 58% 42% 62% 38% / 48% 56% 44% 52%;
+    transform: translate3d(-16%, 0, 0) rotate(-3deg) scale(1.04, 1);
+  }
+
+  25% {
+    opacity: 0.88;
+    border-radius: 42% 58% 46% 54% / 58% 40% 60% 42%;
+    transform: translate3d(16%, 0.35rem, 0) rotate(3deg) scale(1.16, 1.08);
+  }
+
+  50% {
+    opacity: 0.92;
+    border-radius: 66% 34% 56% 44% / 42% 64% 36% 58%;
+    transform: translate3d(-14%, 0.15rem, 0) rotate(-2deg) scale(1.08, 1.16);
+  }
+
+  75% {
+    opacity: 0.76;
+    border-radius: 48% 52% 38% 62% / 54% 46% 58% 42%;
+    transform: translate3d(14%, 0.35rem, 0) rotate(2deg) scale(1.14, 1.04);
+  }
+
+  100% {
+    opacity: 0.62;
+    border-radius: 58% 42% 62% 38% / 48% 56% 44% 52%;
+    transform: translate3d(-16%, 0, 0) rotate(-3deg) scale(1.04, 1);
+  }
+}
+
+@keyframes star-complete-wave-bottom {
+  0% {
+    opacity: 0.58;
+    border-radius: 44% 56% 52% 48% / 58% 42% 56% 44%;
+    transform: translate3d(16%, 0, 0) rotate(3deg) scale(1.04, 1);
+  }
+
+  25% {
+    opacity: 0.84;
+    border-radius: 62% 38% 44% 56% / 46% 62% 38% 54%;
+    transform: translate3d(-16%, -0.35rem, 0) rotate(-3deg) scale(1.16, 1.08);
+  }
+
+  50% {
+    opacity: 0.9;
+    border-radius: 38% 62% 58% 42% / 54% 40% 60% 46%;
+    transform: translate3d(14%, -0.15rem, 0) rotate(2deg) scale(1.08, 1.16);
+  }
+
+  75% {
+    opacity: 0.72;
+    border-radius: 56% 44% 40% 60% / 42% 58% 46% 54%;
+    transform: translate3d(-14%, -0.35rem, 0) rotate(-2deg) scale(1.14, 1.04);
+  }
+
+  100% {
+    opacity: 0.58;
+    border-radius: 44% 56% 52% 48% / 58% 42% 56% 44%;
+    transform: translate3d(16%, 0, 0) rotate(3deg) scale(1.04, 1);
+  }
+}
+
+@keyframes star-analysis-wind-primary {
+  0%,
+  100% {
+    opacity: 0.36;
+    transform: translate3d(-10%, 0, 0) rotate(-8deg) scaleX(0.94);
+  }
+
+  50% {
+    opacity: 0.9;
+    transform: translate3d(18%, 0, 0) rotate(-8deg) scaleX(1.08);
+  }
+}
+
+@keyframes star-analysis-wind-secondary {
+  0%,
+  100% {
+    opacity: 0.3;
+    transform: translate3d(12%, 0, 0) rotate(-8deg) scaleX(0.96);
+  }
+
+  50% {
+    opacity: 0.78;
+    transform: translate3d(-18%, 0, 0) rotate(-8deg) scaleX(1.08);
+  }
+}
+
+@keyframes star-complete-copy {
+  0% {
+    opacity: 0.72;
+    filter: blur(0.18rem);
+  }
+
+  100% {
+    opacity: 1;
+    filter: blur(0);
+    transform: scale(1);
   }
 }
 

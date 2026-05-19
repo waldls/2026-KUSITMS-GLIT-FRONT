@@ -59,7 +59,7 @@ const ChipInput = ({
   };
 
   const baseClass = cn(
-    "body-4 rounded-6 inline-flex w-fit cursor-pointer items-center border-[0.6px] px-2 py-2.5 transition",
+    "body-5 rounded-6 inline-flex w-fit cursor-pointer items-center border-[0.6px] px-2 py-2.5 transition",
     STATE_STYLES.input,
     className,
   );
@@ -99,7 +99,7 @@ const ChipInput = ({
           }}
           onKeyDown={handleKeyDown}
           className={cn(
-            "body-4 [field-sizing:content] min-w-4 bg-transparent text-white caret-white outline-none",
+            "body-5 [field-sizing:content] min-w-4 bg-transparent text-white caret-white outline-none",
             inputClassName,
           )}
         />
@@ -135,7 +135,7 @@ const Chip = (props: ChipProps) => {
     <button
       type="button"
       className={cn(
-        "body-4 rounded-6 inline-flex w-fit cursor-pointer items-center border-[0.6px] px-2 py-2.5 transition active:opacity-[0.76]",
+        "body-5 rounded-6 inline-flex w-fit cursor-pointer items-center border-[0.6px] px-2 py-2.5 transition active:opacity-[0.76]",
         STATE_STYLES[state],
         className,
       )}

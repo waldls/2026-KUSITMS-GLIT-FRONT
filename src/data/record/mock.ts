@@ -66,19 +66,13 @@ export const SELECT_SKILLS_MOCK = {
       id: 1,
       tag: "밋업 프로젝트",
       title: "4/22 기획 작업",
-      tasks: [
-        { id: 101, title: "유저 리서치 문항 설계" },
-        { id: 102, title: "유사 서비스 분석 및 정리" },
-      ],
+      tasks: [{ id: 101, title: "유저 리서치 문항 설계" }],
     },
     {
       id: 2,
       tag: "졸업 프로젝트",
       title: "4/22 기획 작업",
-      tasks: [
-        { id: 201, title: "와이어프레임 작업" },
-        { id: 202, title: "유사 서비스 분석 및 정리" },
-      ],
+      tasks: [{ id: 201, title: "와이어프레임 작업" }],
     },
   ],
 };

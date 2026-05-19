@@ -19,9 +19,9 @@ export interface Report {
 }
 
 export const mockReportGauge: ReportGauge = {
-  currentCount: 7,
-  nextThreshold: 10,
-  progressRate: 0.7,
+  currentCount: 40,
+  nextThreshold: 50,
+  progressRate: 1,
   isGeneratable: false,
 };
 

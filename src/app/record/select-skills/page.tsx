@@ -81,7 +81,7 @@ const Page = () => {
           </div>
 
           <h2 className="head-4 mt-3.75 text-center text-white">직무 역량을 달아주세요</h2>
-          <p className="body-4 text-center text-gray-500">
+          <p className="body-5 text-center text-gray-500">
             오늘의 경험을 가장 잘 표현하는 직무 역량을 선택해요
           </p>
         </section>

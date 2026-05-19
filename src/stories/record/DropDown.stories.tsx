@@ -74,11 +74,11 @@ export const AllVariants: Story = {
   render: () => (
     <div className="mx-auto grid w-full max-w-5xl grid-cols-1 items-start gap-10 md:grid-cols-2">
       <section className="flex min-w-0 flex-col gap-3">
-        <p className="body-4 text-gray-400">접힘</p>
+        <p className="body-5 text-gray-400">접힘</p>
         <DropDown title="제목 입력" description="내용 입력" />
       </section>
       <section className="flex min-w-0 flex-col gap-3">
-        <p className="body-4 text-gray-400">펼침</p>
+        <p className="body-5 text-gray-400">펼침</p>
         <DropDown title="제목 입력" description="내용 입력" open tags={sampleTags} />
       </section>
     </div>

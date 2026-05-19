@@ -69,7 +69,7 @@ const StarImageUploader = ({ images, onImagesChange }: StarImageUploaderProps) =
           <ImageIcon className="size-6 text-gray-100" aria-hidden />
           <span className="body-2 text-gray-100">이미지 첨부</span>
         </div>
-        <span className="body-4 text-gray-600">최대 2장</span>
+        <span className="body-5 text-gray-600">최대 2장</span>
       </div>
 
       <input
@@ -84,7 +84,7 @@ const StarImageUploader = ({ images, onImagesChange }: StarImageUploaderProps) =
       {images.length === 0 ? (
         <button
           type="button"
-          className="body-4 rounded-6 bg-gray-850 flex h-21.5 w-full cursor-pointer flex-col items-center justify-center text-gray-800"
+          className="body-5 rounded-6 bg-gray-850 flex h-21.5 w-full cursor-pointer flex-col items-center justify-center text-gray-800"
           onClick={openImagePicker}>
           <AddIcon className="mb-0.5 size-6 text-gray-800" aria-hidden />
           <span>JPG 최대 10MB / PNG 최대 10MB</span>
@@ -108,7 +108,7 @@ const StarImageUploader = ({ images, onImagesChange }: StarImageUploaderProps) =
           {images.length < MAX_IMAGE_COUNT && (
             <button
               type="button"
-              className="body-4 rounded-6 bg-gray-850 flex size-21.5 cursor-pointer flex-col items-center justify-center px-4 py-5 text-gray-800"
+              className="body-5 rounded-6 bg-gray-850 flex size-21.5 cursor-pointer flex-col items-center justify-center px-4 py-5 text-gray-800"
               onClick={openImagePicker}>
               <AddIcon className="mb-1 size-6 text-gray-800" aria-hidden />
               이미지 추가

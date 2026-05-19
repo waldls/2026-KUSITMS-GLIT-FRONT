@@ -41,7 +41,7 @@ const STAR_STEPS = [
 ] as const;
 
 type StarStep = (typeof STAR_STEPS)[number]["key"];
-type ViewState = "form" | "taskComplete" | "allComplete";
+type ViewState = "form" | "taskComplete" | "allComplete" | "analyzing";
 type ImageAttachmentMap = Record<number, StarImageAttachment[]>;
 
 interface StarTask {
@@ -115,7 +115,9 @@ const StarLogContent = () => {
       ? "taskComplete"
       : stateParam === "all-complete"
         ? "allComplete"
-        : "form";
+        : stateParam === "analyzing"
+          ? "analyzing"
+          : "form";
   const stepIndex = Math.max(
     0,
     STAR_STEPS.findIndex(step => step.param === stepParam),
@@ -147,12 +149,39 @@ const StarLogContent = () => {
   }, [currentStep.param, pathname, router, searchParams, stepIndex, stepParam, viewState]);
 
   useEffect(() => {
+    if (viewState !== "allComplete") return;
+
+    return ((redirectTimer: number) => () => {
+      window.clearTimeout(redirectTimer);
+    })(
+      window.setTimeout(() => {
+        router.replace("/record/star-log?state=analyzing");
+      }, 3500),
+    );
+  }, [router, viewState]);
+
+  // TODO: 추후 AI 태깅 연결 시 리팩토링 예정
+  useEffect(() => {
+    if (viewState !== "analyzing") return;
+
+    return ((redirectTimer: number) => () => {
+      window.clearTimeout(redirectTimer);
+    })(
+      window.setTimeout(() => {
+        router.replace("/record/skill-tagging?state=success");
+      }, 2500),
+    );
+  }, [router, viewState]);
+
+  useEffect(() => {
     const title =
       viewState === "form"
         ? currentStep.headerTitle
         : viewState === "taskComplete"
           ? "다음 심화기록"
-          : "기록 완료";
+          : viewState === "allComplete"
+            ? "기록 완료"
+            : "AI 역량 태깅";
 
     window.dispatchEvent(new CustomEvent("record-title-change", { detail: title }));
     window.dispatchEvent(
@@ -231,6 +260,18 @@ const StarLogContent = () => {
     return <StarAllComplete />;
   }
 
+  if (viewState === "analyzing") {
+    return (
+      <>
+        {/* TODO: 추후 API 연결 시 분석이 지연되면 StarAnalysisDelayed 렌더링 */}
+        <StarAllComplete
+          title="AI가 오늘의 경험을 분석하는 중이에요"
+          description="오늘의 경험은 어떤 태그로 기록될까요?"
+        />
+      </>
+    );
+  }
+
   if (viewState === "taskComplete") {
     const nextTask = tasks[completedTaskIndex + 1];
 
@@ -258,11 +299,11 @@ const StarLogContent = () => {
         <section className="mt-6.5 flex min-h-0 flex-1 flex-col">
           <div className="flex items-center gap-1.5">
             <SkillTag skillId={currentTask.skillId} />
-            <span className="body-4 truncate text-gray-700">{currentTask.projectTitle}</span>
+            <span className="body-5 truncate text-gray-700">{currentTask.projectTitle}</span>
           </div>
 
           <h2 className="body-3 mt-3 text-white">{currentStep.question}</h2>
-          <p className="body-4 mt-1 mr-7.75 whitespace-pre-line text-gray-700">
+          <p className="body-5 mt-1 mr-7.75 whitespace-pre-line text-gray-700">
             {currentGuideExample}
           </p>
 

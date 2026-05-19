@@ -8,9 +8,9 @@ const datingDayStyle = {
   outside: "text-gray-600",
   disabled: "text-gray-600",
   selected: "bg-gray-300 text-gray-900",
-  otherSelected: "bg-gray-600 text-gray-850/50",
+  otherSelected: "bg-gray-800/50 text-gray-600",
   scrum:
-    "after:absolute after:top-full after:h-0.75 after:w-7.5 after:rounded-full after:bg-yellow-500",
+    "after:absolute after:right-0.75 after:top-0.75 after:size-1.25 after:rounded-full after:bg-gray-700",
 };
 
 const DatingDayContent = ({

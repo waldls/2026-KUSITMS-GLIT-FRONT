@@ -83,7 +83,7 @@ const DropDown = ({
         onClick={toggleOpen}>
         <div className="flex min-w-0 flex-col gap-1">
           <p className="body-3 text-white">{title}</p>
-          {description && <p className="body-4 text-gray-400">{description}</p>}
+          {description && <p className="body-5 text-gray-400">{description}</p>}
         </div>
         <span className="shrink-0 text-gray-100 [&_svg]:size-5">
           {isOpen ? <ChevronUpIcon /> : <ChevronDownIcon />}

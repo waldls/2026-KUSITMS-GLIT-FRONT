@@ -102,14 +102,14 @@ const TextField = forwardRef<HTMLInputElement, TextFieldProps>(
         {hasBottom && (
           <div className="mt-1.5 flex items-start justify-between">
             {variant === "error" && errorMessage ? (
-              <p id={errorId} className="body-4 text-error-primary">
+              <p id={errorId} className="body-5 text-error-primary">
                 {errorMessage}
               </p>
             ) : (
               <span />
             )}
             {showCount && maxLength !== undefined && (
-              <p className="body-4 shrink-0 text-white">
+              <p className="body-5 shrink-0 text-white">
                 {count}/{maxLength}
               </p>
             )}

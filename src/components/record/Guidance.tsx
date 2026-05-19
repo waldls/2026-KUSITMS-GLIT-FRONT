@@ -52,7 +52,7 @@ const Guidance = ({
           className={cn("drop-panel", isOpen && "drop-panel-open")}>
           <ul
             className={cn(
-              "drop-list body-4 flex flex-col items-start text-left text-gray-800",
+              "drop-list body-5 flex flex-col items-start text-left text-gray-800",
               isOpen && "drop-list-open",
             )}>
             {items.map(item => (

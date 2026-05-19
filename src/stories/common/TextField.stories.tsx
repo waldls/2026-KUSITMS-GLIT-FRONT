@@ -128,22 +128,22 @@ export const AllStates: Story = {
   render: () => (
     <div className="mt-12 flex flex-col gap-12">
       <div className="flex flex-col gap-2">
-        <label className="body-4 text-gray-600">빈 칸 (포커스 없음)</label>
+        <label className="body-5 text-gray-600">빈 칸 (포커스 없음)</label>
         <TextField placeholder="내용 입력" />
       </div>
 
       <div className="flex flex-col gap-2">
-        <label className="body-4 text-gray-600">빈 칸 (포커스 없음) + 아이콘</label>
+        <label className="body-5 text-gray-600">빈 칸 (포커스 없음) + 아이콘</label>
         <TextField placeholder="검색어를 입력하세요" rightIcon={<SearchIcon />} />
       </div>
 
       <div className="flex flex-col gap-2">
-        <label className="body-4 text-gray-600">입력 후 손 뗌 — 글자·밑줄 gray-500</label>
+        <label className="body-5 text-gray-600">입력 후 손 뗌 — 글자·밑줄 gray-500</label>
         <TextField placeholder="내용 입력" defaultValue="입력된 텍스트" />
       </div>
 
       <div className="flex flex-col gap-2">
-        <label className="body-4 text-gray-600">입력 후 손 뗌 + 아이콘 — 글자·밑줄 gray-500</label>
+        <label className="body-5 text-gray-600">입력 후 손 뗌 + 아이콘 — 글자·밑줄 gray-500</label>
         <TextField
           placeholder="비밀번호 입력"
           defaultValue="mypassword123"
@@ -152,12 +152,12 @@ export const AllStates: Story = {
       </div>
 
       <div className="flex flex-col gap-2">
-        <label className="body-4 text-gray-600">입력 중 (포커스) — 글자·밑줄 gray-300</label>
+        <label className="body-5 text-gray-600">입력 중 (포커스) — 글자·밑줄 gray-300</label>
         <TextField placeholder="내용 입력" defaultValue="입력된 텍스트" autoFocus />
       </div>
 
       <div className="flex flex-col gap-2">
-        <label className="body-4 text-gray-600">
+        <label className="body-5 text-gray-600">
           입력 중 (포커스) + 아이콘 — 글자·밑줄 gray-300
         </label>
         <TextField
@@ -169,7 +169,7 @@ export const AllStates: Story = {
       </div>
 
       <div className="flex flex-col gap-2">
-        <label className="body-4 text-gray-600">에러 상태</label>
+        <label className="body-5 text-gray-600">에러 상태</label>
         <TextField
           id="email-field"
           variant="error"
@@ -180,17 +180,17 @@ export const AllStates: Story = {
       </div>
 
       <div className="flex flex-col gap-2">
-        <label className="body-4 text-gray-600">글자 수 카운트</label>
+        <label className="body-5 text-gray-600">글자 수 카운트</label>
         <TextField placeholder="내용 입력" showCount maxLength={12} />
       </div>
 
       <div className="flex flex-col gap-2">
-        <label className="body-4 text-gray-600">글자 수 카운트 + 아이콘</label>
+        <label className="body-5 text-gray-600">글자 수 카운트 + 아이콘</label>
         <TextField placeholder="내용 입력" rightIcon={<SearchIcon />} showCount maxLength={12} />
       </div>
 
       <div className="flex flex-col gap-2">
-        <label className="body-4 text-gray-600">글자 수 카운트 + 에러</label>
+        <label className="body-5 text-gray-600">글자 수 카운트 + 에러</label>
         <TextField
           id="count-error-field"
           variant="error"
@@ -202,7 +202,7 @@ export const AllStates: Story = {
       </div>
 
       <div className="flex flex-col gap-2">
-        <label className="body-4 text-gray-600">글자 수 카운트 + 아이콘 + 에러</label>
+        <label className="body-5 text-gray-600">글자 수 카운트 + 아이콘 + 에러</label>
         <TextField
           id="count-icon-error-field"
           variant="error"

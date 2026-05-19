@@ -176,6 +176,25 @@ export const useDailyScrum = (): UseDailyScrumReturn => {
     };
   }, []);
 
+  useEffect(() => {
+    window.dispatchEvent(
+      new CustomEvent("today-task-dirty-change", {
+        detail:
+          selectedDate !== null ||
+          addedProjects.length > 0 ||
+          selectedProjectTag !== null ||
+          projectTitle.trim().length > 0 ||
+          projectTasks.some(task => task.trim().length > 0),
+      }),
+    );
+  }, [addedProjects.length, projectTasks, projectTitle, selectedDate, selectedProjectTag]);
+
+  useEffect(() => {
+    return () => {
+      window.dispatchEvent(new CustomEvent("today-task-dirty-change", { detail: false }));
+    };
+  }, []);
+
   const openProjectSheet = () => {
     setProjectSheetMode("create");
     setProjectSheetStep("tag");
