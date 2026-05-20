@@ -10,12 +10,27 @@ interface CareerReportSectionProps {
 }
 
 const CareerReportSection = ({ reports = mockReports }: CareerReportSectionProps) => {
+  const parseDate = (d: string) => new Date(d.replace(/\./g, "-"));
+
+  const careerIndexMap = new Map(
+    [...reports]
+      .filter(r => r.reportType === "CAREER")
+      .sort((a, b) => parseDate(a.createdAt).getTime() - parseDate(b.createdAt).getTime())
+      .map((r, i) => [r.reportId, i + 1]),
+  );
+
   return (
-    <div className="rounded-20 border-t-gray-850 border-b-gray-850 flex flex-col gap-4 border-t border-b px-5 py-7.5 text-white">
+    <div className="rounded-20 border-t-gray-850 border-b-gray-850 flex flex-col gap-4 border-t border-b px-5 py-7.5">
       <p className="head-5 pl-1 text-gray-100">내 커리어 리포트</p>
-      <div className="scrollbar-hide flex h-80 flex-col gap-4 overflow-y-scroll">
+      <div className="scrollbar-hide flex h-71 flex-col gap-4 overflow-y-auto">
         {reports.length > 0 ? (
-          reports.map(report => <ReportCard key={report.reportId} report={report} />)
+          reports.map(report => (
+            <ReportCard
+              key={report.reportId}
+              report={report}
+              careerIndex={careerIndexMap.get(report.reportId)}
+            />
+          ))
         ) : (
           <div className="flex h-full items-center justify-center">
             <div className="flex flex-col items-center gap-4">

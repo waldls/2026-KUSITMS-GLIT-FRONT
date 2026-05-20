@@ -232,6 +232,21 @@
   transform: translateY(0);
 }
 
+@utility text-gradient-100 {
+  background: radial-gradient(
+    135.44% 102.65% at 14.37% 11%,
+    var(--color-offwhite-100, #fefefe) 0%,
+    #bcfff6 19.71%,
+    var(--color-sea-blue-300, #aefaff) 38.46%,
+    #dffdff 57.69%,
+    #c0fcff 77.4%,
+    #26eaf1 97.12%
+  );
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
 @utility bg-gradient-100 {
   background: radial-gradient(
     135.44% 102.65% at 14.37% 11%,
