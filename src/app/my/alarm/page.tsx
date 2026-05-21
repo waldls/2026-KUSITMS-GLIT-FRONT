@@ -1,4 +1,4 @@
-import AlarmForm from "@/components/my/AlarmForm";
+import AlarmForm from "@/containers/my/alarm/AlarmForm";
 
 const Page = () => {
   return <AlarmForm />;

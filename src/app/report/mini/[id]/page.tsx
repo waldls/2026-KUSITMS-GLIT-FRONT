@@ -3,12 +3,12 @@
 import { useRouter } from "next/navigation";
 
 import Header from "@/components/common/Header";
-import ActivitySummarySection from "@/components/report/ActivitySummarySection";
-import CompetencyStatsSection from "@/components/report/CompetencyStatsSection";
 import MoreStep from "@/components/report/MoreStep";
-import MostRecordSection from "@/components/report/MostRecordSection";
-import NextFocusPointSection from "@/components/report/NextFocusPointSection";
-import TopDetailTagsSection from "@/components/report/TopDetailTagsSection";
+import ActivitySummarySection from "@/containers/report/ActivitySummarySection";
+import CompetencyStatsSection from "@/containers/report/CompetencyStatsSection";
+import MostRecordSection from "@/containers/report/MostRecordSection";
+import NextFocusPointSection from "@/containers/report/NextFocusPointSection";
+import TopDetailTagsSection from "@/containers/report/TopDetailTagsSection";
 import { mockReportDetail } from "@/data/report";
 import { sumCompetencyCount } from "@/lib/utils/report";
 

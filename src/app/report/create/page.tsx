@@ -7,7 +7,7 @@ import CalendarSwiper from "@/components/calendar/CalendarSwiper";
 import CTA from "@/components/common/CTA";
 import Header from "@/components/common/Header";
 import ScrumDatePopover from "@/components/report/ScrumDatePopover";
-import SelectedRecordSection from "@/components/report/SelectedRecordSection";
+import SelectedRecordSection from "@/containers/report/SelectedRecordSection";
 import { MOCK_DAILY_RECORDS, NEXT_REPORT_TYPE } from "@/data/report/mock";
 import { toDateKey } from "@/lib/utils/calendar";
 import { getMockDailyRecords, getMockScrumDates, getScrumPopoverStyle } from "@/lib/utils/report";

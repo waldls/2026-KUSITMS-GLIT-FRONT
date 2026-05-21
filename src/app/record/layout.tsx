@@ -26,7 +26,7 @@ const getAnimationDirection = (prevPathname: string, pathname: string) => {
   return currentIndex < prevIndex ? "left" : "right";
 };
 
-const RecordLayout = ({ children }: { children: React.ReactNode }) => {
+export default function Layout({ children }: { children: React.ReactNode }) {
   const router = useRouter();
   const pathname = usePathname();
   const isRecordHome = pathname === "/record";
@@ -139,6 +139,4 @@ const RecordLayout = ({ children }: { children: React.ReactNode }) => {
       {isRecordHome && <NavigationBar className="shrink-0" />}
     </div>
   );
-};
-
-export default RecordLayout;
+}

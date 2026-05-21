@@ -1,25 +1,25 @@
 "use client";
 
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { createPortal } from "react-dom";
 
+import HeartDefaultImage from "@/assets/images/record/hearts-2.png";
+import HeartFilledImage from "@/assets/images/record/hearts-3.png";
 import CTA from "@/components/common/CTA";
 import Popover from "@/components/common/Popover";
 import ProgressBar from "@/components/common/ProgressBar";
-import DefaultHeartGem from "@/components/record/DefaultHeartGem";
-import FilledHeartGem from "@/components/record/FilledHeartGem";
 import RecordProjectCard from "@/components/record/RecordProjectCard";
 import SkillTag, { RECORD_SKILL_TAGS } from "@/components/record/SkillTag";
 import { SELECT_SKILLS_MOCK } from "@/data/record/mock";
 import { useSkillPopover } from "@/lib/hooks/record/useSkillPopover";
-import { cn } from "@/lib/utils/cn";
 
 const SELECT_SKILL_OPTIONS = RECORD_SKILL_TAGS;
 
 type SelectedSkillMap = Record<number, number>;
 
-const Page = () => {
+const SelectSkillsSection = () => {
   const router = useRouter();
   const [selectedSkillIds, setSelectedSkillIds] = useState<SelectedSkillMap>({});
   const { openedTaskId, popoverPosition, skillTriggerRefs, closePopover, togglePopover } =
@@ -68,25 +68,14 @@ const Page = () => {
       <div className="flex min-h-0 flex-1 flex-col">
         {/* 이미지 멘트 영역 */}
         <section className="flex shrink-0 flex-col items-center justify-center pt-7.5 pb-5">
-          <div className="relative flex size-32 items-center justify-center">
-            <DefaultHeartGem
-              animateGlow={!isEverySkillSelected}
-              ariaHidden={isEverySkillSelected}
-              ariaLabel="직무 역량 하트"
-              glowLevel={2}
-              className={cn(
-                "absolute inset-0 transition-opacity duration-700 ease-out",
-                isEverySkillSelected ? "opacity-0" : "opacity-100",
-              )}
-            />
-            <FilledHeartGem
-              animateGlow={isEverySkillSelected}
-              ariaHidden={!isEverySkillSelected}
-              ariaLabel="직무 역량 하트"
-              className={cn(
-                "absolute inset-0 transition-opacity duration-700 ease-out",
-                isEverySkillSelected ? "opacity-100" : "opacity-0",
-              )}
+          <div className="relative flex items-center justify-center">
+            <Image
+              src={isEverySkillSelected ? HeartFilledImage : HeartDefaultImage}
+              alt="직무 역량 하트"
+              width={100}
+              height={100}
+              priority
+              className="relative z-10 object-contain"
             />
           </div>
 
@@ -168,4 +157,4 @@ const Page = () => {
   );
 };
 
-export default Page;
+export default SelectSkillsSection;

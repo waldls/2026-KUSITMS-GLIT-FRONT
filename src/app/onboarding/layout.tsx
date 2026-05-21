@@ -1,4 +1,4 @@
-import OnboardingBackground from "@/components/onboarding/OnboardingBackground";
+import OnboardingBackground from "@/containers/onboarding/OnboardingBackground";
 
 const Layout = ({ children }: { children: React.ReactNode }) => {
   return (

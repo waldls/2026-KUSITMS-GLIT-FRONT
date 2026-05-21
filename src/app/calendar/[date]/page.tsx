@@ -3,13 +3,13 @@
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 
-import CalendarLogCard from "@/components/calendar/CalendarLogCard";
 import CalendarProjectCard from "@/components/common/CalendarProjectCard";
 import Header from "@/components/common/Header";
 import Modal from "@/components/common/Modal";
 import NavigationBar from "@/components/common/NavigationBar";
 import Toast from "@/components/common/Toast";
 import { PRIMARY_CATEGORY_MAP } from "@/constants/competency";
+import CalendarLogCard from "@/containers/calendar/CalendarLogCard";
 import { CALENDAR_DAILY_MOCK } from "@/data/calendar/mock";
 import type { CalendarDailyScrumItem } from "@/types/calendar/calendar";
 

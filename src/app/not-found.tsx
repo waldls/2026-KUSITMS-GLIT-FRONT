@@ -1,4 +1,4 @@
-import StarAnalysisDelayed from "@/app/record/star-log/components/StarAnalysisDelayed";
+import StarAnalysisDelayed from "@/containers/record/star-log/StarAnalysisDelayed";
 
 function NotFound() {
   return (

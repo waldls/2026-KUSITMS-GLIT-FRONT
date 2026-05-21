@@ -5,9 +5,9 @@ import { useMemo, useState } from "react";
 
 import Header from "@/components/common/Header";
 import TextArea from "@/components/common/TextArea";
-import ChipGroup from "@/components/my/ChipGroup";
 import { JOB_OPTIONS, STATUS_OPTIONS } from "@/constants/my";
 import { NICKNAME_REGEX } from "@/constants/regex";
+import ChipGroup from "@/containers/my/profile/ChipGroup";
 import { getNicknameError } from "@/lib/utils/validation";
 
 type ProfileState = {

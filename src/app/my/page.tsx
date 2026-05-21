@@ -1,7 +1,7 @@
 import Header from "@/components/common/Header";
 import NavigationBar from "@/components/common/NavigationBar";
-import MenuSection from "@/components/my/MenuSection";
-import ProfileSection from "@/components/my/ProfileSection";
+import MenuSection from "@/containers/my/MenuSection";
+import ProfileSection from "@/containers/my/profile/ProfileSection";
 import { getMe } from "@/lib/apis/user/getMe";
 
 const page = async () => {

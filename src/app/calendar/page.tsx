@@ -3,9 +3,9 @@
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
-import CalendarScrumPreview from "@/components/calendar/CalendarScrumPreview";
 import CalendarSwiper from "@/components/calendar/CalendarSwiper";
 import NavigationBar from "@/components/common/NavigationBar";
+import CalendarScrumPreview from "@/containers/calendar/CalendarScrumPreview";
 import { CALENDAR_DAILY_PREVIEW_MOCK, CALENDAR_MONTHLY_MOCK } from "@/data/calendar/mock";
 import { exceededMatcher, isExceededDate, toDateKey } from "@/lib/utils/calendar";
 

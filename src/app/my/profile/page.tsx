@@ -1,4 +1,4 @@
-import ProfileForm from "@/components/my/ProfileForm";
+import ProfileForm from "@/containers/my/profile/ProfileForm";
 import { getMe } from "@/lib/apis/user/getMe";
 
 const Page = async () => {

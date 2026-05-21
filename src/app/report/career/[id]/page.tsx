@@ -3,14 +3,14 @@
 import { useRouter } from "next/navigation";
 
 import Header from "@/components/common/Header";
-import BrandingEvidenceSection from "@/components/report/BrandingEvidenceSection";
-import BrandingTitleSection from "@/components/report/BrandingTitleSection";
-import ExperienceHighlightsSection from "@/components/report/ExperienceHighlightsSection";
-import InterviewQuestionsSection from "@/components/report/InvterviewQuestionsSection";
 import MoreStep from "@/components/report/MoreStep";
-import NarrativeSummarySection from "@/components/report/NarrativeSummarySection";
-import PatternSection from "@/components/report/PatternSection";
-import StrengthsSection from "@/components/report/StrengthsSection";
+import BrandingEvidenceSection from "@/containers/report/BrandingEvidenceSection";
+import BrandingTitleSection from "@/containers/report/BrandingTitleSection";
+import ExperienceHighlightsSection from "@/containers/report/ExperienceHighlightsSection";
+import InterviewQuestionsSection from "@/containers/report/InvterviewQuestionsSection";
+import NarrativeSummarySection from "@/containers/report/NarrativeSummarySection";
+import PatternSection from "@/containers/report/PatternSection";
+import StrengthsSection from "@/containers/report/StrengthsSection";
 import { mockCareerReportDetail } from "@/data/report";
 
 const Page = () => {

@@ -1,6 +1,6 @@
-import CalendarEmptyState from "@/components/calendar/CalendarEmptyState";
 import CalendarProjectCard from "@/components/common/CalendarProjectCard";
 import { PRIMARY_CATEGORY_MAP } from "@/constants/competency";
+import CalendarEmptyState from "@/containers/calendar/CalendarEmptyState";
 import { formatDateShort, formatDateTitle } from "@/lib/utils/calendar";
 import type { CalendarDailyScrum } from "@/types/calendar/calendar";
 

@@ -3,8 +3,8 @@ import Link from "next/link";
 
 import CTA from "@/components/common/CTA";
 import NavigationBar from "@/components/common/NavigationBar";
-import HeatmapSection from "@/components/home/HeatmapSection";
-import RadarChartSection from "@/components/home/RadarChartSection";
+import HeatmapSection from "@/containers/home/HeatmapSection";
+import RadarChartSection from "@/containers/home/RadarChartSection";
 
 const page = () => {
   return (
