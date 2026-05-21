@@ -3,7 +3,7 @@
 import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense, useEffect } from "react";
 
-import { getOnboardingStatus } from "@/lib/apis/user/getOnboardingStatus";
+import { getOnboardingStatus } from "@/lib/apis/user/onboarding";
 import { useAuthStore } from "@/store/authStore";
 
 const CallbackHandler = () => {

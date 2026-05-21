@@ -2,7 +2,7 @@ import Header from "@/components/common/Header";
 import NavigationBar from "@/components/common/NavigationBar";
 import MenuSection from "@/containers/my/MenuSection";
 import ProfileSection from "@/containers/my/profile/ProfileSection";
-import { getMe } from "@/lib/apis/user/getMe";
+import { getMe } from "@/lib/apis/user/user";
 
 const page = async () => {
   const profile = await getMe();

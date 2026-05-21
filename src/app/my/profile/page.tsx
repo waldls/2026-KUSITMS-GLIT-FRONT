@@ -1,5 +1,5 @@
 import ProfileForm from "@/containers/my/profile/ProfileForm";
-import { getMe } from "@/lib/apis/user/getMe";
+import { getMe } from "@/lib/apis/user/user";
 
 const Page = async () => {
   const profile = await getMe();

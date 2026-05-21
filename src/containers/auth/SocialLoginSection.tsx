@@ -4,7 +4,7 @@ import GoogleLogo from "@/assets/images/auth/google-logo.svg";
 import KakaoLogo from "@/assets/images/auth/kakao-logo.svg";
 import NaverLogo from "@/assets/images/auth/naver-logo.svg";
 import SocialLoginButton from "@/components/auth/SocialLoginButton";
-import { loginWithSocial, SocialProvider } from "@/lib/apis/auth";
+import { loginWithSocial, SocialProvider } from "@/lib/apis/auth/auth";
 
 const SOCIAL_PROVIDERS = [
   {

@@ -3,6 +3,36 @@ import type { AlarmData, DayOfWeek } from "@/types/user/notification";
 
 export type Day = "월" | "화" | "수" | "목" | "금" | "토" | "일";
 
+const DAY_TO_DAY_OF_WEEK: Record<Day, DayOfWeek> = {
+  월: "MON",
+  화: "TUE",
+  수: "WED",
+  목: "THU",
+  금: "FRI",
+  토: "SAT",
+  일: "SUN",
+};
+
+export const toNotifyTime = (time: TimeValue): string => {
+  let h = time.hour;
+  if (time.meridiem === "Am") {
+    h = h === 12 ? 0 : h;
+  } else {
+    h = h === 12 ? 12 : h + 12;
+  }
+  return `${String(h).padStart(2, "0")}:${String(time.minute).padStart(2, "0")}`;
+};
+
+export const toAlarmData = (settings: {
+  isActive: boolean;
+  selectedDays: Day[];
+  time: TimeValue;
+}): AlarmData => ({
+  isActive: settings.isActive,
+  daysOfWeek: settings.selectedDays.map(d => DAY_TO_DAY_OF_WEEK[d]),
+  notifyTime: toNotifyTime(settings.time),
+});
+
 const DAY_OF_WEEK_TO_DAY: Record<DayOfWeek, Day> = {
   MON: "월",
   TUE: "화",

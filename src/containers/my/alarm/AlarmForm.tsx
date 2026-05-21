@@ -1,16 +1,16 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import Chip from "@/components/common/Chip";
 import Header from "@/components/common/Header";
 import Toast from "@/components/common/Toast";
 import Toggle from "@/components/common/Toggle";
 import WheelTimePicker, { type TimeValue } from "@/components/my/WheelTimePicker";
-import { mockAlarmData } from "@/data/user/notification";
+import { getAlarmSettings, patchAlarmSettings } from "@/lib/apis/user/notification";
 import { cn } from "@/lib/utils/cn";
-import { type Day, fromAlarmData } from "@/lib/utils/notification";
+import { type Day, fromAlarmData, toAlarmData } from "@/lib/utils/notification";
 
 const DAYS = ["월", "화", "수", "목", "금", "토", "일"] as const satisfies Day[];
 
@@ -20,13 +20,22 @@ type AlarmSettings = {
   time: TimeValue;
 };
 
-const DEFAULT = fromAlarmData(mockAlarmData);
-
 const AlarmForm = () => {
   const router = useRouter();
   const [isEditing, setIsEditing] = useState(false);
-  const [saved, setSaved] = useState<AlarmSettings>(DEFAULT);
-  const [draft, setDraft] = useState<AlarmSettings>(DEFAULT);
+  const [saved, setSaved] = useState<AlarmSettings | null>(null);
+  const [draft, setDraft] = useState<AlarmSettings | null>(null);
+
+  useEffect(() => {
+    getAlarmSettings()
+      .then(res => {
+        if (!res) return;
+        const settings = fromAlarmData(res);
+        setSaved(settings);
+        setDraft(settings);
+      })
+      .catch(console.error);
+  }, []);
 
   const current = isEditing ? draft : saved;
 
@@ -35,7 +44,9 @@ const AlarmForm = () => {
     setIsEditing(true);
   };
 
-  const handleSave = () => {
+  const handleSave = async () => {
+    if (!draft) return;
+    await patchAlarmSettings(toAlarmData(draft)).catch(console.error);
     setSaved(draft);
     setIsEditing(false);
   };
@@ -48,13 +59,22 @@ const AlarmForm = () => {
     router.back();
   };
 
+  const handleToggleActive = (v: boolean) =>
+    setDraft(prev => (prev ? { ...prev, isActive: v } : prev));
+
   const toggleDay = (day: Day) =>
-    setDraft(prev => ({
-      ...prev,
-      selectedDays: prev.selectedDays.includes(day)
-        ? prev.selectedDays.filter(d => d !== day)
-        : [...prev.selectedDays, day],
-    }));
+    setDraft(prev =>
+      prev
+        ? {
+            ...prev,
+            selectedDays: prev.selectedDays.includes(day)
+              ? prev.selectedDays.filter(d => d !== day)
+              : [...prev.selectedDays, day],
+          }
+        : prev,
+    );
+
+  if (!current) return null;
 
   return (
     <div className="flex h-full w-full flex-col">
@@ -79,10 +99,7 @@ const AlarmForm = () => {
             <div className="flex items-center justify-between">
               <p className="body-2 text-gray-300">푸시 알림</p>
               <div className={cn(!isEditing && "pointer-events-none")}>
-                <Toggle
-                  checked={current.isActive}
-                  onChange={v => setDraft(prev => ({ ...prev, isActive: v }))}
-                />
+                <Toggle checked={current.isActive} onChange={handleToggleActive} />
               </div>
             </div>
 
@@ -108,7 +125,7 @@ const AlarmForm = () => {
                 <WheelTimePicker
                   value={current.time}
                   disabled={!isEditing}
-                  onChange={time => setDraft(prev => ({ ...prev, time }))}
+                  onChange={time => setDraft(prev => (prev ? { ...prev, time } : prev))}
                 />
               </div>
             </div>
