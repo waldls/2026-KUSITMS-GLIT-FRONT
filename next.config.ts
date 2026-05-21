@@ -1,6 +1,7 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  reactCompiler: true,
   turbopack: {
     rules: {
       "./src/assets/icons/icon_success.svg": {

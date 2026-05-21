@@ -6541,7 +6541,10 @@ packages:
       }
 
   react-mobile-picker@1.2.0:
-    resolution: {integrity: sha512-utIgq/rqJfDw+qL3CA6j5e3JqlAoc1kHucJi2vNiwspjaa1XJurJN/FKWBSgui1wV0gzS0BYutd2CbwcyR2eDA==}
+    resolution:
+      {
+        integrity: sha512-utIgq/rqJfDw+qL3CA6j5e3JqlAoc1kHucJi2vNiwspjaa1XJurJN/FKWBSgui1wV0gzS0BYutd2CbwcyR2eDA==,
+      }
     peerDependencies:
       react: ^18 || ^19
       react-dom: ^18 || ^19

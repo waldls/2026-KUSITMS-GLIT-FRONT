@@ -568,6 +568,50 @@
   }
 }
 
+@keyframes heart-blur-flash {
+  0%,
+  100% {
+    border-radius: 50%;
+    opacity: calc(var(--heart-blur-opacity) * 0.82);
+    transform: translate3d(-0.046875rem, 0.0234375rem, 0) scale(var(--heart-blur-scale));
+  }
+
+  18% {
+    border-radius: 53% 47% 48% 52% / 47% 54% 46% 53%;
+    opacity: calc(var(--heart-blur-opacity) * 1.05);
+    transform: translate3d(0.046875rem, -0.03125rem, 0)
+      scale(calc(var(--heart-blur-scale) * 1.02), calc(var(--heart-blur-scale) * 0.995));
+  }
+
+  32% {
+    border-radius: 49% 51% 54% 46% / 54% 46% 52% 48%;
+    opacity: calc(var(--heart-blur-opacity) * 0.87);
+    transform: translate3d(0.0234375rem, 0.046875rem, 0)
+      scale(calc(var(--heart-blur-scale) * 0.985), calc(var(--heart-blur-scale) * 1.02));
+  }
+
+  48% {
+    border-radius: 50%;
+    opacity: calc(var(--heart-blur-opacity) * 1.1);
+    transform: translate3d(-0.03125rem, -0.0234375rem, 0)
+      scale(calc(var(--heart-blur-scale) * 1.04));
+  }
+
+  68% {
+    border-radius: 47% 53% 51% 49% / 52% 48% 54% 46%;
+    opacity: calc(var(--heart-blur-opacity) * 0.93);
+    transform: translate3d(0.0546875rem, 0.01171875rem, 0)
+      scale(calc(var(--heart-blur-scale) * 1.008), calc(var(--heart-blur-scale) * 0.985));
+  }
+
+  82% {
+    border-radius: 51% 49% 47% 53% / 48% 52% 49% 51%;
+    opacity: calc(var(--heart-blur-opacity) * 1.06);
+    transform: translate3d(-0.01171875rem, 0.03515625rem, 0)
+      scale(calc(var(--heart-blur-scale) * 1.03), calc(var(--heart-blur-scale) * 1.008));
+  }
+}
+
 @utility radar-polygon {
   opacity: 0.91;
 }

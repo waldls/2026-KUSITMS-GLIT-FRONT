@@ -1,8 +1,6 @@
-import Image from "next/image";
-
-import HeartImage from "@/assets/images/record/hearts-3.png";
 import CTA from "@/components/common/CTA";
 import Tag from "@/components/common/Tag";
+import FilledHeartGem from "@/components/record/FilledHeartGem";
 
 interface StarTask {
   id: number;
@@ -53,7 +51,7 @@ const StarTaskComplete = ({
   return (
     <section className="flex min-h-0 flex-1 flex-col items-center justify-center">
       <div className="flex flex-1 flex-col items-center justify-center">
-        <Image src={HeartImage} alt="첫 번째 기록 완료" width={128} height={128} priority />
+        <FilledHeartGem ariaLabel="첫 번째 기록 완료" />
         <p className="head-4 mt-3.75 text-white">{completedTaskOrdinal} 번째 기록 완료!</p>
         <div className="rounded-8 bg-gray-850/60 mt-3 flex flex-col items-center p-3">
           <p className="body-5 text-sea-blue-400">다음 기록 목록</p>

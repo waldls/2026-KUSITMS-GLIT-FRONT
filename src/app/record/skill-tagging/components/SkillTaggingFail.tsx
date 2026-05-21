@@ -1,7 +1,6 @@
-import Image from "next/image";
 import Link from "next/link";
 
-import HeartImage from "@/assets/images/record/hearts-3.png";
+import HeartImage from "@/assets/images/record/heart-filled.svg";
 import CTA from "@/components/common/CTA";
 
 function SkillTaggingFail() {
@@ -9,7 +8,7 @@ function SkillTaggingFail() {
     <section className="relative -mx-5 flex min-h-0 flex-1 flex-col overflow-hidden px-5">
       <div className="flex min-h-0 flex-1 flex-col items-center justify-center">
         <div className="relative flex items-center justify-center">
-          <Image src={HeartImage} alt="역량 태깅 실패" width={128} height={128} priority />
+          <HeartImage role="img" aria-label="역량 태깅 실패" className="size-32 object-contain" />
         </div>
         <h1 className="head-4 mt-3.75 text-center text-white">
           아쉽게도 세부 역량 태그

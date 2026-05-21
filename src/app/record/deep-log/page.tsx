@@ -1,15 +1,12 @@
 "use client";
 
-import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
-import Heart0Image from "@/assets/images/record/hearts.png";
-import Heart1Image from "@/assets/images/record/hearts-1.png";
-import Heart2Image from "@/assets/images/record/hearts-2.png";
 import Button from "@/components/common/Button";
 import Checkbox from "@/components/common/Checkbox";
 import Modal from "@/components/common/Modal";
+import DefaultHeartGem from "@/components/record/DefaultHeartGem";
 import RecordProjectCard from "@/components/record/RecordProjectCard";
 import { DEEP_LOG_MOCK } from "@/data/record/mock";
 import { cn } from "@/lib/utils/cn";
@@ -26,6 +23,7 @@ const Page = () => {
   };
 
   const selectedCount = selectedTaskIds.length;
+  const glowLevel = selectedCount >= 4 ? 3 : selectedCount >= 2 ? 2 : selectedCount;
 
   const handleNextClick = () => {
     if (selectedCount === 0) return;
@@ -41,17 +39,7 @@ const Page = () => {
     <div className="flex min-h-0 flex-1 flex-col">
       {/* 이미지 멘트 영역 */}
       <section className="flex shrink-0 flex-col items-center justify-center pb-5">
-        <div className="relative flex items-center justify-center">
-          <Image
-            src={
-              selectedCount === 0 ? Heart0Image : selectedCount === 1 ? Heart1Image : Heart2Image
-            }
-            alt="심화 기록 하트"
-            width={100}
-            height={100}
-            className="relative z-10 object-contain"
-          />
-        </div>
+        <DefaultHeartGem ariaLabel="심화 기록 하트" glowLevel={glowLevel} className="mt-9.75" />
 
         <h2 className="head-4 mt-3.75 text-center text-white">
           {selectedCount === 0

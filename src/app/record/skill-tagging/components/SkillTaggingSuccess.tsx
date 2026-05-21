@@ -1,12 +1,11 @@
-import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
-import HeartImage from "@/assets/images/record/hearts-3.png";
 import CTA from "@/components/common/CTA";
 import Modal from "@/components/common/Modal";
 import Tag from "@/components/common/Tag";
+import FilledHeartGem from "@/components/record/FilledHeartGem";
 import { RECORD_SKILL_TAGS } from "@/components/record/SkillTag";
 import { mockReportGauge } from "@/data/report";
 
@@ -41,16 +40,7 @@ function getReportMilestone(currentCount: number) {
 }
 
 function FloatingHeart() {
-  return (
-    <Image
-      src={HeartImage}
-      alt="역량 태깅 성공"
-      width={68}
-      height={68}
-      priority
-      className="object-contain"
-    />
-  );
+  return <FilledHeartGem ariaLabel="역량 태깅 성공" className="size-17" />;
 }
 
 function SkillTaggingSuccess({

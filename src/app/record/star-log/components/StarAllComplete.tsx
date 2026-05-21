@@ -1,6 +1,4 @@
-import Image from "next/image";
-
-import HeartImage from "@/assets/images/record/hearts-3.png";
+import FilledHeartGem from "@/components/record/FilledHeartGem";
 
 interface StarAllCompleteProps {
   title?: string;
@@ -14,7 +12,7 @@ function StarAllComplete({ title = "모든 작업 기록 완료", description }:
       <div className="star-analysis-wind star-analysis-wind-blue" aria-hidden />
       <div className="relative z-10 flex-[0.4]" />
       <div className="relative z-10 flex flex-col items-center">
-        <Image src={HeartImage} alt="모든 작업 기록 완료" width={128} height={128} priority />
+        <FilledHeartGem ariaLabel="모든 작업 기록 완료" />
         <p key={title} className="animate-star-complete-copy head-4 mt-3.75 text-white">
           {title}
         </p>
