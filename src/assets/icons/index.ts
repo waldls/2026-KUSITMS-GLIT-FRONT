@@ -10,6 +10,7 @@ export { default as ChevronDownIcon } from "@/assets/icons/icon_chevron_down.svg
 export { default as ChevronLeftIcon } from "@/assets/icons/icon_chevron_left.svg";
 export { default as ChevronRightIcon } from "@/assets/icons/icon_chevron_right.svg";
 export { default as ChevronUpIcon } from "@/assets/icons/icon_chevron_up.svg";
+export { default as DeleteIcon } from "@/assets/icons/icon_delete.svg";
 export { default as DesignerIcon } from "@/assets/icons/icon_designer.svg";
 export { default as DeveloperIcon } from "@/assets/icons/icon_devoloper.svg";
 export { default as DownloadIcon } from "@/assets/icons/icon_download.svg";
