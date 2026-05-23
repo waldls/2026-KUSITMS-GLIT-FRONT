@@ -23,8 +23,9 @@ let refreshPromise: Promise<{ accessToken: string; refreshToken: string }> | nul
 async function reissue(): Promise<{ accessToken: string; refreshToken: string }> {
   const { refreshToken } = useAuthStore.getState();
   // const options = process.env.NODE_ENV === "development" && refreshToken ? { json: { refreshToken } } : {};
-  const isNonProdServer = process.env.NEXT_PUBLIC_API_BASE_URL?.includes("stg") ?? false;
-  const options = isNonProdServer && refreshToken ? { json: { refreshToken } } : {};
+  // const isNonProdServer = process.env.NEXT_PUBLIC_API_BASE_URL?.includes("stg") ?? false;
+  // const options = isNonProdServer && refreshToken ? { json: { refreshToken } } : {};
+  const options = refreshToken ? { json: { refreshToken } } : {};
 
   const json = await baseKy
     .post(getUrl("/api/auth/reissue"), options)

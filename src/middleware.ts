@@ -22,7 +22,8 @@ async function tryReissue(request: NextRequest): Promise<NextResponse | null> {
 
   try {
     // const isDev = process.env.NODE_ENV === "development";
-    const isNonProdServer = BASE_URL?.includes("stg") ?? false;
+    // const isNonProdServer = BASE_URL?.includes("stg") ?? false;
+    const isHttp = request.nextUrl.protocol === "http:";
     const cookieHeader = `refreshToken=${refreshToken}`;
 
     const response = await fetch(`${BASE_URL}/api/auth/reissue`, {
@@ -32,7 +33,8 @@ async function tryReissue(request: NextRequest): Promise<NextResponse | null> {
         Cookie: cookieHeader,
       },
       // ...(isDev ? { body: JSON.stringify({ refreshToken }) } : {}),
-      ...(isNonProdServer ? { body: JSON.stringify({ refreshToken }) } : {}),
+      // ...(isNonProdServer ? { body: JSON.stringify({ refreshToken }) } : {}),
+      ...(isHttp ? { body: JSON.stringify({ refreshToken }) } : {}),
     });
 
     if (!response.ok) return null;
