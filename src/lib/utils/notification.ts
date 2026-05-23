@@ -1,4 +1,4 @@
-import type { Meridiem, TimeValue } from "@/components/my/WheelTimePicker";
+import { type Meridiem, normalizeAlarmTime, type TimeValue } from "@/lib/utils/alarmTime";
 import type { AlarmData, DayOfWeek } from "@/types/user/notification";
 
 export type Day = "월" | "화" | "수" | "목" | "금" | "토" | "일";
@@ -14,13 +14,16 @@ const DAY_TO_DAY_OF_WEEK: Record<Day, DayOfWeek> = {
 };
 
 export const toNotifyTime = (time: TimeValue): string => {
-  let h = time.hour;
-  if (time.meridiem === "Am") {
+  const normalizedTime = normalizeAlarmTime(time);
+  let h = normalizedTime.hour;
+
+  if (normalizedTime.meridiem === "Am") {
     h = h === 12 ? 0 : h;
   } else {
     h = h === 12 ? 12 : h + 12;
   }
-  return `${String(h).padStart(2, "0")}:${String(time.minute).padStart(2, "0")}`;
+
+  return `${String(h).padStart(2, "0")}:${String(normalizedTime.minute).padStart(2, "0")}`;
 };
 
 export const toAlarmData = (settings: {
@@ -46,10 +49,20 @@ const DAY_OF_WEEK_TO_DAY: Record<DayOfWeek, Day> = {
 export const fromNotifyTime = (notifyTime: string): TimeValue => {
   const [h, m] = notifyTime.split(":").map(Number);
   const minute = m as 0 | 30;
-  if (h === 0) return { hour: 12, minute, meridiem: "Am" as Meridiem };
-  if (h < 12) return { hour: h, minute, meridiem: "Am" as Meridiem };
-  if (h === 12) return { hour: 12, minute, meridiem: "Pm" as Meridiem };
-  return { hour: h - 12, minute, meridiem: "Pm" as Meridiem };
+
+  if (h === 0) {
+    return normalizeAlarmTime({ hour: 12, minute, meridiem: "Am" as Meridiem });
+  }
+
+  if (h < 12) {
+    return normalizeAlarmTime({ hour: h, minute, meridiem: "Am" as Meridiem });
+  }
+
+  if (h === 12) {
+    return normalizeAlarmTime({ hour: 12, minute, meridiem: "Pm" as Meridiem });
+  }
+
+  return normalizeAlarmTime({ hour: h - 12, minute, meridiem: "Pm" as Meridiem });
 };
 
 export const fromAlarmData = (data: AlarmData) => ({

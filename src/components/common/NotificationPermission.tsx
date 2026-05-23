@@ -31,11 +31,11 @@ export const requestNotificationPermission = async () => {
     }
     console.log("FCM token:", token);
     await postDeviceToken(token);
-    // 알림 권한 허용시 기본값 평일 19:00으로 임시 설정
+    // 알림 권한 허용시 기본값 평일 22:00
     await patchAlarmSettings({
       isActive: true,
       daysOfWeek: ["MON", "TUE", "WED", "THU", "FRI"],
-      notifyTime: "19:00",
+      notifyTime: "22:00",
     }).catch(console.error);
   } catch (error) {
     console.error(error);

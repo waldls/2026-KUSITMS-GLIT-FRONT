@@ -23,7 +23,6 @@ import {
   OUTER_RADIUS,
   RADAR_CATEGORIES,
 } from "@/constants/radarChart";
-import { RadarChartData } from "@/data/radarchart";
 import {
   axisAngle,
   buildStarPoints,
@@ -32,6 +31,7 @@ import {
   roundedInnerStarPath,
   sharpTipStarPath,
 } from "@/lib/utils/radarChart";
+import type { ActivityStatsData } from "@/types/home/home";
 
 const StarGrid = () => {
   const width = useChartWidth() ?? 0;
@@ -180,7 +180,7 @@ const StarShape = ({ points = [] }: StarShapeProps) => {
 };
 
 interface RadarChartProps {
-  data: RadarChartData;
+  data: ActivityStatsData;
 }
 
 const RadarChart: React.FC<RadarChartProps> = ({ data }) => {

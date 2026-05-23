@@ -22,28 +22,41 @@ const NAV_ITEMS: NavItem[] = [
 ];
 
 interface NavigationBarProps {
+  activeHrefOverride?: string;
+  calendarOverlay?: React.ReactNode;
   className?: string;
 }
 
-const NavigationBar = ({ className }: NavigationBarProps) => {
+const NavigationBar = ({ activeHrefOverride, calendarOverlay, className }: NavigationBarProps) => {
   const pathname = usePathname();
 
   return (
     <nav
       className={cn(
-        "rounded-t-20 flex w-full justify-between bg-gray-900 px-5 pt-3.75 pb-7.75 [border-top:0.4px_solid_var(--color-gray-800)]",
+        "rounded-t-20 relative flex w-full justify-between bg-gray-900 px-5 pt-3.75 pb-7.75 [border-top:0.4px_solid_var(--color-gray-800)]",
         className,
       )}>
       {NAV_ITEMS.map(({ href, label, icon: Icon, iconClassName = "size-6" }) => {
-        const isActive = href === "/" ? pathname === "/" : pathname.startsWith(href);
+        const isActive = activeHrefOverride
+          ? href === activeHrefOverride
+          : href === "/"
+            ? pathname === "/"
+            : pathname.startsWith(href);
+        const isCalendar = href === "/calendar";
+
         return (
           <Link
             key={href}
             href={href}
             className={cn(
-              "flex flex-col items-center transition-all duration-300 hover:text-white",
+              "relative flex flex-col items-center transition-all duration-300 hover:text-white",
               isActive ? "text-white" : "text-gray-700",
             )}>
+            {isCalendar && calendarOverlay ? (
+              <div className="pointer-events-none absolute bottom-full left-1/2 z-30 mb-4 w-max max-w-none -translate-x-1/2">
+                {calendarOverlay}
+              </div>
+            ) : null}
             <span className="flex h-8 shrink-0 items-center justify-center px-2.5">
               <Icon className={iconClassName} />
             </span>

@@ -1,12 +1,11 @@
 import { MyPageIcon } from "@/assets/icons";
-import type { DayStatus, HeatmapData } from "@/data/heatmap";
 import { cn } from "@/lib/utils/cn";
+import type { GrassStatus, MonthlyGrassData as HeatmapData } from "@/types/home/home";
 
 type HeatmapLevel = "default" | 1 | 2 | "full";
 
-export const statusToLevel: Record<DayStatus, HeatmapLevel> = {
+export const statusToLevel: Record<GrassStatus, HeatmapLevel> = {
   NO_DATA: "default",
-  SCRUM_ONLY: "default",
   STAR_LOW: 1,
   STAR_MID: 2,
   STAR_HIGH: "full",

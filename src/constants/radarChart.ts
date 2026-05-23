@@ -1,6 +1,6 @@
-import type { RadarCategory } from "@/data/radarchart";
+import type { ActivityCategory } from "@/types/home/home";
 
-export const RADAR_CATEGORIES: { key: RadarCategory; label: string }[] = [
+export const RADAR_CATEGORIES: { key: ActivityCategory; label: string }[] = [
   { key: "DISCOVERY_ANALYSIS", label: "발견/분석" },
   { key: "REFLECTION_GROWTH", label: "성찰/성장" },
   { key: "COLLABORATION", label: "협업/조율" },

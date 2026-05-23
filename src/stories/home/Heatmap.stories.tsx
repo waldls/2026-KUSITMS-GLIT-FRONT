@@ -1,7 +1,12 @@
 import type { Meta, StoryObj } from "@storybook/nextjs";
 
 import { HeatmapCell, statusToLevel } from "@/components/home/Heatmap";
-import { mockHeatmapData } from "@/data/heatmap";
+import type { GrassStatus } from "@/types/home/home";
+
+const sampleDays: { date: string; status: GrassStatus }[] = Array.from({ length: 31 }, (_, i) => ({
+  date: `2026-05-${String(i + 1).padStart(2, "0")}`,
+  status: (["NO_DATA", "STAR_LOW", "STAR_MID", "STAR_HIGH"] as GrassStatus[])[i % 4],
+}));
 
 const cellMeta = {
   title: "Home/HeatmapCell",
@@ -43,7 +48,7 @@ export const AllVariants: CellStory = {
   args: { level: "default", date: "2026-05-08" },
   render: () => (
     <div className="grid grid-cols-9 gap-1">
-      {mockHeatmapData.days.map(({ date, status }) => (
+      {sampleDays.map(({ date, status }) => (
         <HeatmapCell key={date} level={statusToLevel[status]} date={date} />
       ))}
     </div>

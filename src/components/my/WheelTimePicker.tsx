@@ -2,17 +2,15 @@
 
 import Picker, { type PickerValue } from "react-mobile-picker";
 
-export type Meridiem = "Am" | "Pm";
+import {
+  getAvailableHours,
+  getAvailableMinutes,
+  MERIDIEMS,
+  normalizeAlarmTime,
+  type TimeValue,
+} from "@/lib/utils/alarmTime";
 
-export interface TimeValue {
-  hour: number;
-  minute: number;
-  meridiem: Meridiem;
-}
-
-const HOURS = Array.from({ length: 12 }, (_, i) => i + 1);
-const MINUTES = [0, 30];
-const MERIDIEMS = ["Am", "Pm"] as const;
+export type { Meridiem, TimeValue } from "@/lib/utils/alarmTime";
 
 const ITEM_H = 32;
 const HEIGHT = 174;
@@ -46,9 +44,13 @@ interface WheelTimePickerProps {
 }
 
 const WheelTimePicker = ({ value, disabled, onChange }: WheelTimePickerProps) => {
-  const hourIdx = HOURS.indexOf(value.hour);
-  const minuteIdx = MINUTES.indexOf(value.minute);
-  const meridiemIdx = MERIDIEMS.indexOf(value.meridiem);
+  const normalizedValue = normalizeAlarmTime(value);
+  const availableHours = getAvailableHours(normalizedValue.meridiem);
+  const availableMinutes = getAvailableMinutes(normalizedValue);
+
+  const hourIdx = availableHours.indexOf(normalizedValue.hour);
+  const minuteIdx = availableMinutes.indexOf(normalizedValue.minute);
+  const meridiemIdx = MERIDIEMS.indexOf(normalizedValue.meridiem);
 
   return (
     <div className="relative overflow-hidden" style={{ height: HEIGHT }}>
@@ -64,21 +66,21 @@ const WheelTimePicker = ({ value, disabled, onChange }: WheelTimePickerProps) =>
       <div className={disabled ? "pointer-events-none" : undefined}>
         <Picker
           className="wtp"
-          value={value as unknown as PickerValue}
-          onChange={v => onChange(v as unknown as TimeValue)}
+          value={normalizedValue as unknown as PickerValue}
+          onChange={v => onChange(normalizeAlarmTime(v as unknown as TimeValue))}
           height={HEIGHT}
           itemHeight={ITEM_H}
           style={{ gap: 24 }}
           wheelMode="normal">
           <Picker.Column name="hour" style={{ flex: "0 0 3rem" }}>
-            {HOURS.map((h, i) => (
+            {availableHours.map((h, i) => (
               <Picker.Item key={h} value={h}>
                 {() => <span style={itemStyle(i, hourIdx, "right")}>{h}</span>}
               </Picker.Item>
             ))}
           </Picker.Column>
           <Picker.Column name="minute" style={{ flex: "0 0 3rem" }}>
-            {MINUTES.map((m, i) => (
+            {availableMinutes.map((m, i) => (
               <Picker.Item key={m} value={m}>
                 {() => (
                   <span style={itemStyle(i, minuteIdx, "center")}>
