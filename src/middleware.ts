@@ -21,7 +21,8 @@ async function tryReissue(request: NextRequest): Promise<NextResponse | null> {
   if (!refreshToken) return null;
 
   try {
-    const isDev = process.env.NODE_ENV === "development";
+    // const isDev = process.env.NODE_ENV === "development";
+    const isNonProdServer = BASE_URL?.includes("stg") ?? false;
     const cookieHeader = `refreshToken=${refreshToken}`;
 
     const response = await fetch(`${BASE_URL}/api/auth/reissue`, {
@@ -30,7 +31,8 @@ async function tryReissue(request: NextRequest): Promise<NextResponse | null> {
         "Content-Type": "application/json",
         Cookie: cookieHeader,
       },
-      ...(isDev ? { body: JSON.stringify({ refreshToken }) } : {}),
+      // ...(isDev ? { body: JSON.stringify({ refreshToken }) } : {}),
+      ...(isNonProdServer ? { body: JSON.stringify({ refreshToken }) } : {}),
     });
 
     if (!response.ok) return null;
@@ -49,7 +51,6 @@ async function tryReissue(request: NextRequest): Promise<NextResponse | null> {
       maxAge: 60 * 60 * 24,
       sameSite: "lax",
       secure,
-      httpOnly: true,
     });
     if (newRefreshToken) {
       res.cookies.set("refreshToken", newRefreshToken, {
@@ -57,7 +58,6 @@ async function tryReissue(request: NextRequest): Promise<NextResponse | null> {
         maxAge: 60 * 60 * 24 * 7,
         sameSite: "lax",
         secure,
-        httpOnly: true,
       });
     }
     return res;
