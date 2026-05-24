@@ -5,13 +5,13 @@ export const RECORD_SKILL_TAGS = [
   {
     id: 1,
     label: "발견/분석",
-    colorClassName: "bg-tag-100",
+    colorClassName: "bg-tag-200",
     textClassName: "text-white",
   },
   {
     id: 2,
     label: "기획/실행",
-    colorClassName: "bg-tag-200",
+    colorClassName: "bg-tag-100",
     textClassName: "text-white",
   },
   {

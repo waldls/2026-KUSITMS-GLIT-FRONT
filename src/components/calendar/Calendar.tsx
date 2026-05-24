@@ -18,7 +18,7 @@ type CalendarProps =
   React.ComponentProps<typeof DayPicker> extends infer Props
     ? Props extends object
       ? Omit<Props, "captionLayout"> & {
-          onScrumDateClick?: (date: Date) => void;
+          onCalendarDayClick?: (date: Date) => void;
           type?: CalendarType;
         }
       : never
@@ -31,29 +31,33 @@ const Calendar = ({
   locale,
   formatters,
   components,
-  onScrumDateClick,
+  onCalendarDayClick,
   type = "default",
+  onMonthChange,
+  month: monthProp,
+  defaultMonth,
   ...props
 }: CalendarProps) => {
-  const [monthState, setMonthState] = useState<Date>(
-    props.month || props.defaultMonth || new Date(),
-  );
+  const [monthState, setMonthState] = useState<Date>(monthProp || defaultMonth || new Date());
   const [direction, setDirection] = useState<"left" | "right" | "">("");
 
-  const currentMonth = props.month || monthState;
+  const currentMonth = monthProp || monthState;
   const isPage = type === "page";
+
+  const handleMonthChange = (newMonth: Date) => {
+    setDirection(newMonth < currentMonth ? "left" : "right");
+    setMonthState(newMonth);
+    onMonthChange?.(newMonth);
+  };
 
   return (
     <CalendarContext.Provider value={type}>
       <DayPicker
         showOutsideDays={showOutsideDays}
         animate={false}
+        defaultMonth={defaultMonth}
         month={currentMonth}
-        onMonthChange={newMonth => {
-          setDirection(newMonth < currentMonth ? "left" : "right");
-          setMonthState(newMonth);
-          props.onMonthChange?.(newMonth);
-        }}
+        onMonthChange={handleMonthChange}
         className={cn(
           "body-2 group/calendar rounded-8 p-2 text-white",
           isPage && "w-full p-0",
@@ -75,7 +79,7 @@ const Calendar = ({
           month: cn("flex max-w-full flex-col", isPage ? "w-full gap-5" : "w-fit gap-5"),
           month_caption: isPage
             ? "flex w-full items-center px-1.5"
-            : "flex h-6.25 w-full items-center justify-center",
+            : "pointer-events-none flex h-6.25 w-full items-center justify-center",
           table: "w-full border-collapse",
           weekdays: cn("grid grid-cols-7", isPage ? "gap-x-5.5" : "gap-x-5"),
           weeks: "flex flex-col mt-5 gap-y-5",
@@ -122,18 +126,22 @@ const Calendar = ({
               return <DatingDayButton {...dayButtonProps} />;
             }
 
-            const stopScrumDateSelection = (event: React.SyntheticEvent<HTMLButtonElement>) => {
-              if (!dayButtonProps.modifiers.scrum) return false;
-              event.preventDefault();
-              event.stopPropagation();
-              return true;
-            };
-
             const handleDayButtonClick = (event: React.MouseEvent<HTMLButtonElement>) => {
-              if (stopScrumDateSelection(event)) {
-                onScrumDateClick?.(dayButtonProps.day.date);
+              const { calendar: hasScrum, disabled: isDisabled } = dayButtonProps.modifiers;
+
+              if (isDisabled) {
+                event.preventDefault();
+                event.stopPropagation();
                 return;
               }
+
+              if (hasScrum && onCalendarDayClick) {
+                event.preventDefault();
+                event.stopPropagation();
+                onCalendarDayClick(dayButtonProps.day.date);
+                return;
+              }
+
               dayButtonProps.onClick?.(event);
             };
 

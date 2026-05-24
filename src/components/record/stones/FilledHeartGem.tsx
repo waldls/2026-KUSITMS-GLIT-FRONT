@@ -18,7 +18,7 @@ const FilledHeartGem = ({
 }: FilledHeartGemProps) => (
   <div
     className={cn(
-      "[container-type:size] relative flex size-32 items-center justify-center",
+      "@container-[size] relative flex size-32 items-center justify-center",
       className,
     )}>
     <div aria-hidden="true" className="pointer-events-none absolute inset-0">

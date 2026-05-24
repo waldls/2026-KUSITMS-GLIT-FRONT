@@ -15,6 +15,7 @@ interface CalendarSwiperProps {
   scrumDates: Date[];
   exceededMatcher: (date: Date) => boolean;
   onSelect: (date: Date | undefined) => void;
+  onMonthChange?: (date: Date) => void;
 }
 
 const CalendarSwiper = ({
@@ -23,6 +24,7 @@ const CalendarSwiper = ({
   scrumDates,
   exceededMatcher,
   onSelect,
+  onMonthChange,
 }: CalendarSwiperProps) => {
   const [baseMonth, setBaseMonth] = useState<Date>(
     () => new Date(today.getFullYear(), today.getMonth()),
@@ -37,10 +39,13 @@ const CalendarSwiper = ({
   const handleTransitionEnd = (swiper: SwiperType) => {
     if (swiper.activeIndex === 1) return;
     const delta = swiper.activeIndex === 0 ? -1 : 1;
+    const nextBaseMonth = new Date(baseMonth.getFullYear(), baseMonth.getMonth() + delta);
+
     flushSync(() => {
-      setBaseMonth(prev => new Date(prev.getFullYear(), prev.getMonth() + delta));
+      setBaseMonth(nextBaseMonth);
     });
     swiper.slideTo(1, 0, false);
+    onMonthChange?.(nextBaseMonth);
   };
 
   return (
@@ -54,7 +59,7 @@ const CalendarSwiper = ({
               month={month}
               selected={selectedDate}
               onSelect={onSelect}
-              modifiers={{ scrum: scrumDates, exceeded: exceededMatcher, otherSelected: today }}
+              modifiers={{ calendar: scrumDates, exceeded: exceededMatcher, otherSelected: today }}
             />
           </SwiperSlide>
         ))}

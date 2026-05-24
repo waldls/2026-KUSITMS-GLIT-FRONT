@@ -1,6 +1,6 @@
 import CTA from "@/components/common/CTA";
 import Tag from "@/components/common/Tag";
-import FilledHeartGem from "@/components/record/FilledHeartGem";
+import FilledHeartGem from "@/components/record/stones/FilledHeartGem";
 
 interface StarTask {
   id: number;

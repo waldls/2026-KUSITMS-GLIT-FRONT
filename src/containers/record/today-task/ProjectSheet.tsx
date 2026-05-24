@@ -1,7 +1,5 @@
 "use client";
 
-import { useEffect, useRef } from "react";
-
 import { CancelIcon, PlusIcon } from "@/assets/icons";
 import BottomSheet from "@/components/common/BottomSheet";
 import Button from "@/components/common/Button";
@@ -26,6 +24,8 @@ interface ProjectSheetProps {
   isAddingProjectTag: boolean;
   projectTitle: string;
   projectTasks: string[];
+  projectTitlePlaceholder: string;
+  projectTaskPlaceholder: string;
   canEditProjectTags: boolean;
   isProjectActionEnabled: boolean;
   maxProjectTasks: number;
@@ -48,16 +48,6 @@ interface ProjectSheetProps {
   onNext: () => void;
 }
 
-function scrollProjectTitleInputIntoView(titleInput: HTMLInputElement | null) {
-  window.setTimeout(() => {
-    titleInput?.scrollIntoView({
-      block: "center",
-      inline: "nearest",
-      behavior: "smooth",
-    });
-  }, 120);
-}
-
 const ProjectSheet = ({
   isOpen,
   mode,
@@ -71,6 +61,8 @@ const ProjectSheet = ({
   isAddingProjectTag,
   projectTitle,
   projectTasks,
+  projectTitlePlaceholder,
+  projectTaskPlaceholder,
   canEditProjectTags,
   isProjectActionEnabled,
   maxProjectTasks,
@@ -92,36 +84,12 @@ const ProjectSheet = ({
   onPrevious,
   onNext,
 }: ProjectSheetProps) => {
-  const titleInputRef = useRef<HTMLInputElement>(null);
-
-  useEffect(() => {
-    if (!isOpen || step !== "title") return;
-
-    window.setTimeout(() => {
-      titleInputRef.current?.focus();
-      scrollProjectTitleInputIntoView(titleInputRef.current);
-    }, 260);
-  }, [isOpen, step]);
-
-  useEffect(() => {
-    if (!isOpen || step !== "title" || !window.visualViewport) return;
-
-    function handleVisualViewportResize() {
-      scrollProjectTitleInputIntoView(titleInputRef.current);
-    }
-
-    window.visualViewport.addEventListener("resize", handleVisualViewportResize);
-
-    return () => {
-      window.visualViewport?.removeEventListener("resize", handleVisualViewportResize);
-    };
-  }, [isOpen, step]);
-
   return (
     <BottomSheet
       isOpen={isOpen}
       onClose={onClose}
       onOverlayClick={onOverlayClick}
+      className="max-h-svh"
       text={step === "tag" ? (isProjectTagEditing ? "완료" : "편집") : undefined}
       onTextClick={onHeaderTextClick}
       textDisabled={step === "tag" && !isProjectTagEditing && !canEditProjectTags}
@@ -151,7 +119,9 @@ const ProjectSheet = ({
           </h2>
           <p className="body-5 text-gray-400">
             {step === "tag"
-              ? "최대 1개만 선택할 수 있어요"
+              ? isProjectTagEditing
+                ? "새로 생성한 프로젝트 태그만 수정할 수 있어요"
+                : "최대 1개만 선택할 수 있어요"
               : step === "title"
                 ? "이 프로젝트에서 한 작업들의 제목을 적어요"
                 : "작업 당 최대 50자까지 적을 수 있어요"}
@@ -179,10 +149,9 @@ const ProjectSheet = ({
                         <CancelIcon className="size-4" />
                       </button>
                       <input
-                        autoFocus
                         value={editingProjectTagValue}
+                        maxLength={15}
                         onChange={event => onChangeEditingProjectTagValue(event.target.value)}
-                        onBlur={onConfirmProjectTagEdit}
                         onKeyDown={event => {
                           if (event.nativeEvent.isComposing) return;
 
@@ -242,6 +211,7 @@ const ProjectSheet = ({
                 confirmOnBlur
                 onConfirm={onCommitNewProjectTag}
                 onCancel={onCancelAddingProjectTag}
+                maxLength={15}
                 className="border-sea-blue-400 bg-gray-800"
                 inputClassName="min-w-2"
               />
@@ -277,6 +247,7 @@ const ProjectSheet = ({
                 confirmOnBlur
                 onConfirm={onCommitNewProjectTag}
                 onCancel={onCancelAddingProjectTag}
+                maxLength={15}
                 className="border-sea-blue-400 bg-gray-800"
                 inputClassName="min-w-2"
               />
@@ -292,23 +263,23 @@ const ProjectSheet = ({
           </div>
         ) : step === "title" ? (
           <TextField
-            ref={titleInputRef}
             value={projectTitle}
             onChange={event => onChangeProjectTitle(event.target.value)}
-            onFocus={() => scrollProjectTitleInputIntoView(titleInputRef.current)}
-            placeholder="ex. 6/6 기획 작업"
+            placeholder={`ex. ${projectTitlePlaceholder}`}
             maxLength={20}
             showCount
             rightIcon={<CancelIcon />}
             onRightIconClick={onClearProjectTitle}
             rightIconClassName={cn("text-gray-100", projectTitle.length === 0 && "text-gray-800")}
-            className="body-2 text-gray-200 placeholder:text-gray-800"
+            wrapperClassName="border-gray-800 has-[input:not(:placeholder-shown):focus]:border-gray-800 has-[input:not(:placeholder-shown):not(:focus)]:border-gray-800"
+            className="body-2 text-gray-200 placeholder:text-gray-800 focus:text-gray-200"
           />
         ) : (
           <ScrumTextArea
             value={projectTasks}
             onChange={onChangeProjectTasks}
             maxItems={maxProjectTasks}
+            placeholder={projectTaskPlaceholder}
           />
         )}
 

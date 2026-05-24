@@ -12,6 +12,7 @@ interface ScrumTextAreaProps {
   value?: string[];
   onChange?: (items: string[]) => void;
   maxItems?: number;
+  placeholder?: string;
 }
 
 const ScrumTextArea = ({
@@ -19,6 +20,7 @@ const ScrumTextArea = ({
   value,
   onChange,
   maxItems = MAX_ITEMS,
+  placeholder = "어드민 페이지 화면 작업",
 }: ScrumTextAreaProps) => {
   const [internalItems, setInternalItems] = useState<string[]>([]);
   const refs = useRef<(HTMLTextAreaElement | null)[]>([]);
@@ -30,11 +32,11 @@ const ScrumTextArea = ({
   const totalChars = items.reduce((acc, s) => acc + s.length, 0);
 
   useEffect(() => {
-    if (pendingFocus.current !== null) {
-      const el = refs.current[pendingFocus.current];
-      el?.focus();
-      pendingFocus.current = null;
-    }
+    if (pendingFocus.current === null) return;
+
+    const el = refs.current[pendingFocus.current];
+    el?.focus({ preventScroll: true });
+    pendingFocus.current = null;
   });
 
   const autoResize = (el: HTMLTextAreaElement) => {
@@ -42,12 +44,9 @@ const ScrumTextArea = ({
     el.style.height = `${el.scrollHeight}px`;
   };
 
-  const activate = (e: React.MouseEvent<HTMLDivElement>) => {
+  const activate = () => {
     if (items.length === 0) {
-      pendingFocus.current = 0;
       update([""]);
-    } else if (!(e.target as HTMLElement).closest("textarea")) {
-      refs.current[items.length - 1]?.focus();
     }
   };
 
@@ -98,13 +97,13 @@ const ScrumTextArea = ({
       onBlur={handleContainerBlur}>
       <div
         className="h-26.25 cursor-text overflow-y-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
-        onClick={e => activate(e)}>
+        onClick={activate}>
         {items.length === 0 ? (
           <div className="flex flex-col">
             {Array.from({ length: itemLimit }, (_, i) => (
               <div key={i} className="flex items-start gap-1">
                 <span className="body-2 shrink-0 pt-px text-gray-800 select-none">{i + 1}.</span>
-                {i === 0 && <span className="body-2 text-gray-800">어드민 페이지 화면 작업</span>}
+                {i === 0 && <span className="body-2 text-gray-800">{placeholder}</span>}
               </div>
             ))}
           </div>

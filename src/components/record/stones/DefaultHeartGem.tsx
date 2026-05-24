@@ -19,10 +19,7 @@ const DefaultHeartGem = ({
   glowLevel = 2,
 }: DefaultHeartGemProps) => (
   <div
-    className={cn(
-      "[container-type:size] relative flex size-32 items-center justify-center",
-      className,
-    )}
+    className={cn("@container-[size] relative flex size-32 items-center justify-center", className)}
     style={
       {
         "--heart-blur-opacity": glowLevel === 0 ? 0 : 0.3 + glowLevel * 0.16,
@@ -34,7 +31,7 @@ const DefaultHeartGem = ({
       className="pointer-events-none absolute inset-0 z-20 flex items-center justify-center">
       <span
         className={cn(
-          "size-[61.71875%] rounded-full bg-gray-100 opacity-[var(--heart-blur-opacity)] blur-[19.53125cqw] transition-opacity duration-500 ease-out",
+          "size-[61.71875%] rounded-full bg-gray-100 opacity-(--heart-blur-opacity) blur-[19.53125cqw] transition-opacity duration-500 ease-out",
           animateGlow && "animate-[heart-blur-flash_5.5s_ease-in-out_infinite]",
         )}
       />

@@ -1,4 +1,4 @@
-import FilledHeartGem from "@/components/record/FilledHeartGem";
+import FilledHeartGem from "@/components/record/stones/FilledHeartGem";
 
 interface StarAllCompleteProps {
   title?: string;

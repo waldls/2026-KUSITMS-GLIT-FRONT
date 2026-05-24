@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect, useRef, useState } from "react";
+import { type Dispatch, type SetStateAction, useEffect, useRef, useState } from "react";
 
 import { AddIcon, CancelIcon, ImageIcon } from "@/assets/icons";
 import Toast from "@/components/common/Toast";
@@ -9,25 +9,39 @@ import Toast from "@/components/common/Toast";
 export interface StarImageAttachment {
   id: string;
   url: string;
+  file: File;
+  starImageId?: number;
+  isUploading?: boolean;
 }
 
 interface StarImageUploaderProps {
   images: StarImageAttachment[];
-  onImagesChange: (images: StarImageAttachment[]) => void;
+  onImagesChange: Dispatch<SetStateAction<StarImageAttachment[]>>;
+  onImageUpload: (image: StarImageAttachment) => Promise<void>;
+  onImageRemove?: (image: StarImageAttachment) => Promise<void>;
 }
 
 const MAX_IMAGE_COUNT = 2;
 
-const StarImageUploader = ({ images, onImagesChange }: StarImageUploaderProps) => {
+const StarImageUploader = ({
+  images,
+  onImagesChange,
+  onImageUpload,
+  onImageRemove,
+}: StarImageUploaderProps) => {
   const imageInputRef = useRef<HTMLInputElement | null>(null);
   const [isLimitToastVisible, setIsLimitToastVisible] = useState(false);
+  const [isUploadToastVisible, setIsUploadToastVisible] = useState(false);
 
   useEffect(() => {
-    if (!isLimitToastVisible) return;
+    if (!isLimitToastVisible && !isUploadToastVisible) return;
 
-    const timer = window.setTimeout(() => setIsLimitToastVisible(false), 2000);
+    const timer = window.setTimeout(() => {
+      setIsLimitToastVisible(false);
+      setIsUploadToastVisible(false);
+    }, 2000);
     return () => window.clearTimeout(timer);
-  }, [isLimitToastVisible]);
+  }, [isLimitToastVisible, isUploadToastVisible]);
 
   const openImagePicker = () => {
     imageInputRef.current?.click();
@@ -47,9 +61,19 @@ const StarImageUploader = ({ images, onImagesChange }: StarImageUploaderProps) =
       const nextImages = selectedFiles.map(file => ({
         id: `${file.name}-${file.lastModified}-${crypto.randomUUID()}`,
         url: URL.createObjectURL(file),
+        file,
+        isUploading: true,
       }));
 
-      onImagesChange([...images, ...nextImages].slice(0, MAX_IMAGE_COUNT));
+      onImagesChange(prev => [...prev, ...nextImages].slice(0, MAX_IMAGE_COUNT));
+
+      nextImages.forEach(image => {
+        void onImageUpload(image).catch(() => {
+          URL.revokeObjectURL(image.url);
+          onImagesChange(prev => prev.filter(item => item.id !== image.id));
+          setIsUploadToastVisible(true);
+        });
+      });
     }
 
     e.target.value = "";
@@ -59,7 +83,8 @@ const StarImageUploader = ({ images, onImagesChange }: StarImageUploaderProps) =
     const removedImage = images.find(image => image.id === imageId);
     if (removedImage) URL.revokeObjectURL(removedImage.url);
 
-    onImagesChange(images.filter(image => image.id !== imageId));
+    onImagesChange(prev => prev.filter(image => image.id !== imageId));
+    if (removedImage) void onImageRemove?.(removedImage);
   };
 
   return (
@@ -96,9 +121,11 @@ const StarImageUploader = ({ images, onImagesChange }: StarImageUploaderProps) =
               key={image.id}
               className="rounded-6 bg-gray-850 relative size-21.5 overflow-hidden">
               <Image src={image.url} alt="첨부 이미지" fill unoptimized className="object-cover" />
+              {image.isUploading && <div className="absolute inset-0 bg-black/40" />}
               <button
                 type="button"
                 aria-label="이미지 삭제"
+                disabled={image.isUploading}
                 className="absolute top-1.25 right-1.25 flex cursor-pointer items-center justify-center rounded-full bg-white"
                 onClick={() => handleRemoveImage(image.id)}>
                 <CancelIcon className="size-5 text-gray-800" aria-hidden />
@@ -120,6 +147,13 @@ const StarImageUploader = ({ images, onImagesChange }: StarImageUploaderProps) =
       {isLimitToastVisible && (
         <Toast
           contents="최대 2장만 고를 수 있어요"
+          showCloseButton={false}
+          className="fixed bottom-9.5 left-1/2 z-[60] -translate-x-1/2 justify-center transition-opacity duration-300"
+        />
+      )}
+      {isUploadToastVisible && (
+        <Toast
+          contents="이미지를 다시 선택해주세요"
           showCloseButton={false}
           className="fixed bottom-9.5 left-1/2 z-[60] -translate-x-1/2 justify-center transition-opacity duration-300"
         />

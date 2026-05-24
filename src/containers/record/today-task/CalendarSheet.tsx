@@ -1,40 +1,53 @@
 import Calendar from "@/components/calendar/Calendar";
 import BottomSheet from "@/components/common/BottomSheet";
+import { getSelectableRecordDateRange, isWithinSelectableRecordRange } from "@/lib/utils/calendar";
 import { cn } from "@/lib/utils/cn";
 
 interface CalendarSheetProps {
   isOpen: boolean;
   selectedDate: Date | null;
-  scrumDates: Date[];
+  isScrumDate: (date: Date) => boolean;
+  isStarDate: (date: Date) => boolean;
   doneEnabled: boolean;
   onClose: () => void;
   onConfirm: () => void;
   onSelectDate: (date: Date) => void;
-  onScrumDateClick: () => void;
+  onMonthChange: (month: Date) => void;
+  onCalendarDayClick: (date: Date) => void;
 }
 
 const CalendarSheet = ({
   isOpen,
   selectedDate,
-  scrumDates,
+  isScrumDate,
+  isStarDate,
   doneEnabled,
   onClose,
   onConfirm,
   onSelectDate,
-  onScrumDateClick,
+  onMonthChange,
+  onCalendarDayClick,
 }: CalendarSheetProps) => {
+  const { start, end } = getSelectableRecordDateRange();
+  const canConfirm =
+    doneEnabled &&
+    selectedDate !== null &&
+    isWithinSelectableRecordRange(selectedDate) &&
+    !isStarDate(selectedDate);
+
   return (
     <BottomSheet
       isOpen={isOpen}
       onClose={onClose}
       text="완료"
       onTextClick={onConfirm}
-      textDisabled={!doneEnabled}
-      textClassName={cn(doneEnabled && "text-sea-blue-500")}>
-      <div className="w-full px-5 pt-2.5 pb-7.5">
+      textDisabled={!canConfirm}
+      textClassName={cn(canConfirm && "text-sea-blue-500")}>
+      <div className="w-full px-5 pt-2.5 pb-14 sm:pb-7.5">
         <Calendar
           mode="single"
           selected={selectedDate ?? undefined}
+          defaultMonth={end}
           className="w-full p-0"
           classNames={{
             root: "w-full",
@@ -46,10 +59,12 @@ const CalendarSheet = ({
               onSelectDate(newDate);
             }
           }}
-          onScrumDateClick={onScrumDateClick}
+          onMonthChange={onMonthChange}
+          onCalendarDayClick={onCalendarDayClick}
+          disabled={[{ before: start }, { after: end }]}
           modifiers={{
             otherSelected: new Date(),
-            scrum: scrumDates,
+            calendar: isScrumDate,
           }}
         />
       </div>

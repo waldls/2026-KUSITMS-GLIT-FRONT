@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/nextjs";
 
-import DefaultHeartGem from "@/components/record/DefaultHeartGem";
-import FilledHeartGem from "@/components/record/FilledHeartGem";
+import DefaultHeartGem from "@/components/record/stones/DefaultHeartGem";
+import FilledHeartGem from "@/components/record/stones/FilledHeartGem";
 
 const meta = {
   title: "Record/HeartGem",

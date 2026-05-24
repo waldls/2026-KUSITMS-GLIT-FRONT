@@ -20,7 +20,7 @@ const DatingMonthNav = ({
 }: DatingMonthNavProps) => (
   <nav
     className={cn(
-      "absolute inset-x-0 top-0 grid h-6.25 grid-cols-7 items-center gap-x-5",
+      "absolute inset-x-0 top-0 z-10 grid h-6.25 grid-cols-7 items-center gap-x-5",
       className,
     )}
     {...props}>
@@ -46,7 +46,7 @@ const DatingMonthNav = ({
 );
 
 const DatingMonthCaption = ({ className, ...props }: HTMLAttributes<HTMLSpanElement>) => (
-  <span className={cn("body-3 text-white select-none", className)} {...props} />
+  <span className={cn("body-3 pointer-events-none text-white select-none", className)} {...props} />
 );
 
 export { DatingMonthCaption };

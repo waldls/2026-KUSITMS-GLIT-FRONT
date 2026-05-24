@@ -53,7 +53,7 @@ const DayPreview = () => (
     <DatingDayButton {...createDayProps("1", { outside: true })} />
     <DatingDayButton {...createDayProps("1", { selected: true })} />
     <DatingDayButton {...createDayProps("1", { otherSelected: true })} />
-    <DatingDayButton {...createDayProps("1", { scrum: true })} />
+    <DatingDayButton {...createDayProps("1", { calendar: true })} />
   </div>
 );
 

@@ -52,7 +52,6 @@ export const FilledFocused: Story = {
   args: {
     placeholder: "내용 입력",
     defaultValue: "입력된 텍스트",
-    autoFocus: true,
   },
 };
 
@@ -61,7 +60,6 @@ export const FilledFocusedWithIcon: Story = {
   args: {
     placeholder: "비밀번호 입력",
     defaultValue: "mypassword123",
-    autoFocus: true,
     rightIcon: <ClosedEyeIcon />,
   },
 };
@@ -153,7 +151,7 @@ export const AllStates: Story = {
 
       <div className="flex flex-col gap-2">
         <label className="body-5 text-gray-600">입력 중 (포커스) — 글자·밑줄 gray-300</label>
-        <TextField placeholder="내용 입력" defaultValue="입력된 텍스트" autoFocus />
+        <TextField placeholder="내용 입력" defaultValue="입력된 텍스트" />
       </div>
 
       <div className="flex flex-col gap-2">
@@ -163,7 +161,6 @@ export const AllStates: Story = {
         <TextField
           placeholder="비밀번호 입력"
           defaultValue="mypassword123"
-          autoFocus
           rightIcon={<ClosedEyeIcon />}
         />
       </div>

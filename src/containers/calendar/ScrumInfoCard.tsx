@@ -9,11 +9,11 @@ const CATEGORY_MAP: Record<string, { label: string; variant: TagVariant }> = {
 };
 
 interface ScrumInfoCardProps {
-  freeText: string;
-  scrumContent: string;
-  primaryCategory: string;
-  detailTags: string[];
-  images: { imageId: number; imageUrl: string; sortOrder: number }[];
+  freeText?: string;
+  scrumContent?: string;
+  primaryCategory?: string;
+  detailTags?: string[];
+  images?: { imageId?: number; imageUrl?: string; sortOrder?: number }[];
 }
 
 const ScrumInfoCard = ({
@@ -31,10 +31,12 @@ const ScrumInfoCard = ({
           <p className="body-3 text-gray-100">{scrumContent}</p>
         </div>
         <div className="flex flex-row gap-1">
-          <Tag variant={CATEGORY_MAP[primaryCategory]?.variant}>
-            {CATEGORY_MAP[primaryCategory]?.label ?? primaryCategory}
-          </Tag>
-          {detailTags.map(tag => (
+          {primaryCategory && (
+            <Tag variant={CATEGORY_MAP[primaryCategory]?.variant}>
+              {CATEGORY_MAP[primaryCategory]?.label ?? primaryCategory}
+            </Tag>
+          )}
+          {detailTags?.map(tag => (
             <Tag key={tag} variant="gray">
               # {tag}
             </Tag>
@@ -42,8 +44,8 @@ const ScrumInfoCard = ({
         </div>
         <div className="flex flex-row gap-3">
           {/* TODO: 발급 받은 URL을 Image 태그로 렌더링 */}
-          {images.map(img => (
-            <div key={img.imageId} className="rounded-8 size-23.5 bg-gray-200" />
+          {images?.map((img, index) => (
+            <div key={img.imageId ?? index} className="rounded-8 size-23.5 bg-gray-200" />
           ))}
         </div>
       </div>

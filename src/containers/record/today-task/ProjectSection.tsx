@@ -2,13 +2,7 @@ import { PlusIcon, StarOneIcon, ThreeDotsIcon } from "@/assets/icons";
 import CTA from "@/components/common/CTA";
 import Popover from "@/components/common/Popover";
 import RecordProjectCard from "@/components/record/RecordProjectCard";
-
-type AddedProject = {
-  id: number;
-  label: string;
-  title: string;
-  tasks: string[];
-};
+import type { AddedProject } from "@/lib/hooks/record/useDailyScrum";
 
 type ProjectSheetStep = "tag" | "title" | "task";
 
@@ -86,7 +80,7 @@ const ProjectSection = ({
                 }>
                 <ol className="flex flex-col gap-0.5">
                   {project.tasks.map((task, index) => (
-                    <li key={`${project.id}-${task}`} className="body-5 text-gray-400">
+                    <li key={`${project.id}-${index}`} className="body-5 text-gray-400">
                       {index + 1}. {task}
                     </li>
                   ))}
