@@ -89,7 +89,8 @@ const ProjectSheet = ({
       isOpen={isOpen}
       onClose={onClose}
       onOverlayClick={onOverlayClick}
-      className="max-h-svh"
+      height="55vh"
+      hideScrollbar
       text={step === "tag" ? (isProjectTagEditing ? "완료" : "편집") : undefined}
       onTextClick={onHeaderTextClick}
       textDisabled={step === "tag" && !isProjectTagEditing && !canEditProjectTags}
@@ -101,7 +102,7 @@ const ProjectSheet = ({
             ? "text-gray-400"
             : "text-gray-600",
       )}>
-      <div className="flex min-h-92.5 flex-col px-5 pt-3 pb-7">
+      <div className="flex min-h-full flex-col px-5 pt-3 pb-7">
         <div
           className={cn(
             step === "tag" && "mb-6",
@@ -148,25 +149,30 @@ const ProjectSheet = ({
                         className="flex size-4 shrink-0 cursor-pointer items-center justify-center">
                         <CancelIcon className="size-4" />
                       </button>
-                      <input
-                        value={editingProjectTagValue}
-                        maxLength={15}
-                        onChange={event => onChangeEditingProjectTagValue(event.target.value)}
-                        onKeyDown={event => {
-                          if (event.nativeEvent.isComposing) return;
+                      <span className="relative inline-block min-w-4">
+                        <span aria-hidden="true" className="body-5 invisible whitespace-pre">
+                          {editingProjectTagValue || " "}
+                        </span>
+                        <input
+                          value={editingProjectTagValue}
+                          maxLength={15}
+                          onChange={event => onChangeEditingProjectTagValue(event.target.value)}
+                          onKeyDown={event => {
+                            if (event.nativeEvent.isComposing) return;
 
-                          if (event.key === "Enter") {
-                            event.preventDefault();
-                            onConfirmProjectTagEdit();
-                          }
+                            if (event.key === "Enter") {
+                              event.preventDefault();
+                              onConfirmProjectTagEdit();
+                            }
 
-                          if (event.key === "Escape") {
-                            event.preventDefault();
-                            onCancelProjectTagEdit();
-                          }
-                        }}
-                        className="body-5 [field-sizing:content] min-w-4 bg-transparent text-white caret-white outline-none"
-                      />
+                            if (event.key === "Escape") {
+                              event.preventDefault();
+                              onCancelProjectTagEdit();
+                            }
+                          }}
+                          className="body-5 absolute inset-0 h-full w-full bg-transparent text-white caret-white outline-none"
+                        />
+                      </span>
                     </span>
                   </label>
                 );
@@ -204,10 +210,9 @@ const ProjectSheet = ({
                 </Chip>
               );
             })}
-            {isAddingProjectTag ? (
+            {isAddingProjectTag && (
               <Chip
                 state="input"
-                leftIcon={<PlusIcon />}
                 confirmOnBlur
                 onConfirm={onCommitNewProjectTag}
                 onCancel={onCancelAddingProjectTag}
@@ -215,15 +220,15 @@ const ProjectSheet = ({
                 className="border-sea-blue-400 bg-gray-800"
                 inputClassName="min-w-2"
               />
-            ) : (
-              <Chip
-                leftIcon={<PlusIcon />}
-                state="default"
-                onClick={onStartAddingProjectTag}
-                className="border border-transparent bg-gray-900 opacity-100">
-                추가
-              </Chip>
             )}
+            <Chip
+              leftIcon={<PlusIcon />}
+              state="default"
+              onClick={onStartAddingProjectTag}
+              disabled={isAddingProjectTag}
+              className="!disabled:cursor-not-allowed border border-transparent bg-gray-900">
+              추가
+            </Chip>
           </div>
         ) : step === "tag" ? (
           <div className="flex flex-wrap gap-3">
@@ -240,10 +245,9 @@ const ProjectSheet = ({
                 {projectTag}
               </Chip>
             ))}
-            {isAddingProjectTag ? (
+            {isAddingProjectTag && (
               <Chip
                 state="input"
-                leftIcon={<PlusIcon />}
                 confirmOnBlur
                 onConfirm={onCommitNewProjectTag}
                 onCancel={onCancelAddingProjectTag}
@@ -251,15 +255,15 @@ const ProjectSheet = ({
                 className="border-sea-blue-400 bg-gray-800"
                 inputClassName="min-w-2"
               />
-            ) : (
-              <Chip
-                leftIcon={<PlusIcon />}
-                state="default"
-                onClick={onStartAddingProjectTag}
-                className="border border-transparent bg-gray-900 opacity-100">
-                추가
-              </Chip>
             )}
+            <Chip
+              leftIcon={<PlusIcon />}
+              state="default"
+              onClick={onStartAddingProjectTag}
+              disabled={isAddingProjectTag}
+              className="!disabled:cursor-not-allowed border border-transparent bg-gray-900">
+              추가
+            </Chip>
           </div>
         ) : step === "title" ? (
           <TextField

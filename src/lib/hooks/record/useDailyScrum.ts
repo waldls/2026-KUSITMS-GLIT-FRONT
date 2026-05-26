@@ -1,10 +1,16 @@
+import { useState } from "react";
+
 import { useDailyScrumCalendar } from "@/lib/hooks/record/useDailyScrumCalendar";
 import { useDailyScrumDraft } from "@/lib/hooks/record/useDailyScrumDraft";
 import { useDailyScrumProjectSheet } from "@/lib/hooks/record/useDailyScrumProjectSheet";
+import { useRecordDraftStore } from "@/store/recordDraftStore";
 
 export type { AddedProject } from "@/store/recordDraftStore";
 
 export const useDailyScrum = () => {
+  const [isDateFieldSelected, setIsDateFieldSelected] = useState(
+    () => !!useRecordDraftStore.getState().selectedDate,
+  );
   const projectSheet = useDailyScrumProjectSheet();
   const draft = useDailyScrumDraft({
     projectTagItems: projectSheet.projectTagItems,
@@ -18,12 +24,14 @@ export const useDailyScrum = () => {
     selectedDate: draft.selectedDate,
     onConfirmDate: date => {
       draft.setSelectedDate(date);
+      setIsDateFieldSelected(true);
     },
     showScrumToast: draft.showScrumToast,
   });
 
   return {
     selectedDate: draft.selectedDate,
+    isDateFieldSelected,
     addedProjects: draft.addedProjects,
     scrumToastState: draft.scrumToastState,
     scrumToastMessage: draft.scrumToastMessage,

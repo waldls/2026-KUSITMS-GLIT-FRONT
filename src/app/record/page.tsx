@@ -3,20 +3,9 @@
 import Image from "next/image";
 
 import { ChevronRightIcon, StarOneIcon } from "@/assets/icons";
-import RecordCharacter from "@/assets/images/record/record_character.png";
 import Tag from "@/components/common/Tag";
 import { useMe } from "@/lib/hooks/user/userClient";
-
-const navigateRecord = (href: string) => {
-  window.history.pushState(window.history.state, "", href);
-  window.dispatchEvent(
-    new CustomEvent("record-route-change", {
-      detail: {
-        pathname: new URL(href, window.location.origin).pathname,
-      },
-    }),
-  );
-};
+import { navigateRecord } from "@/lib/utils/recordNavigation";
 
 const Page = () => {
   const { data: profile } = useMe();
@@ -47,11 +36,12 @@ const Page = () => {
       {/* 캐릭터 이미지 */}
       <div className="relative h-75 shrink-0">
         <Image
-          src={RecordCharacter}
+          src="/images/record/record_character.svg"
           alt="기록 캐릭터"
-          width={460}
-          height={460}
-          className="absolute inset-0 h-full w-full object-contain pb-4"
+          fill
+          priority
+          sizes="(max-width: 430px) 100vw, 430px"
+          className="object-contain pb-4"
         />
       </div>
 
@@ -59,7 +49,7 @@ const Page = () => {
       <button
         type="button"
         onClick={() => navigateRecord("/record/today-task")}
-        className="rounded-12 z-10 mb-2 flex min-h-38.75 w-full shrink-0 cursor-pointer flex-col items-start justify-start border-[0.3px] border-solid border-gray-800 bg-[linear-gradient(126deg,rgba(17,17,17,0.20)_6.6%,rgba(173,173,173,0.20)_106.5%)] px-4.5 pt-4 text-left">
+        className="rounded-12 z-10 mb-2 flex min-h-40 w-full shrink-0 cursor-pointer flex-col items-start justify-start border-[0.3px] border-solid border-gray-800 bg-[linear-gradient(126deg,rgba(17,17,17,0.20)_6.6%,rgba(173,173,173,0.20)_106.5%)] px-4.5 pt-4 text-left">
         <p className="body-5 mb-0.5 text-gray-100">오늘 한 일을 간단히 기록해요</p>
         <div className="flex items-center gap-1">
           <h3 className="head-4 text-white">기록 하러가기</h3>

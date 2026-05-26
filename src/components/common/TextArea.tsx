@@ -58,13 +58,13 @@ const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>(
           onChange={handleChange}
           onBlur={onBlur}
           className={cn(
-            "body-2 h-34.5 w-full resize-none overflow-y-auto bg-transparent text-gray-200 caret-white outline-none [scrollbar-width:none] placeholder:text-gray-800 [&::-webkit-scrollbar]:hidden",
+            "body-4 h-34.5 w-full resize-none overflow-y-auto bg-transparent text-gray-200 caret-white outline-none [scrollbar-width:none] placeholder:text-gray-800 [&::-webkit-scrollbar]:hidden",
             textareaClassName,
           )}
         />
         {showCount && (
           <div className="flex justify-end">
-            <span className="body-5 text-gray-700">
+            <span className="body-4 text-gray-700">
               {count}/{maxLength}
             </span>
           </div>

@@ -39,6 +39,8 @@ const CalendarSheet = ({
     <BottomSheet
       isOpen={isOpen}
       onClose={onClose}
+      height="55vh"
+      hideScrollbar
       text="완료"
       onTextClick={onConfirm}
       textDisabled={!canConfirm}

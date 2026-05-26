@@ -60,6 +60,12 @@ function StonePreview({ stoneIds }: { stoneIds: SkillStoneId[] }) {
   );
 }
 
+function formatDetailTagLabel(tagLabel: string) {
+  const label = tagLabel.startsWith("#") ? tagLabel.slice(1) : tagLabel;
+
+  return `# ${label}`;
+}
+
 function SkillTaggingSuccess({ results }: { results: AiTaggingResultResponse[] }) {
   const router = useRouter();
   const primaryCategoryLabels = getPrimaryCategoryLabels(results);
@@ -112,13 +118,13 @@ function SkillTaggingSuccess({ results }: { results: AiTaggingResultResponse[] }
           <div className="scrollbar-hide mt-3 flex flex-wrap justify-center gap-1 overflow-y-auto px-3">
             {detailTagLabels.map(tagLabel => (
               <Tag key={tagLabel} variant="gray" className="bg-gray-850">
-                {tagLabel}
+                {formatDetailTagLabel(tagLabel)}
               </Tag>
             ))}
           </div>
         </div>
       </div>
-      <div className="relative z-10 shrink-0 py-4">
+      <div className="relative z-10 shrink-0 pb-10">
         <Link href="/">
           <CTA>홈으로 돌아가기</CTA>
         </Link>

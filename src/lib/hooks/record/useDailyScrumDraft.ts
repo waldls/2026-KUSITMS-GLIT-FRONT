@@ -172,9 +172,10 @@ export const useDailyScrumDraft = ({
   const selectedDateStr = useRecordDraftStore(state => state.selectedDate);
   const addedProjects = useRecordDraftStore(state => state.addedProjects);
   const setDraft = useRecordDraftStore(state => state.setDraft);
-  const selectedDate = selectedDateStr ? parseApiDate(selectedDateStr) : null;
+  const selectedDate = selectedDateStr ? parseApiDate(selectedDateStr) : getToday();
   const projectTagItemsRef = useRef(projectTagItems);
   const loadDailyProjectsRequestRef = useRef(0);
+  const hasLoadedInitialDateRef = useRef(false);
   const [scrumToastState, setScrumToastState] = useState<ScrumToastState>("hidden");
   const [scrumToastMessage, setScrumToastMessage] = useState("");
   const [isSaving, setIsSaving] = useState(false);
@@ -263,9 +264,12 @@ export const useDailyScrumDraft = ({
   );
 
   useEffect(() => {
-    if (!selectedDateStr) return;
+    if (!selectedDateStr && hasLoadedInitialDateRef.current) return;
 
-    void loadDailyProjects(parseApiDate(selectedDateStr), { preferSession: true });
+    hasLoadedInitialDateRef.current = true;
+    const date = selectedDateStr ? parseApiDate(selectedDateStr) : getToday();
+
+    void loadDailyProjects(date, { preferSession: true });
 
     return () => {
       loadDailyProjectsRequestRef.current += 1;

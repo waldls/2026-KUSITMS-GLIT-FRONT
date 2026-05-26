@@ -25,7 +25,12 @@ const RecordProjectCard = ({
   contentClassName,
 }: RecordProjectCardProps) => {
   return (
-    <article className={cn("rounded-8 bg-gray-850 flex flex-col p-3.5 pr-3 pl-4", className)}>
+    <article
+      className={cn(
+        "rounded-8 bg-recordprojectcard flex flex-col py-3.5",
+        rightSlot ? "pr-3 pl-4" : "px-4",
+        className,
+      )}>
       <div className="flex items-start justify-between gap-3">
         <Tag variant="gray" className={tagClassName}>
           {tag}

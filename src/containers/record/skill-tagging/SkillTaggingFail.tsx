@@ -7,9 +7,6 @@ function SkillTaggingFail() {
   return (
     <section className="relative -mx-5 flex min-h-0 flex-1 flex-col overflow-hidden px-5">
       <div className="flex min-h-0 flex-1 flex-col items-center justify-center">
-        <div className="relative flex items-center justify-center">
-          <HeartImage role="img" aria-label="역량 태깅 실패" className="size-32 object-contain" />
-        </div>
         <h1 className="head-4 mt-3.75 text-center text-white">
           아쉽게도 세부 역량 태그
           <br />
@@ -19,7 +16,7 @@ function SkillTaggingFail() {
           태그가 없어도 기록은 잘 쌓이고 있어요
         </p>
       </div>
-      <div className="relative z-10 shrink-0 py-4">
+      <div className="relative z-10 shrink-0 pb-10">
         <Link href="/">
           <CTA>홈으로 돌아가기</CTA>
         </Link>

@@ -315,6 +315,8 @@ export const useDailyScrumProjectSheet = () => {
   };
 
   const startAddingProjectTag = () => {
+    if (isAddingProjectTag) return;
+
     cancelProjectTagEdit();
     setSelectedProjectTag(null);
     setIsAddingProjectTag(true);

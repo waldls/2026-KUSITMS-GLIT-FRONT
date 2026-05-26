@@ -1,16 +1,16 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import { cn } from "@/lib/utils/cn";
 
 type ChipState = "default" | "selected" | "unselected" | "input";
 
 const STATE_STYLES: Record<ChipState, string> = {
-  default: "border-gray-800 bg-gray-800/54 text-white active:bg-gray-800",
+  default: "border-gray-800 bg-gray-850 text-white active:bg-gray-800",
   selected: "border-sea-blue-400 bg-gray-800 text-white active:bg-gray-800",
   unselected: "border-transparent bg-gray-800 text-offwhite-400 opacity-30 active:bg-gray-800",
-  input: "border-gray-800 bg-gray-800/54 text-white",
+  input: "border-gray-800 bg-gray-850 text-white",
 };
 
 interface ChipBaseProps {
@@ -47,6 +47,10 @@ const ChipInput = ({
   const [value, setValue] = useState("");
   const inputRef = useRef<HTMLInputElement | null>(null);
   const skipBlurConfirm = useRef(false);
+
+  useEffect(() => {
+    inputRef.current?.focus();
+  }, []);
 
   const confirm = () => {
     onConfirm?.(value);

@@ -17,6 +17,7 @@ import StarImageUploader, {
 } from "@/containers/record/star-log/StarImageUploader";
 import StarTaskComplete from "@/containers/record/star-log/StarTaskComplete";
 import { getStarGuideExample } from "@/data/record/starGuides";
+import type { Competency } from "@/types/competency";
 import {
   type AiTaggingResultResponse,
   getAiTaggingResult,
@@ -25,7 +26,9 @@ import {
 } from "@/lib/apis/record/record";
 import { confirmImage, uploadImage } from "@/lib/apis/record/starImage";
 import { updateStep } from "@/lib/apis/record/starRecord";
+import { useMe } from "@/lib/hooks/user/userClient";
 import { cn } from "@/lib/utils/cn";
+import { navigateRecord, replaceRecordHistory } from "@/lib/utils/recordNavigation";
 
 const STAR_STEPS = [
   {
@@ -71,9 +74,6 @@ const STAR_LOG_STATE_PARAM_MAP: Record<StarLogStateView, string> = {
   delayed: "delayed",
 };
 type ImageAttachmentMap = Record<number, StarImageAttachment[]>;
-type NavigateRecordOptions = {
-  replace?: boolean;
-};
 
 interface StarTask {
   id: number;
@@ -83,11 +83,11 @@ interface StarTask {
   projectTag: string;
   projectTitle: string;
   skillId: number;
+  competency?: Competency;
 }
 
 const triggeredAiTaggingKeys = new Set<string>();
-const STAR_LOG_COMPLETED_IDS_KEY = "star-log-completed-star-record-ids";
-const SKILL_TAGGING_STATE_KEY = "skill-tagging-state";
+const ANALYZING_STATUS_POLL_LIMIT = 20;
 
 const getInitialTasks = () => {
   if (typeof window === "undefined") return [];
@@ -107,7 +107,7 @@ const getInitialTasks = () => {
 const getInitialCompletedStarRecordIds = () => {
   if (typeof window === "undefined") return [];
 
-  const storedIds = window.sessionStorage.getItem(STAR_LOG_COMPLETED_IDS_KEY);
+  const storedIds = window.sessionStorage.getItem("star-log-completed-star-record-ids");
   if (!storedIds) return [];
 
   try {
@@ -119,12 +119,40 @@ const getInitialCompletedStarRecordIds = () => {
 };
 
 const saveCompletedStarRecordIds = (ids: number[]) => {
-  window.sessionStorage.setItem(STAR_LOG_COMPLETED_IDS_KEY, JSON.stringify(ids));
+  window.sessionStorage.setItem("star-log-completed-star-record-ids", JSON.stringify(ids));
+};
+
+const getUploadImageMimeType = async (file: File) => {
+  if (file.type === "image/png" || file.type === "image/jpeg") return file.type;
+
+  if (file.type) throw new Error("JPG 또는 PNG 이미지만 업로드할 수 있어요");
+
+  const bytes = new Uint8Array(await file.slice(0, 8).arrayBuffer());
+  const isPng =
+    bytes[0] === 0x89 &&
+    bytes[1] === 0x50 &&
+    bytes[2] === 0x4e &&
+    bytes[3] === 0x47 &&
+    bytes[4] === 0x0d &&
+    bytes[5] === 0x0a &&
+    bytes[6] === 0x1a &&
+    bytes[7] === 0x0a;
+  const isJpeg = bytes[0] === 0xff && bytes[1] === 0xd8 && bytes[2] === 0xff;
+
+  if (isPng) return "image/png";
+  if (isJpeg) return "image/jpeg";
+
+  const extension = file.name.split(".").pop()?.toLowerCase();
+  if (extension === "png") return "image/png";
+  if (extension === "jpg" || extension === "jpeg") return "image/jpeg";
+
+  throw new Error("JPG 또는 PNG 이미지만 업로드할 수 있어요");
 };
 
 const uploadStarImage = async (starRecordId: number, image: StarImageAttachment) => {
+  const mimeType = await getUploadImageMimeType(image.file);
   const uploadTargets = await uploadImage(starRecordId, {
-    mimeTypes: [image.file.type],
+    mimeTypes: [mimeType],
   });
   const uploadTarget = uploadTargets?.[0];
 
@@ -134,7 +162,7 @@ const uploadStarImage = async (starRecordId: number, image: StarImageAttachment)
 
   const response = await fetch(uploadTarget.presignedUrl, {
     method: "PUT",
-    headers: { "Content-Type": image.file.type },
+    headers: { "Content-Type": mimeType },
     body: image.file,
   });
 
@@ -189,7 +217,7 @@ const createStepHref = (nextStepIndex: number, viewState: ViewState = "form") =>
 };
 
 const replaceCurrentHistory = (href: string) => {
-  window.history.replaceState(window.history.state, "", href);
+  replaceRecordHistory(href);
 };
 
 const replaceStarLogState = (
@@ -205,29 +233,15 @@ const replaceSkillTagging = (
   state: "success" | "fail",
   setViewState: (viewState: ViewState) => void,
 ) => {
-  window.sessionStorage.setItem(SKILL_TAGGING_STATE_KEY, state);
-  window.history.replaceState(window.history.state, "", "/record/skill-tagging");
+  window.sessionStorage.setItem("skill-tagging-state", state);
+  replaceRecordHistory("/record/skill-tagging");
   setViewState(state === "success" ? "skillTaggingSuccess" : "skillTaggingFail");
-};
-
-const navigateRecord = (href: string, options?: NavigateRecordOptions) => {
-  if (options?.replace) {
-    window.history.replaceState(window.history.state, "", href);
-  } else {
-    window.history.pushState(window.history.state, "", href);
-  }
-
-  window.dispatchEvent(
-    new CustomEvent("record-route-change", {
-      detail: {
-        pathname: new URL(href, window.location.origin).pathname,
-      },
-    }),
-  );
 };
 
 const StarLogContent = () => {
   const imageAttachmentsRef = useRef<ImageAttachmentMap>({});
+  const aiTaggingStatusPollCountRef = useRef(0);
+  const { data: profile } = useMe();
   const [tasks] = useState<StarTask[]>(getInitialTasks);
   const [taskIndex, setTaskIndex] = useState(0);
   const [completedTaskIndex, setCompletedTaskIndex] = useState(0);
@@ -248,7 +262,8 @@ const StarLogContent = () => {
   const currentStep = STAR_STEPS[stepIndex];
   const currentGuideExample = currentTask
     ? getStarGuideExample({
-        job: "developer",
+        job: profile?.jobRole,
+        competency: currentTask.competency,
         skillId: currentTask.skillId,
         stepKey: currentStep.key,
       })
@@ -310,25 +325,27 @@ const StarLogContent = () => {
       .filter((starRecordId): starRecordId is number => Boolean(starRecordId));
     let ignore = false;
     let pollingTimer: number | undefined;
-    let delayedTimer: number | undefined;
-    let failTimer: number | undefined;
     const taggingStorageKey = `star-log-ai-tagging:${starRecordIdKey}`;
+    const isAnalyzing = viewState === "analyzing";
 
-    const clearDelayedTimer = () => {
-      if (delayedTimer) window.clearTimeout(delayedTimer);
-    };
-    const clearFailTimer = () => {
-      if (failTimer) window.clearTimeout(failTimer);
+    if (isAnalyzing) {
+      aiTaggingStatusPollCountRef.current = 0;
+    }
+
+    const scheduleNextPoll = () => {
+      pollingTimer = window.setTimeout(() => {
+        void pollAiTagging();
+      }, 1500);
     };
 
     const pollAiTagging = async () => {
       try {
+        aiTaggingStatusPollCountRef.current += 1;
+
         const statuses = await Promise.all(aiTaggingStarRecordIds.map(getAiTaggingStatus));
         if (ignore) return;
 
         if (statuses.some(status => status?.status === "FAILED")) {
-          clearDelayedTimer();
-          clearFailTimer();
           replaceSkillTagging("fail", setViewState);
           return;
         }
@@ -344,20 +361,22 @@ const StarLogContent = () => {
           setAiTaggingResults(
             nextResults.filter((result): result is AiTaggingResultResponse => result !== null),
           );
-          clearDelayedTimer();
-          clearFailTimer();
           replaceSkillTagging("success", setViewState);
           return;
         }
-
-        pollingTimer = window.setTimeout(pollAiTagging, 1500);
       } catch {
-        if (!ignore) {
-          clearDelayedTimer();
-          clearFailTimer();
-          replaceSkillTagging("fail", setViewState);
-        }
+        if (ignore) return;
       }
+
+      if (
+        viewState === "analyzing" &&
+        aiTaggingStatusPollCountRef.current >= ANALYZING_STATUS_POLL_LIMIT
+      ) {
+        replaceStarLogState("delayed", stepIndex, setViewState);
+        return;
+      }
+
+      scheduleNextPoll();
     };
 
     const startAiTagging = async () => {
@@ -365,18 +384,6 @@ const StarLogContent = () => {
         if (aiTaggingStarRecordIds.length === 0) {
           replaceSkillTagging("fail", setViewState);
           return;
-        }
-
-        if (viewState === "analyzing") {
-          delayedTimer = window.setTimeout(() => {
-            if (!ignore) replaceStarLogState("delayed", stepIndex, setViewState);
-          }, 3000);
-        }
-
-        if (viewState === "delayed") {
-          failTimer = window.setTimeout(() => {
-            if (!ignore) replaceSkillTagging("fail", setViewState);
-          }, 7000);
         }
 
         if (!triggeredAiTaggingKeys.has(taggingStorageKey)) {
@@ -395,8 +402,6 @@ const StarLogContent = () => {
     return () => {
       ignore = true;
       if (pollingTimer) window.clearTimeout(pollingTimer);
-      clearDelayedTimer();
-      clearFailTimer();
     };
   }, [hasCompletedAllTasks, starRecordIdKey, stepIndex, tasks, viewState]);
 
@@ -613,7 +618,7 @@ const StarLogContent = () => {
           </section>
 
           {/* 이전 다음 버튼 영역 */}
-          <div className="flex shrink-0 gap-2 pt-4 pb-9 md:pb-5">
+          <div className="flex shrink-0 gap-2 pt-4 pb-10 md:pb-5">
             <Button
               size="lg"
               variant="gray"

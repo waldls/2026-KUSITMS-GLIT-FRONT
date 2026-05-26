@@ -61,7 +61,7 @@ const StarTaskComplete = ({
           </div>
         </div>
       </div>
-      <div className="w-full shrink-0 py-4">
+      <div className="w-full shrink-0 pb-10">
         <CTA onClick={onNextTaskClick}>다음 기록하기</CTA>
       </div>
     </section>

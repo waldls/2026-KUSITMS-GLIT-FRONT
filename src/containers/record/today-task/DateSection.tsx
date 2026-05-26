@@ -28,7 +28,10 @@ const DateSection = ({ value, placeholder, selected, onOpenCalendar }: DateSecti
         onRightIconClick={onOpenCalendar}
         rightIconClassName="text-gray-800"
         wrapperClassName="border-gray-800 has-[input:not(:placeholder-shown):focus]:border-gray-800 has-[input:not(:placeholder-shown):not(:focus)]:border-gray-800"
-        className={cn("body-2 cursor-pointer", selected ? "text-gray-100" : "text-gray-800")}
+        className={cn(
+          "body-2 cursor-pointer",
+          selected ? "text-gray-200 focus:text-gray-200" : "text-gray-800 focus:text-gray-800",
+        )}
       />
     </div>
   );

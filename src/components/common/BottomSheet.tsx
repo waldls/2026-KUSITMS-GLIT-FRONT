@@ -17,6 +17,8 @@ interface BottomSheetProps {
   textDisabled?: boolean;
   hasOverlay?: boolean;
   onOverlayClick?: () => void;
+  height?: string;
+  hideScrollbar?: boolean;
 }
 
 const BottomSheet = ({
@@ -32,6 +34,8 @@ const BottomSheet = ({
   textDisabled = false,
   hasOverlay = true,
   onOverlayClick,
+  height,
+  hideScrollbar = false,
 }: BottomSheetProps) => {
   const [shouldRender, setShouldRender] = useState(isOpen);
   const [isClosing, setIsClosing] = useState(false);
@@ -92,8 +96,10 @@ const BottomSheet = ({
       <div
         role="dialog"
         aria-modal="true"
+        style={height ? { height } : undefined}
         className={cn(
-          "rounded-t-20 bg-gray-850 relative flex max-h-dvh w-full flex-col",
+          "rounded-t-20 bg-gray-850 relative flex w-full flex-col",
+          height ? "shrink-0" : "max-h-dvh",
           isClosing ? "animate-slide-out-down" : !hasEntered && "animate-slide-in-up",
           className,
         )}
@@ -134,7 +140,14 @@ const BottomSheet = ({
           </div>
         )}
 
-        <div className={cn("mt-8.5 flex-1 overflow-y-auto")}>{children}</div>
+        <div
+          className={cn(
+            "mt-8.5 min-h-0 flex-1 overflow-y-auto",
+            hideScrollbar &&
+              "[-webkit-overflow-scrolling:touch] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden",
+          )}>
+          {children}
+        </div>
       </div>
     </div>
   );

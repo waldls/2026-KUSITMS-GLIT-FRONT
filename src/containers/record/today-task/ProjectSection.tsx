@@ -89,7 +89,7 @@ const ProjectSection = ({
             ))}
           </div>
         ) : (
-          <div className="rounded-8 bg-gray-850/60 flex min-h-29.5 w-full flex-col items-center justify-center">
+          <div className="rounded-8 bg-recordprojectcard flex min-h-29.5 w-full flex-col items-center justify-center">
             <span className="body-5 text-center text-gray-600">
               아직 프로젝트가 없어요
               <br />

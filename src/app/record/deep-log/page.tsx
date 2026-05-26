@@ -10,6 +10,7 @@ import RecordProjectCard from "@/components/record/RecordProjectCard";
 import DefaultHeartGem from "@/components/record/stones/DefaultHeartGem";
 import { bulkCreate } from "@/lib/apis/record/starRecord";
 import { cn } from "@/lib/utils/cn";
+import { navigateRecord } from "@/lib/utils/recordNavigation";
 import {
   type DeepLogProject,
   getTodayTaskScrums,
@@ -17,17 +18,6 @@ import {
   saveDeepLogSelectedScrums,
 } from "@/lib/utils/recordSession";
 import { useRecordDraftStore } from "@/store/recordDraftStore";
-
-const navigateRecord = (href: string) => {
-  window.history.pushState(window.history.state, "", href);
-  window.dispatchEvent(
-    new CustomEvent("record-route-change", {
-      detail: {
-        pathname: new URL(href, window.location.origin).pathname,
-      },
-    }),
-  );
-};
 
 const getInitialDeepLogState = () => {
   const storedScrums = getTodayTaskScrums();
@@ -151,7 +141,7 @@ const Page = () => {
                 const isChecked = selectedTaskIds.includes(task.id);
 
                 return (
-                  <div key={task.id} className="flex items-center gap-2">
+                  <div key={task.id} className="flex items-center gap-2 py-1">
                     <Checkbox checked={isChecked} onChange={() => toggleTask(task.id)} />
                     <button
                       type="button"
@@ -177,7 +167,7 @@ const Page = () => {
       </section>
 
       {/* 이전 다음 버튼 영역 */}
-      <div className="flex shrink-0 gap-2 pt-4 pb-9 md:pb-5">
+      <div className="flex shrink-0 gap-2 pt-4 pb-10 md:pb-5">
         <Button
           size="lg"
           variant="gray"
