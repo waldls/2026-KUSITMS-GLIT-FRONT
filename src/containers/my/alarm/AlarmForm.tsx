@@ -103,32 +103,38 @@ const AlarmForm = () => {
               </div>
             </div>
 
-            <div className="flex flex-col gap-4">
-              <p className="body-2 text-gray-300">알림 받는 시간</p>
+            {current.isActive && (
+              <div className="flex flex-col gap-4">
+                <p className="body-2 text-gray-300">알림 받는 시간</p>
 
-              <div className="flex flex-col gap-5">
-                <div className="flex w-full justify-between">
-                  {DAYS.map(day => {
-                    const selected = current.selectedDays.includes(day);
-                    return (
-                      <Chip
-                        key={day}
-                        state={selected ? "selected" : isEditing ? "default" : "unselected"}
-                        onClick={isEditing ? () => toggleDay(day) : undefined}
-                        className="size-10 justify-center">
-                        {day}
-                      </Chip>
-                    );
-                  })}
+                <div className="flex flex-col gap-5">
+                  <div
+                    className={cn(
+                      "flex w-full justify-between p-px",
+                      !isEditing && "pointer-events-none",
+                    )}>
+                    {DAYS.map(day => {
+                      const selected = current.selectedDays.includes(day);
+                      return (
+                        <Chip
+                          key={day}
+                          state={selected ? "selected" : isEditing ? "default" : "unselected"}
+                          onClick={() => toggleDay(day)}
+                          className="size-10 justify-center">
+                          {day}
+                        </Chip>
+                      );
+                    })}
+                  </div>
+
+                  <WheelTimePicker
+                    value={current.time}
+                    disabled={!isEditing}
+                    onChange={time => setDraft(prev => (prev ? { ...prev, time } : prev))}
+                  />
                 </div>
-
-                <WheelTimePicker
-                  value={current.time}
-                  disabled={!isEditing}
-                  onChange={time => setDraft(prev => (prev ? { ...prev, time } : prev))}
-                />
               </div>
-            </div>
+            )}
           </div>
         </div>
       </div>

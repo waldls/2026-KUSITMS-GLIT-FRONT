@@ -2,10 +2,10 @@ import Header from "@/components/common/Header";
 import NavigationBar from "@/components/common/NavigationBar";
 import MenuSection from "@/containers/my/MenuSection";
 import ProfileSection from "@/containers/my/profile/ProfileSection";
-import { getMeServer } from "@/lib/apis/user/user.server";
+import { getMe } from "@/lib/apis/user/user.server";
 
 const page = async () => {
-  const profile = await getMeServer();
+  const profile = await getMe();
 
   return (
     <div className="flex h-full w-full flex-col">

@@ -1,5 +1,6 @@
 import Image from "next/image";
 
+import characterProfile from "@/assets/images/my/character_profile.png";
 import type { UserProfile } from "@/types/user/user";
 
 interface Props {
@@ -7,23 +8,19 @@ interface Props {
 }
 
 const ProfileSection = ({ profile }: Props) => {
-  const { profileImage, nickname, jobRole, userStatus } = profile ?? {};
+  const { nickname, jobRole, userStatus } = profile ?? {};
   return (
     <div className="flex flex-col items-center gap-3">
-      {profileImage ? (
-        <div className="size-31 overflow-hidden rounded-full">
-          <Image
-            src={profileImage}
-            alt="프로필 이미지"
-            width={124}
-            height={124}
-            className="size-full object-cover"
-            priority
-          />
-        </div>
-      ) : (
-        <div className="size-31 rounded-full bg-gray-700" />
-      )}
+      <div className="size-31 overflow-hidden rounded-full">
+        <Image
+          src={characterProfile}
+          alt="프로필 이미지"
+          width={124}
+          height={124}
+          className="size-full object-cover"
+          priority
+        />
+      </div>
       <div className="flex flex-col items-center gap-0.5">
         <p className="head-5 text-white">{nickname}</p>
         {(jobRole || userStatus) && (

@@ -1,4 +1,5 @@
 import Chip from "@/components/common/Chip";
+import { cn } from "@/lib/utils/cn";
 
 interface ChipGroupProps {
   title: string;
@@ -11,13 +12,13 @@ interface ChipGroupProps {
 const ChipGroup = ({ title, options, selectedValue, isEditing, onChange }: ChipGroupProps) => (
   <div className="flex flex-col gap-3">
     <p className="body-2 text-gray-300">{title}</p>
-    <div className="flex flex-wrap gap-3">
+    <div className={cn("flex flex-wrap gap-3 p-px", !isEditing && "pointer-events-none")}>
       {options.map(({ label, Icon }) => (
         <Chip
           key={label}
           state={selectedValue === label ? "selected" : isEditing ? "default" : "unselected"}
           leftIcon={<Icon />}
-          onClick={isEditing ? () => onChange(label) : undefined}>
+          onClick={() => onChange(label)}>
           {label}
         </Chip>
       ))}

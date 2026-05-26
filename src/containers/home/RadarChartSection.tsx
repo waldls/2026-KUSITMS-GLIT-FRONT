@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 
 import RadarChart from "@/components/home/RadarChart";
 import { getRadar } from "@/lib/apis/home/home";
+import { useMe } from "@/lib/hooks/user/userClient";
 import type { ActivityStatsData } from "@/types/home/home";
 
 const emptyData: ActivityStatsData = {
@@ -19,6 +20,7 @@ const emptyData: ActivityStatsData = {
 };
 
 const RadarChartSection = () => {
+  const { data: me } = useMe();
   const [data, setData] = useState<ActivityStatsData | null>(null);
 
   useEffect(() => {
@@ -29,7 +31,9 @@ const RadarChartSection = () => {
 
   return (
     <div className="bg-card rounded-12 flex w-full flex-col p-4">
-      <p className="body-3 text-white">다솔님의 역량 기록 분포</p>
+      <p className="body-3 text-white">
+        <span suppressHydrationWarning>{me?.nickname ?? ""}</span>님의 역량 기록 분포
+      </p>
       <div className="flex items-center justify-center">
         <RadarChart data={data ?? emptyData} />
       </div>

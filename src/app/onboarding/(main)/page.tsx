@@ -12,8 +12,8 @@ import SelectionCardGrid from "@/components/onboarding/SelectionCardGrid";
 import { NICKNAME_REGEX } from "@/constants/regex";
 import OnboardingStepHeader from "@/containers/onboarding/OnboardingStepHeader";
 import { JOB_OPTIONS, STATUS_OPTIONS } from "@/data/onboarding";
-import { usePostOnboardingComplete } from "@/lib/hooks/user/usePostOnboardingComplete";
 import { getNicknameError } from "@/lib/utils/validation";
+import { useOnboardingStore } from "@/store/onboardingStore";
 
 type Step = 1 | 2 | 3;
 
@@ -25,7 +25,7 @@ const Page = () => {
   const [jobRole, setJobRole] = useState("");
   const [userStatus, setUserStatus] = useState("");
 
-  const { mutate, isPending } = usePostOnboardingComplete();
+  const setOnboardingData = useOnboardingStore(state => state.setOnboardingData);
 
   const canProceed = useMemo(() => {
     if (step === 1) return NICKNAME_REGEX.test(nickname);
@@ -43,7 +43,8 @@ const Page = () => {
     if (step < 3) {
       setStep(prev => (prev + 1) as Step);
     } else {
-      mutate({ nickname, jobRole, userStatus }, { onSuccess: () => router.replace("/") });
+      setOnboardingData({ nickname, jobRole, userStatus });
+      router.push("/onboarding/guide");
     }
   };
 
@@ -110,7 +111,7 @@ const Page = () => {
       </section>
 
       <div className="px-5 pb-10">
-        <CTA disabled={!canProceed || isPending} onClick={handleNext}>
+        <CTA disabled={!canProceed} onClick={handleNext}>
           다음으로
         </CTA>
       </div>

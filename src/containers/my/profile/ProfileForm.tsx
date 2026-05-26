@@ -8,6 +8,7 @@ import TextArea from "@/components/common/TextArea";
 import { JOB_OPTIONS, STATUS_OPTIONS } from "@/constants/my";
 import { NICKNAME_REGEX } from "@/constants/regex";
 import ChipGroup from "@/containers/my/profile/ChipGroup";
+import { patchMe } from "@/lib/apis/user/user";
 import { getNicknameError } from "@/lib/utils/validation";
 
 type ProfileState = {
@@ -44,8 +45,8 @@ const ProfileForm = ({ initialProfile }: ProfileFormProps) => {
     setIsEditing(true);
   };
 
-  const handleSave = () => {
-    // TODO: API 연동
+  const handleSave = async () => {
+    await patchMe({ jobRole, userStatus });
     setProfile({ nickname, jobRole, userStatus });
     setIsEditing(false);
   };

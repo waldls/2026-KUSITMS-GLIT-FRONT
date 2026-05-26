@@ -6,7 +6,7 @@ import Providers from "@/providers/Providers";
 
 export const metadata: Metadata = {
   title: "글릿",
-  description: "KUSITMS 33rd 밋업 프로젝트 글릿",
+  description: "기록할수록 선명해지는 나만의 커리어, 글릿",
   manifest: "/manifest.webmanifest",
   openGraph: {
     images: ["/og-image.png"],

@@ -5,8 +5,8 @@ import "swiper/css";
 import { useEffect, useState } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 
+import SwipeIndicator from "@/components/common/SwipeIndicator";
 import Heatmap from "@/components/home/Heatmap";
-import HeatmapIndicator from "@/components/home/HeatmapIndicator";
 import { getCompetencyStats } from "@/lib/apis/home/home";
 import type { MonthlyGrassData } from "@/types/home/home";
 
@@ -51,7 +51,7 @@ const HeatmapSection = () => {
           );
         })}
       </Swiper>
-      <HeatmapIndicator total={months.length} current={activeIndex} />
+      <SwipeIndicator total={months.length} current={activeIndex} />
     </div>
   );
 };

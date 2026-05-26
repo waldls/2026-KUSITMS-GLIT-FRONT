@@ -1,9 +1,9 @@
-interface HeatmapIndicatorProps {
+interface SwipeIndicatorProps {
   total: number;
   current: number;
 }
 
-const HeatmapIndicator = ({ total, current }: HeatmapIndicatorProps) => {
+const SwipeIndicator = ({ total, current }: SwipeIndicatorProps) => {
   return (
     <div className="flex items-center justify-center gap-1.5">
       {Array.from({ length: total }).map((_, i) => (
@@ -18,4 +18,4 @@ const HeatmapIndicator = ({ total, current }: HeatmapIndicatorProps) => {
   );
 };
 
-export default HeatmapIndicator;
+export default SwipeIndicator;

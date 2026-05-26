@@ -6,6 +6,9 @@ import {
   SchoolIcon,
   WorkIcon,
 } from "@/assets/icons";
+import guideOne from "@/assets/images/guide/guide_one.png";
+import guideThree from "@/assets/images/guide/guide_three.png";
+import guideTwo from "@/assets/images/guide/guide_two.png";
 
 export type MenuItemConfig =
   | { label: string; href: string }
@@ -30,4 +33,22 @@ export const STATUS_OPTIONS = [
   { label: "재학 중", Icon: SchoolIcon },
   { label: "취업 준비 중", Icon: FireIcon },
   { label: "재직 중", Icon: WorkIcon },
+];
+
+export const GUIDE_LIST = [
+  {
+    image: guideOne,
+    title: "하루의 경험을 기록해요",
+    description: "프로젝트 태그부터 작업 내용까지 한번에 작성할 수 있어요",
+  },
+  {
+    image: guideTwo,
+    title: "직무 역량 태그로 경험을 표현해요",
+    description: "오늘의 경험을 잘 보여주는 직무 역량을 고를 수 있어요",
+  },
+  {
+    image: guideThree,
+    title: "3단계 질문으로 경험을 커리어 기록으로",
+    description: "각 질문을 따라 기록하고, 나만의 커리어 기록을 완성해요",
+  },
 ];
