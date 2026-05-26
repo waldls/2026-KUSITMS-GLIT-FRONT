@@ -1,0 +1,6 @@
+export type Competency =
+  | "DISCOVERY_ANALYSIS"
+  | "PLANNING_EXECUTION"
+  | "COLLABORATION"
+  | "PROBLEM_SOLVING"
+  | "REFLECTION_GROWTH";

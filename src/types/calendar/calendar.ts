@@ -1,51 +1,30 @@
-// CalendarMonthlyResponse
-export type CalendarDay = {
-  date: string;
-  hasScrums: boolean;
-  hasStar: boolean;
-  primaryCategory: string | null;
-  starCount: number;
-};
+import type { Competency } from "@/types/competency";
 
-export type CalendarMonthlyData = {
-  month: string;
-  days: CalendarDay[];
-};
+// 월별 캘린더 데이터 조회
+export interface CalendarDayInfo {
+  date?: string;
+  hasScrums?: boolean;
+  hasStar?: boolean;
+  primaryCategory?: Competency | null;
+  starCount?: number;
+}
 
-// CalendarDailyPreviewResponse
-export type CalendarDailyScrum = {
-  scrumId: number;
-  projectName: string;
-  freeText: string;
-  content: string;
-  primaryCategory: string | null;
-  detailTags: string[] | null;
-  hasStar: boolean;
-};
+export interface CalendarMonthlyResponse {
+  month?: string;
+  days?: CalendarDayInfo[];
+}
 
-export type CalendarDailyPreviewData = {
-  date: string;
-  scrums: CalendarDailyScrum[];
-};
+// 날짜 프리뷰 조회
+export interface CalendarTitlePreview {
+  titleId?: number;
+  projectName?: string;
+  freeText?: string;
+  primaryCategories?: Competency[];
+  scrumCount?: number;
+  hasStarAny?: boolean;
+}
 
-// CalendarDailyResponse
-export type CalendarDailyScrumItem = {
-  scrumId: number;
-  content: string;
-  hasStar: boolean;
-  isEditable: boolean;
-  primaryCategory: string | null; // 임시
-};
-
-export type CalendarDailyGroup = {
-  titleId: number;
-  projectTag: string;
-  freeText: string;
-  isEditable: boolean;
-  items: CalendarDailyScrumItem[];
-};
-
-export type CalendarDailyData = {
-  receivedTags: string[]; // 임시
-  groups: CalendarDailyGroup[];
-};
+export interface CalendarDailyPreviewResponse {
+  date?: string;
+  titles?: CalendarTitlePreview[];
+}

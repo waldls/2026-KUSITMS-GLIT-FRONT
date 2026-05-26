@@ -13,7 +13,7 @@ const datingDayStyle = {
   selected: "bg-gray-300 text-gray-900",
   otherSelected: "bg-gray-800/50 text-gray-600",
   scrumDot:
-    "text-white after:absolute after:right-0.75 after:top-0.75 after:size-1.25 after:rounded-full after:bg-gray-700",
+    "after:absolute after:right-0.75 after:top-0.75 after:size-1.25 after:rounded-full after:bg-gray-700",
 };
 
 const DatingDayContent = ({
@@ -31,7 +31,7 @@ const DatingDayContent = ({
         modifiers.outside && datingDayStyle.outside,
         modifiers.selected && datingDayStyle.selected,
         modifiers.otherSelected && !modifiers.selected && datingDayStyle.otherSelected,
-        modifiers.calendar && datingDayStyle.scrumDot,
+        modifiers.calendar && !modifiers.selected && datingDayStyle.scrumDot,
         !isPage && modifiers.disabled && datingDayStyle.disabled,
         isPage && modifiers.exceeded && !modifiers.selected && "opacity-30",
       )}>
@@ -58,7 +58,7 @@ const DatingDayButton = ({
     disabled={disabled}
     className={cn(
       className,
-      "body-2 flex aspect-square w-full cursor-pointer items-center justify-center disabled:cursor-default",
+      "body-2 flex aspect-square w-full cursor-pointer items-center justify-center outline-none disabled:cursor-default",
       disabled && "cursor-default",
     )}
     {...props}>

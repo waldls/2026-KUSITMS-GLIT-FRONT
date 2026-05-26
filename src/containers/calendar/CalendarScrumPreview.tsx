@@ -1,8 +1,8 @@
 import CalendarProjectCard from "@/components/common/CalendarProjectCard";
 import { PRIMARY_CATEGORY_MAP } from "@/constants/competency";
 import CalendarEmptyState from "@/containers/calendar/CalendarEmptyState";
-import type { CalendarTitlePreview } from "@/lib/apis/calendar/calendar";
 import { formatDateShort, formatDateTitle } from "@/lib/utils/calendar";
+import type { CalendarTitlePreview } from "@/types/calendar/calendar";
 
 interface CalendarScrumPreviewProps {
   selectedDate: Date;
@@ -45,11 +45,7 @@ const CalendarScrumPreview = ({
               name={scrum.freeText ?? ""}
               pjName={scrum.projectName ?? ""}
               date={formatDateShort(selectedDate)}
-              skillTags={
-                scrum.primaryCategories
-                  ?.map(category => PRIMARY_CATEGORY_MAP[category])
-                  .filter(Boolean) ?? undefined
-              }
+              skillTags={scrum.primaryCategories?.map(category => PRIMARY_CATEGORY_MAP[category])}
             />
           ))}
         </div>

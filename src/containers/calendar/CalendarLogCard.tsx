@@ -14,7 +14,7 @@ const CalendarLogCard = ({ userName, tags }: CalendarLogCardProps) => {
       <div className="flex flex-wrap gap-1">
         {tags.map((tag, i) => (
           <Tag key={i} variant="gray">
-            # {tag}
+            {tag}
           </Tag>
         ))}
       </div>

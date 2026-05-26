@@ -1,44 +1,29 @@
-"use client";
-
-import { useParams, useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
-
 import Header from "@/components/common/Header";
 import ActionSection from "@/containers/calendar/ActionSection";
 import ResultSection from "@/containers/calendar/ResultSection";
 import ScrumInfoCard from "@/containers/calendar/ScrumInfoCard";
 import SituationTaskSection from "@/containers/calendar/SituationTaskSection";
-import { getStarDetail } from "@/lib/apis/record/starRecord";
+import { getStarDetailServer } from "@/lib/apis/record/starRecord.server";
 
-const Page = () => {
-  const router = useRouter();
-  const { date, id } = useParams<{ date: string; id: string }>();
-  const [data, setData] = useState<Awaited<ReturnType<typeof getStarDetail>> | null>(null);
+interface PageProps {
+  params: Promise<{ date: string; id: string }>;
+}
 
-  useEffect(() => {
-    let ignore = false;
+const page = async ({ params }: PageProps) => {
+  const { id } = await params;
 
-    const loadStarDetail = async () => {
-      try {
-        const starDetail = await getStarDetail(Number(id));
-        if (!ignore) setData(starDetail);
-      } catch {
-        if (!ignore) setData(null);
-      }
-    };
-
-    void loadStarDetail();
-
-    return () => {
-      ignore = true;
-    };
-  }, [id]);
+  let data: Awaited<ReturnType<typeof getStarDetailServer>> | null = null;
+  try {
+    data = await getStarDetailServer(Number(id));
+  } catch {
+    data = null;
+  }
 
   if (!data) return null;
 
   return (
     <div className="flex h-screen w-full flex-col">
-      <Header title={data.projectTag ?? ""} onLeftClick={() => router.push(`/calendar/${date}`)} />
+      <Header title={data.projectTag ?? ""} />
       <div className="scrollbar-hide flex-1 overflow-y-auto px-5 py-4">
         <div className="flex flex-col gap-6.25">
           <ScrumInfoCard
@@ -62,4 +47,4 @@ const Page = () => {
   );
 };
 
-export default Page;
+export default page;

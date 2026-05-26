@@ -49,6 +49,10 @@ const nextConfig: NextConfig = {
         protocol: "https",
         hostname: "avatars.githubusercontent.com",
       },
+      {
+        protocol: "https",
+        hostname: "glit-images.s3.ap-northeast-2.amazonaws.com",
+      },
     ],
   },
 };

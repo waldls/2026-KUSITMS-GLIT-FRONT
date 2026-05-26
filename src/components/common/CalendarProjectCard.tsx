@@ -3,7 +3,6 @@
 import { useEffect, useRef, useState } from "react";
 
 import { DeleteIcon, ThreeDotsIcon } from "@/assets/icons";
-import type { PopoverItem } from "@/components/common/Popover";
 import Popover from "@/components/common/Popover";
 import type { TagVariant } from "@/components/common/Tag";
 import Tag from "@/components/common/Tag";
@@ -16,11 +15,9 @@ interface CalendarProjectCardProps {
   pjName: string;
   date?: string;
   skillTags?: { label: string; variant: TagVariant }[];
-  scrumItems?: { content: string; highlight?: TagVariant }[];
-  showIcoR?: boolean;
-  onIcoRClick?: () => void;
+  scrumItems?: { content: string; highlight?: TagVariant; onClick?: () => void }[];
+  onDelete?: () => void;
   onScrumDelete?: (index: number) => void;
-  popoverItems?: PopoverItem[];
   className?: string;
 }
 
@@ -31,10 +28,8 @@ const CalendarProjectCard = ({
   date,
   skillTags,
   scrumItems,
-  showIcoR,
-  onIcoRClick,
+  onDelete,
   onScrumDelete,
-  popoverItems,
   className,
 }: CalendarProjectCardProps) => {
   const isDelete = type === "delete";
@@ -54,41 +49,33 @@ const CalendarProjectCard = ({
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [isPopoverOpen]);
 
-  const wrappedPopoverItems = popoverItems?.map(item => ({
-    ...item,
-    onClick: () => {
-      item.onClick?.();
-      setIsPopoverOpen(false);
-    },
-  }));
-
-  const handleIcoRClick = () => {
-    if (popoverItems) {
-      setIsPopoverOpen(prev => !prev);
-    } else {
-      onIcoRClick?.();
-    }
-  };
-
   return (
     <article className={cn("rounded-8 bg-gray-850/60 flex w-full flex-col gap-2 p-3", className)}>
       <div className="flex flex-col gap-0.5">
         <div className="relative flex items-center gap-2">
           {!isDelete && date && <span className="body-5 text-gray-300">{date}</span>}
           <span className="body-5 text-gray-300">{pjName}</span>
-          {showIcoR && (
+          {onDelete && (
             <div ref={popoverRef} className="absolute right-0">
               <button
                 type="button"
                 className="flex cursor-pointer items-center justify-center"
-                onClick={handleIcoRClick}
+                onClick={() => setIsPopoverOpen(prev => !prev)}
                 aria-label="더보기">
                 <ThreeDotsIcon className="size-5 text-gray-500" />
               </button>
-              {isPopoverOpen && wrappedPopoverItems && (
+              {isPopoverOpen && (
                 <Popover
                   className="absolute top-full right-0 z-10 mt-1"
-                  items={wrappedPopoverItems}
+                  items={[
+                    {
+                      label: "삭제하기",
+                      onClick: () => {
+                        onDelete();
+                        setIsPopoverOpen(false);
+                      },
+                    },
+                  ]}
                   onClose={() => setIsPopoverOpen(false)}
                 />
               )}
@@ -127,7 +114,10 @@ const CalendarProjectCard = ({
                   item.highlight
                     ? cn("border-l-4 pl-0.5", TAG_BORDER_CLASS[item.highlight])
                     : "pl-1.5",
-                )}>
+                  !isDelete && item.onClick ? "cursor-pointer" : "",
+                )}
+                onClick={!isDelete ? item.onClick : undefined}
+                role={!isDelete && item.onClick ? "button" : undefined}>
                 <span className="body-5 text-gray-400">
                   {i + 1}. {item.content}
                 </span>
