@@ -17,7 +17,6 @@ import StarImageUploader, {
 } from "@/containers/record/star-log/StarImageUploader";
 import StarTaskComplete from "@/containers/record/star-log/StarTaskComplete";
 import { getStarGuideExample } from "@/data/record/starGuides";
-import type { Competency } from "@/types/competency";
 import {
   type AiTaggingResultResponse,
   getAiTaggingResult,
@@ -29,6 +28,7 @@ import { updateStep } from "@/lib/apis/record/starRecord";
 import { useMe } from "@/lib/hooks/user/userClient";
 import { cn } from "@/lib/utils/cn";
 import { navigateRecord, replaceRecordHistory } from "@/lib/utils/recordNavigation";
+import type { Competency } from "@/types/competency";
 
 const STAR_STEPS = [
   {
