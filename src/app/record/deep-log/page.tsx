@@ -102,7 +102,7 @@ const Page = () => {
       );
       navigateRecord("/record/select-skills");
     } catch {
-      setApiErrorMessage("심화기록을 시작하지 못했어요");
+      setApiErrorMessage("이미 심화기록을 남긴 작업이에요");
       setIsSavingSelectedScrums(false);
     }
   };
@@ -177,10 +177,13 @@ const Page = () => {
         </Button>
         <Button
           size="lg"
+          variant="gray"
           disabled={selectedCount === 0}
           className={cn(
             "flex-[3.5]",
-            selectedCount > 0 ? "bg-white text-gray-900" : "text-offwhite-500 bg-gray-400/40",
+            selectedCount > 0
+              ? "bg-white text-gray-900 active:bg-white"
+              : "text-offwhite-500 bg-gray-400/40",
           )}
           onClick={handleNextClick}>
           다음

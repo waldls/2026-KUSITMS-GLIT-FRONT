@@ -8,8 +8,8 @@ import { CalendarContext } from "@/providers/CalendarContext";
 
 const datingDayStyle = {
   default: "size-7.5 rounded-full text-white",
-  outside: "text-gray-700",
-  disabled: "text-gray-700",
+  outside: "text-gray-800",
+  disabled: "text-gray-800",
   selected: "bg-gray-300 text-gray-900",
   otherSelected: "bg-gray-800/50 text-gray-600",
   scrumDot:

@@ -93,7 +93,6 @@ const ProjectSheet = ({
       hideScrollbar
       text={step === "tag" ? (isProjectTagEditing ? "완료" : "편집") : undefined}
       onTextClick={onHeaderTextClick}
-      textDisabled={step === "tag" && !isProjectTagEditing && !canEditProjectTags}
       textClassName={cn(
         "body-3",
         isProjectTagEditing
@@ -261,7 +260,7 @@ const ProjectSheet = ({
               state="default"
               onClick={onStartAddingProjectTag}
               disabled={isAddingProjectTag}
-              className="!disabled:cursor-not-allowed border border-transparent bg-gray-900">
+              className="bg-gray-900 ring-0 disabled:cursor-not-allowed">
               추가
             </Chip>
           </div>

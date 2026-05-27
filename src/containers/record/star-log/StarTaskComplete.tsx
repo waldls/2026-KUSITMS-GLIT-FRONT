@@ -1,6 +1,6 @@
 import CTA from "@/components/common/CTA";
 import Tag from "@/components/common/Tag";
-import FilledHeartGem from "@/components/record/stones/FilledHeartGem";
+import GlowingSkillStone, { type SkillStoneId } from "@/components/record/stones/GlowingSkillStone";
 
 interface StarTask {
   id: number;
@@ -8,11 +8,12 @@ interface StarTask {
   projectId: number;
   projectTag: string;
   projectTitle: string;
-  skillId: number;
+  skillId: SkillStoneId;
 }
 
 interface StarTaskCompleteProps {
   completedTaskNumber: number;
+  completedTaskSkillId: SkillStoneId;
   nextTask: StarTask;
   onNextTaskClick: () => void;
 }
@@ -42,6 +43,7 @@ const KOREAN_ORDINALS = [
 
 const StarTaskComplete = ({
   completedTaskNumber,
+  completedTaskSkillId,
   nextTask,
   onNextTaskClick,
 }: StarTaskCompleteProps) => {
@@ -51,7 +53,12 @@ const StarTaskComplete = ({
   return (
     <section className="flex min-h-0 flex-1 flex-col items-center justify-center">
       <div className="flex flex-1 flex-col items-center justify-center">
-        <FilledHeartGem ariaLabel="첫 번째 기록 완료" />
+        <GlowingSkillStone
+          skillId={completedTaskSkillId}
+          animate
+          ariaLabel={`${completedTaskOrdinal} 번째 기록 완료 원석`}
+          className="size-26.25"
+        />
         <p className="head-4 mt-3.75 text-white">{completedTaskOrdinal} 번째 기록 완료!</p>
         <div className="rounded-8 bg-gray-850/60 mt-3 flex flex-col items-center p-3">
           <p className="body-5 text-sea-blue-400">다음 기록 목록</p>

@@ -11,6 +11,19 @@ interface ScrumInfoCardProps {
   images?: { imageId?: number; imageUrl?: string; sortOrder?: number }[];
 }
 
+const normalizeImageUrl = (url?: string) => {
+  if (!url) return "";
+  let normalized = url;
+  if (normalized.startsWith("http://")) {
+    normalized = normalized.replace("http://", "https://");
+  }
+  if (normalized.startsWith("/")) {
+    const apiBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL ?? "";
+    normalized = `${apiBaseUrl}${normalized}`;
+  }
+  return normalized;
+};
+
 const ScrumInfoCard = ({
   freeText,
   scrumContent,
@@ -43,7 +56,13 @@ const ScrumInfoCard = ({
               <div
                 key={img.imageId ?? index}
                 className="rounded-8 relative size-23.5 overflow-hidden">
-                <Image src={img.imageUrl} alt="" fill className="object-cover" unoptimized />
+                <Image
+                  src={normalizeImageUrl(img.imageUrl)}
+                  alt=""
+                  fill
+                  className="object-cover"
+                  unoptimized
+                />
               </div>
             ) : (
               <div key={img.imageId ?? index} className="rounded-8 size-23.5 bg-gray-200" />

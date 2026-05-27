@@ -9,7 +9,7 @@ import Toast from "@/components/common/Toast";
 export interface StarImageAttachment {
   id: string;
   url: string;
-  file: File;
+  file?: File;
   starImageId?: number;
   isUploading?: boolean;
 }
@@ -67,13 +67,17 @@ const StarImageUploader = ({
 
       onImagesChange(prev => [...prev, ...nextImages].slice(0, MAX_IMAGE_COUNT));
 
-      nextImages.forEach(image => {
-        void onImageUpload(image).catch(() => {
-          URL.revokeObjectURL(image.url);
-          onImagesChange(prev => prev.filter(item => item.id !== image.id));
-          setIsUploadToastVisible(true);
-        });
-      });
+      void (async () => {
+        for (const image of nextImages) {
+          try {
+            await onImageUpload(image);
+          } catch {
+            URL.revokeObjectURL(image.url);
+            onImagesChange(prev => prev.filter(item => item.id !== image.id));
+            setIsUploadToastVisible(true);
+          }
+        }
+      })();
     }
 
     e.target.value = "";

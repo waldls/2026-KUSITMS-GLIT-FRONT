@@ -332,7 +332,10 @@ export const useDailyScrumProjectSheet = () => {
     if (createdProjectTags.length > 0) {
       setIsProjectTagEditing(true);
       setIsAddingProjectTag(false);
+      return;
     }
+
+    showProjectTagToast("새로 추가한 태그만 수정할 수 있어요");
   };
 
   const handleProjectPrevious = () => {

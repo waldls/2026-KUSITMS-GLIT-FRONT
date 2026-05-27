@@ -97,7 +97,9 @@ const Page = () => {
       {projectTagToastState !== "hidden" && (
         <Toast
           contents={projectTagToastMessage}
-          variant="success"
+          variant={
+            projectTagToastMessage === "새로 추가한 태그만 수정할 수 있어요" ? "error" : "success"
+          }
           showCloseButton={false}
           className={cn(
             "fixed bottom-9.5 left-1/2 z-60 -translate-x-1/2 justify-center transition-opacity duration-300",
@@ -107,7 +109,7 @@ const Page = () => {
       )}
 
       <DateSection
-        value={selectedDate ? formatDate(selectedDate) : ""}
+        value={isDateFieldSelected && selectedDate ? formatDate(selectedDate) : ""}
         placeholder={formatDate(new Date())}
         selected={isDateFieldSelected}
         onOpenCalendar={openCalendarSheet}

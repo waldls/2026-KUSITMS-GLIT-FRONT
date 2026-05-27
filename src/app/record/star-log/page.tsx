@@ -8,6 +8,7 @@ import Modal from "@/components/common/Modal";
 import ProgressBar from "@/components/common/ProgressBar";
 import TextArea from "@/components/common/TextArea";
 import SkillTag from "@/components/record/SkillTag";
+import type { SkillStoneId } from "@/components/record/stones/GlowingSkillStone";
 import SkillTaggingFail from "@/containers/record/skill-tagging/SkillTaggingFail";
 import SkillTaggingSuccess from "@/containers/record/skill-tagging/SkillTaggingSuccess";
 import StarAllComplete from "@/containers/record/star-log/StarAllComplete";
@@ -23,7 +24,7 @@ import {
   getAiTaggingStatus,
   triggerAiTagging,
 } from "@/lib/apis/record/record";
-import { confirmImage, uploadImage } from "@/lib/apis/record/starImage";
+import { confirmImage, deleteImage, getImages, uploadImage } from "@/lib/apis/record/starImage";
 import { updateStep } from "@/lib/apis/record/starRecord";
 import { useMe } from "@/lib/hooks/user/userClient";
 import { cn } from "@/lib/utils/cn";
@@ -82,7 +83,7 @@ interface StarTask {
   projectId: number;
   projectTag: string;
   projectTitle: string;
-  skillId: number;
+  skillId: SkillStoneId;
   competency?: Competency;
 }
 
@@ -150,6 +151,7 @@ const getUploadImageMimeType = async (file: File) => {
 };
 
 const uploadStarImage = async (starRecordId: number, image: StarImageAttachment) => {
+  if (!image.file) throw new Error("업로드할 이미지 파일이 없습니다");
   const mimeType = await getUploadImageMimeType(image.file);
   const uploadTargets = await uploadImage(starRecordId, {
     mimeTypes: [mimeType],
@@ -236,6 +238,22 @@ const replaceSkillTagging = (
   window.sessionStorage.setItem("skill-tagging-state", state);
   replaceRecordHistory("/record/skill-tagging");
   setViewState(state === "success" ? "skillTaggingSuccess" : "skillTaggingFail");
+};
+
+const normalizeImageUrl = (url?: string) => {
+  if (!url) return "";
+  let normalized = url;
+  if (normalized.startsWith("http://")) {
+    normalized = normalized.replace("http://", "https://");
+  }
+  if (normalized.startsWith("/")) {
+    const apiBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL;
+    if (apiBaseUrl) {
+      const base = apiBaseUrl.replace(/\/+$/, "");
+      normalized = `${base}${normalized}`;
+    }
+  }
+  return normalized;
 };
 
 const StarLogContent = () => {
@@ -406,6 +424,41 @@ const StarLogContent = () => {
   }, [hasCompletedAllTasks, starRecordIdKey, stepIndex, tasks, viewState]);
 
   useEffect(() => {
+    if (!currentStarRecordId || !currentTask) return;
+
+    const taskId = currentTask.id;
+    let isMounted = true;
+    const fetchImages = async () => {
+      try {
+        const response = await getImages(currentStarRecordId);
+        if (!isMounted) return;
+        if (response) {
+          const attachments = response.map(item => {
+            const url = normalizeImageUrl(item.imageUrl);
+            return {
+              id: String(item.starImageId),
+              url,
+              starImageId: item.starImageId,
+            };
+          });
+          setImageAttachments(prev => ({
+            ...prev,
+            [taskId]: attachments,
+          }));
+        }
+      } catch (error) {
+        console.error("Failed to fetch images:", error);
+      }
+    };
+
+    void fetchImages();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [currentStarRecordId, currentTask]);
+
+  useEffect(() => {
     const title =
       viewState === "form"
         ? currentStep.headerTitle
@@ -456,17 +509,78 @@ const StarLogContent = () => {
     try {
       await uploadStarImage(currentStarRecordId, image);
 
-      setImageAttachments(prev => ({
-        ...prev,
-        [taskId]: (prev[taskId] ?? []).map(item =>
-          item.id === image.id ? { ...item, isUploading: false } : item,
-        ),
-      }));
+      const response = await getImages(currentStarRecordId);
+      if (response) {
+        setImageAttachments(prev => {
+          const currentList = prev[taskId] ?? [];
+          const completedAttachments = response.map((item, index) => {
+            const localItem = currentList[index];
+            const url =
+              localItem && localItem.url.startsWith("blob:")
+                ? localItem.url
+                : normalizeImageUrl(item.imageUrl);
+            return {
+              id: String(item.starImageId),
+              url,
+              starImageId: item.starImageId,
+              file: localItem?.file,
+            };
+          });
+
+          const uploadingItems = currentList.slice(completedAttachments.length);
+          const attachments = [...completedAttachments, ...uploadingItems];
+
+          return {
+            ...prev,
+            [taskId]: attachments,
+          };
+        });
+      }
     } catch (error) {
       setImageAttachments(prev => ({
         ...prev,
         [taskId]: (prev[taskId] ?? []).filter(item => item.id !== image.id),
       }));
+      throw error;
+    }
+  };
+
+  const handleImageRemove = async (image: StarImageAttachment) => {
+    if (!currentTask || !currentStarRecordId) return;
+
+    const taskId = currentTask.id;
+    if (!image.starImageId) {
+      setImageAttachments(prev => ({
+        ...prev,
+        [taskId]: (prev[taskId] ?? []).filter(item => item.id !== image.id),
+      }));
+      return;
+    }
+
+    try {
+      await deleteImage(currentStarRecordId, image.starImageId);
+      setImageAttachments(prev => ({
+        ...prev,
+        [taskId]: (prev[taskId] ?? []).filter(item => item.id !== image.id),
+      }));
+    } catch (error) {
+      setApiErrorMessage("이미지를 삭제하지 못했어요");
+      try {
+        const response = await getImages(currentStarRecordId);
+        if (response) {
+          const attachments = response.map(item => ({
+            id: String(item.starImageId),
+            url: normalizeImageUrl(item.imageUrl),
+            starImageId: item.starImageId,
+          }));
+          setImageAttachments(prev => ({
+            ...prev,
+            [currentTask.id]: attachments,
+          }));
+        }
+      } catch (fetchError) {
+        console.error("Failed to restore images after delete error:", fetchError);
+      }
       throw error;
     }
   };
@@ -560,15 +674,17 @@ const StarLogContent = () => {
   }
 
   if (viewState === "taskComplete") {
+    const completedTask = tasks[completedTaskIndex];
     const nextTask = tasks[completedTaskIndex + 1];
 
-    if (!nextTask) {
+    if (!completedTask || !nextTask) {
       return <StarAllComplete />;
     }
 
     return (
       <StarTaskComplete
         completedTaskNumber={completedTaskIndex + 1}
+        completedTaskSkillId={completedTask.skillId}
         nextTask={nextTask}
         onNextTaskClick={handleNextTaskClick}
       />
@@ -592,7 +708,7 @@ const StarLogContent = () => {
           <section className="mt-6.5 flex min-h-0 flex-1 flex-col">
             <div className="flex items-center gap-1.5">
               <SkillTag skillId={currentTask.skillId} />
-              <span className="body-5 truncate text-gray-700">{currentTask.projectTitle}</span>
+              <span className="body-5 truncate text-gray-700">{currentTask.title}</span>
             </div>
 
             <h2 className="body-3 mt-3 text-white">{currentStep.question}</h2>
@@ -613,6 +729,7 @@ const StarLogContent = () => {
                 images={currentImageAttachments}
                 onImagesChange={handleImageAttachmentsChange}
                 onImageUpload={handleImageUpload}
+                onImageRemove={handleImageRemove}
               />
             )}
           </section>
