@@ -1,4 +1,4 @@
-import type { Strength } from "@/data/report";
+import type { Strength } from "@/types/report/report";
 
 interface StrengthsSectionProps {
   strengths: Strength[];
@@ -12,9 +12,9 @@ const StrengthCard = ({ strength }: { strength: Strength }) => (
         <p className="body-4 text-gray-900">{strength.description}</p>
       </div>
       <div className="flex flex-col gap-1">
-        {strength.evidenceRecords.map(record => (
-          <p key={record.starRecordId} className="body-5 text-gray-700 underline">
-            [{record.title}] {record.recordedAt}
+        {strength.evidences.map(record => (
+          <p key={record.id} className="body-5 text-gray-700 underline">
+            [{record.scrumTitle}] {record.createdAt}
           </p>
         ))}
       </div>

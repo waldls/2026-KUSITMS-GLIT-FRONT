@@ -3,13 +3,12 @@ import Link from "next/link";
 import { StarTwoIcon } from "@/assets/icons";
 import Button from "@/components/common/Button";
 import ReportCard from "@/components/report/ReportCard";
-import { mockReports, Report } from "@/data/report";
+import { getReports } from "@/lib/apis/report/report.server";
 
-interface CareerReportSectionProps {
-  reports?: Report[];
-}
+const CareerReportSection = async () => {
+  const data = await getReports();
+  const reports = data?.reports ?? [];
 
-const CareerReportSection = ({ reports = mockReports }: CareerReportSectionProps) => {
   const parseDate = (d: string) => new Date(d.replace(/\./g, "-"));
 
   const careerIndexMap = new Map(

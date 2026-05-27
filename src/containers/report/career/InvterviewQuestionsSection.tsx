@@ -1,4 +1,4 @@
-import type { InterviewQuestion } from "@/data/report";
+import type { InterviewQuestion } from "@/types/report/report";
 
 interface InvterviewQuestionsSectionProps {
   interviewQuestions: InterviewQuestion[];
@@ -15,9 +15,9 @@ const InvterviewQuestionsSection = ({ interviewQuestions }: InvterviewQuestionsS
               <p className="body-4 text-gray-900">{item.question}</p>
             </div>
             <div className="flex flex-col gap-1">
-              {item.evidenceRecords.map(record => (
-                <p key={record.starRecordId} className="body-5 text-gray-700 underline">
-                  [{record.title}] {record.recordedAt}
+              {item.evidences.map(record => (
+                <p key={record.id} className="body-5 text-gray-700 underline">
+                  [{record.scrumTitle}] {record.createdAt}
                 </p>
               ))}
             </div>

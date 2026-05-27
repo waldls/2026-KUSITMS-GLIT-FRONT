@@ -20,14 +20,18 @@ function ProvidersContent({ children }: { children: React.ReactNode }) {
 
 export default function Providers({ children }: { children: React.ReactNode }) {
   const [queryClient] = useState(() => new QueryClient());
-  const [persister] = useState(() => {
-    if (typeof window === "undefined") return null;
+  const [persister, setPersister] = useState<ReturnType<typeof createSyncStoragePersister> | null>(
+    null,
+  );
 
-    return createSyncStoragePersister({
-      key: REACT_QUERY_SESSION_CACHE_KEY,
-      storage: window.sessionStorage,
-    });
-  });
+  useEffect(() => {
+    setPersister(
+      createSyncStoragePersister({
+        key: REACT_QUERY_SESSION_CACHE_KEY,
+        storage: window.sessionStorage,
+      }),
+    );
+  }, []);
 
   useEffect(() => {
     import("@/lib/utils/fcm");

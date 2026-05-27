@@ -1,7 +1,7 @@
 import Link from "next/link";
 
 import { ChevronRightIcon } from "@/assets/icons";
-import { Report } from "@/data/report";
+import type { Report } from "@/types/report/report";
 
 interface ReportCardProps {
   report: Report;

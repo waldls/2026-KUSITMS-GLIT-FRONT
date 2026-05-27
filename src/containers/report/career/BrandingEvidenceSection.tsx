@@ -1,12 +1,12 @@
 import Tag from "@/components/common/Tag";
-import { BrandingEvidence } from "@/data/report";
+import type { TopTag } from "@/types/report/report";
 
 interface Props {
-  brandingEvidence: BrandingEvidence;
+  topDetailTags: TopTag[];
 }
 
-const BrandingEvidenceSection = ({ brandingEvidence }: Props) => {
-  const topTags = brandingEvidence.topTags.slice(0, 3);
+const BrandingEvidenceSection = ({ topDetailTags }: Props) => {
+  const topTags = topDetailTags.slice(0, 3);
 
   return (
     <div className="bg-gray-850 rounded-12 px-6.75 py-4">

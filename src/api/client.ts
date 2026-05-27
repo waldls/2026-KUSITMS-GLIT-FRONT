@@ -103,9 +103,9 @@ export const clientApi = {
       .get(getUrl(path), { searchParams: params })
       .json<ApiResponse<T>>()
       .then(json => unwrap<T>(json)),
-  post: <T>(path: string, body?: unknown) =>
+  post: <T>(path: string, body?: unknown, options?: { timeout?: number | false }) =>
     clientKy
-      .post(getUrl(path), { json: body })
+      .post(getUrl(path), { json: body, timeout: options?.timeout })
       .json<ApiResponse<T>>()
       .then(json => unwrap<T>(json)),
   put: <T>(path: string, body?: unknown) =>

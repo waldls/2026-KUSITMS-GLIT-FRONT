@@ -3,10 +3,10 @@ import Image from "next/image";
 import SitDownCharacter from "@/assets/images/report/character_sitdown.png";
 
 interface BrandingTitleSectionProps {
-  brandingTitle: string;
+  brandingStatement: string;
 }
 
-const BrandingTitleSection = ({ brandingTitle }: BrandingTitleSectionProps) => {
+const BrandingTitleSection = ({ brandingStatement }: BrandingTitleSectionProps) => {
   return (
     <div className="rounded-12 bg-gray-850 relative w-full overflow-hidden p-4 text-white">
       <div className="bg-sea-blue-600 absolute top-1/2 left-0 h-32 w-32 -translate-y-1/2 opacity-40 blur-[100px]" />
@@ -20,7 +20,7 @@ const BrandingTitleSection = ({ brandingTitle }: BrandingTitleSectionProps) => {
         height={115}
       />
       <div className="relative w-40">
-        <p className="body-3 text-left break-keep text-gray-100">{brandingTitle}</p>
+        <p className="body-3 text-left break-keep text-gray-100">{brandingStatement}</p>
       </div>
     </div>
   );

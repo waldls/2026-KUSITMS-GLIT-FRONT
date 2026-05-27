@@ -1,30 +1,48 @@
 "use client";
 
-import { useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 
 import Header from "@/components/common/Header";
 import MoreStep from "@/components/report/MoreStep";
-import BrandingEvidenceSection from "@/containers/report/BrandingEvidenceSection";
-import BrandingTitleSection from "@/containers/report/BrandingTitleSection";
-import ExperienceHighlightsSection from "@/containers/report/ExperienceHighlightsSection";
-import InterviewQuestionsSection from "@/containers/report/InvterviewQuestionsSection";
-import NarrativeSummarySection from "@/containers/report/NarrativeSummarySection";
-import PatternSection from "@/containers/report/PatternSection";
-import StrengthsSection from "@/containers/report/StrengthsSection";
-import { mockCareerReportDetail } from "@/data/report";
+import BrandingEvidenceSection from "@/containers/report/career/BrandingEvidenceSection";
+import BrandingTitleSection from "@/containers/report/career/BrandingTitleSection";
+import ExperienceHighlightsSection from "@/containers/report/career/ExperienceHighlightsSection";
+import InterviewQuestionsSection from "@/containers/report/career/InvterviewQuestionsSection";
+import NarrativeSummarySection from "@/containers/report/career/NarrativeSummarySection";
+import PatternSection from "@/containers/report/career/PatternSection";
+import StrengthsSection from "@/containers/report/career/StrengthsSection";
+import { getReportDetail } from "@/lib/apis/report/report";
+import { useMe } from "@/lib/hooks/user/userClient";
+import type { CareerReportDetail } from "@/types/report/report";
 
 const Page = () => {
   const router = useRouter();
+  const params = useParams();
+  const { data: me } = useMe();
+  const [data, setData] = useState<CareerReportDetail | null>(null);
+
+  useEffect(() => {
+    getReportDetail(Number(params.id))
+      .then(res => {
+        if (res?.reportType === "CAREER") setData(res);
+        else router.push("/report");
+      })
+      .catch(() => router.push("/report"));
+  }, [params.id, router]);
+
+  if (!data) return null;
+
+  const { createdAt, selectedStarCount, content } = data;
   const {
-    brandingEvidence,
-    brandingTitle,
+    brandingStatement,
+    brandingPattern,
+    topDetailTags,
     narrativeSummary,
     strengths,
     experienceHighlights,
     interviewQuestions,
-  } = mockCareerReportDetail.content;
-  const { pattern } = brandingEvidence;
-  const { createdAt, selectedStarCount } = mockCareerReportDetail;
+  } = content;
 
   return (
     <div className="flex h-screen w-full flex-col">
@@ -33,16 +51,16 @@ const Page = () => {
         <div className="flex flex-col gap-3">
           <div>
             <p className="body-5 pb-0.5 text-gray-600">{createdAt}</p>
-            <p className="head-4 pb-2 text-gray-100">다솔님의 커리어 리포트가 나왔어요</p>
+            <p className="head-4 pb-2 text-gray-100">{me?.nickname}님의 커리어 리포트가 나왔어요</p>
             <p className="body-5 text-sea-blue-500">
               벌써 {selectedStarCount}개의 심화기록이 쌓였어요!
             </p>
             <p className="body-5 text-gray-300">얼마나 열심히 기록했는지 확인해볼까요?</p>
           </div>
           <div className="flex flex-col gap-4">
-            <BrandingTitleSection brandingTitle={brandingTitle} />
-            <BrandingEvidenceSection brandingEvidence={brandingEvidence} />
-            <PatternSection pattern={pattern} />
+            <BrandingTitleSection brandingStatement={brandingStatement} />
+            <BrandingEvidenceSection topDetailTags={topDetailTags} />
+            <PatternSection pattern={brandingPattern} />
           </div>
         </div>
         <MoreStep className="pt-1.5 pb-2.5" />

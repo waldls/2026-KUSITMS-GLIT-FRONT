@@ -14,7 +14,7 @@ interface ScrumDatePopoverProps {
 
 const ScrumDatePopover = ({ scrums, selectedIds, onToggle, style }: ScrumDatePopoverProps) => (
   <div
-    className="border-linear-100 rounded-8 absolute z-10 flex -translate-y-[calc(100%+8px)] flex-col gap-2 px-4 py-3"
+    className="border-linear-100 rounded-8 absolute z-10 flex w-65.5 -translate-y-[calc(100%+8px)] flex-col gap-2 px-4 py-3"
     style={style}>
     {scrums.map(scrum => (
       <div

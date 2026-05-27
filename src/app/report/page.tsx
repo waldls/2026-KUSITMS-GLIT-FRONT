@@ -1,18 +1,17 @@
-import { PlusIcon } from "@/assets/icons";
-import CTA from "@/components/common/CTA";
 import Header from "@/components/common/Header";
 import NavigationBar from "@/components/common/NavigationBar";
 import GaugeBar from "@/components/report/GaugeBar";
 import CareerReportSection from "@/containers/report/CareerReportSection";
-import { mockReportGauge } from "@/data/report";
+import CreateReportCTA from "@/containers/report/CreateReportCTA";
+import { getReportGauge } from "@/lib/apis/report/report.server";
 import { cn } from "@/lib/utils/cn";
 
-const page = () => {
-  // TODO: API 연동
-  const progress = mockReportGauge;
+const page = async () => {
+  const progress = await getReportGauge();
+  if (!progress) return null;
 
   return (
-    <div className="flex h-full flex-col">
+    <div className="flex h-full w-full flex-col">
       <div className="scrollbar-hide flex-1 overflow-y-auto">
         <Header title="리포트" leftIcon={null} />
         <div className="px-5 pb-7.5">
@@ -40,9 +39,7 @@ const page = () => {
         <CareerReportSection />
       </div>
       <div className="px-5 pb-5.75">
-        <CTA variant="default" leftIcon={<PlusIcon />} disabled={!progress.isGeneratable}>
-          리포트 생성
-        </CTA>
+        <CreateReportCTA isGeneratable={progress.isGeneratable} />
       </div>
       <NavigationBar />
     </div>

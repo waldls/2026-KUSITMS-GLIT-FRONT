@@ -1,6 +1,7 @@
-import type { CompetencyCategory, CompetencyStat } from "@/data/report";
+import type { Competency } from "@/types/competency";
+import type { CompetencyStat } from "@/types/report/report";
 
-const CATEGORY_LABEL: Record<CompetencyCategory, string> = {
+const CATEGORY_LABEL: Record<Competency, string> = {
   DISCOVERY_ANALYSIS: "발견/분석",
   PLANNING_EXECUTION: "기획/실행",
   PROBLEM_SOLVING: "문제해결/개선",
@@ -13,10 +14,10 @@ interface Props {
   topDetailTags: string[];
 }
 
-const MostRecordSection = ({ topCategories, topDetailTags }: Props) => {
+const MostRecordSection = ({ topCategories = [], topDetailTags = [] }: Props) => {
   const maxCount = Math.max(...topCategories.map(c => c.count));
   const tops = topCategories.filter(c => c.count === maxCount);
-  const topLabel = tops.map(c => `${CATEGORY_LABEL[c.category]}(${maxCount}회)`).join(", ");
+  const topLabel = tops.map(c => `${CATEGORY_LABEL[c.competency]}(${maxCount}회)`).join(", ");
   const tags = topDetailTags.slice(0, 3).join(", ");
 
   return (

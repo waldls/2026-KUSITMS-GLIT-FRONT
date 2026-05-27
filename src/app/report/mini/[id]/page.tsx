@@ -1,21 +1,38 @@
 "use client";
 
-import { useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 
 import Header from "@/components/common/Header";
 import MoreStep from "@/components/report/MoreStep";
-import ActivitySummarySection from "@/containers/report/ActivitySummarySection";
-import CompetencyStatsSection from "@/containers/report/CompetencyStatsSection";
-import MostRecordSection from "@/containers/report/MostRecordSection";
-import NextFocusPointSection from "@/containers/report/NextFocusPointSection";
-import TopDetailTagsSection from "@/containers/report/TopDetailTagsSection";
-import { mockReportDetail } from "@/data/report";
-import { sumCompetencyCount } from "@/lib/utils/report";
+import ActivitySummarySection from "@/containers/report/mini/ActivitySummarySection";
+import CompetencyStatsSection from "@/containers/report/mini/CompetencyStatsSection";
+import MostRecordSection from "@/containers/report/mini/MostRecordSection";
+import NextFocusPointSection from "@/containers/report/mini/NextFocusPointSection";
+import TopDetailTagsSection from "@/containers/report/mini/TopDetailTagsSection";
+import { getReportDetail } from "@/lib/apis/report/report";
+import { useMe } from "@/lib/hooks/user/userClient";
+import type { MiniReportDetail } from "@/types/report/report";
 
 const Page = () => {
   const router = useRouter();
-  const { createdAt } = mockReportDetail;
-  const totalCount = sumCompetencyCount(mockReportDetail.content.competencyStats.topCategories);
+  const params = useParams();
+  const { data: me } = useMe();
+  const [data, setData] = useState<MiniReportDetail | null>(null);
+
+  useEffect(() => {
+    getReportDetail(Number(params.id))
+      .then(res => {
+        if (res?.reportType === "MINI") setData(res);
+        else router.push("/report");
+      })
+      .catch(() => router.push("/report"));
+  }, [params.id, router]);
+
+  if (!data) return null;
+
+  const { createdAt, selectedStarCount, content } = data;
+  const { competencyFrequency, topDetailTags, activitySummary, nextFocusPoint } = content;
 
   return (
     <div className="flex h-screen w-full flex-col">
@@ -27,29 +44,24 @@ const Page = () => {
               <div className="flex flex-col gap-3">
                 <div>
                   <p className="body-5 pb-0.5 text-gray-600">{createdAt}</p>
-                  <p className="head-4 pb-2 text-gray-100">다솔님의 미니 리포트가 나왔어요</p>
+                  <p className="head-4 pb-2 text-gray-100">
+                    {me?.nickname}님의 미니 리포트가 나왔어요
+                  </p>
                   <p className="body-5 text-sea-blue-500">
-                    벌써 {totalCount}개의 심화기록이 쌓였어요!
+                    벌써 {selectedStarCount}개의 심화기록이 쌓였어요!
                   </p>
                   <p className="body-5 text-gray-300">얼마나 열심히 기록했는지 확인해볼까요?</p>
                 </div>
-                <CompetencyStatsSection
-                  topCategories={mockReportDetail.content.competencyStats.topCategories}
-                />
+                <CompetencyStatsSection topCategories={competencyFrequency} />
               </div>
-              <TopDetailTagsSection
-                topDetailTags={mockReportDetail.content.competencyStats.topDetailTags}
-              />
+              <TopDetailTagsSection topDetailTags={topDetailTags} />
             </div>
             <MoreStep />
-            <MostRecordSection
-              topCategories={mockReportDetail.content.competencyStats.topCategories}
-              topDetailTags={mockReportDetail.content.competencyStats.topDetailTags}
-            />
+            <MostRecordSection topCategories={competencyFrequency} topDetailTags={topDetailTags} />
           </div>
           <div className="flex flex-col gap-4">
-            <ActivitySummarySection activitySummary={mockReportDetail.content.activitySummary} />
-            <NextFocusPointSection nextFocusPoint={mockReportDetail.content.nextFocusPoint} />
+            <ActivitySummarySection activitySummary={activitySummary} />
+            <NextFocusPointSection nextFocusPoint={nextFocusPoint} />
           </div>
         </div>
       </div>

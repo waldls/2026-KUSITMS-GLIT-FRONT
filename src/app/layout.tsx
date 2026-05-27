@@ -3,6 +3,7 @@ import "@/app/globals.css";
 import type { Metadata, Viewport } from "next";
 
 import Providers from "@/providers/Providers";
+import RouteTransitionProvider from "@/providers/RouteTransitionProvider";
 
 export const metadata: Metadata = {
   title: "글릿",
@@ -41,7 +42,7 @@ export default function RootLayout({
       <body className="app-viewport-bg h-dvh overflow-hidden">
         <Providers>
           <main className="relative z-10 mx-auto flex h-dvh w-full max-w-107.5 min-w-0 overflow-hidden bg-gray-900">
-            {children}
+            <RouteTransitionProvider>{children}</RouteTransitionProvider>
           </main>
         </Providers>
       </body>
