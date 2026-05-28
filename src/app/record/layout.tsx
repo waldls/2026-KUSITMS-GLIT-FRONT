@@ -9,7 +9,7 @@ import Modal from "@/components/common/Modal";
 import NavigationBar from "@/components/common/NavigationBar";
 import { cn } from "@/lib/utils/cn";
 import { navigateRecord, RECORD_ROUTE_CHANGE_EVENT } from "@/lib/utils/recordNavigation";
-import { clearRecordSession } from "@/lib/utils/recordSession";
+import { clearRecordSession, markRecordFlowCompleted } from "@/lib/utils/recordSession";
 import { useRecordDraftStore } from "@/store/recordDraftStore";
 
 import DeepLogPage from "./deep-log/page";
@@ -70,6 +70,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         setHasVisitedTodayTask(false);
         useRecordDraftStore.getState().reset();
         clearRecordSession();
+        markRecordFlowCompleted();
       }
       if (nextPathname === "/record/today-task") {
         setHasVisitedTodayTask(true);
@@ -93,6 +94,16 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       window.removeEventListener("popstate", handlePopState);
     };
   }, []);
+
+  useEffect(() => {
+    if (pathname !== window.location.pathname || pathname === currentPathname) return;
+
+    window.dispatchEvent(
+      new CustomEvent(RECORD_ROUTE_CHANGE_EVENT, {
+        detail: { pathname },
+      }),
+    );
+  }, [pathname, currentPathname]);
 
   useEffect(() => {
     if (!hasRouteTransition) return;

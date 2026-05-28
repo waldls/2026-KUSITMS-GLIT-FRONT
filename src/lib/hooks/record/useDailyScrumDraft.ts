@@ -279,6 +279,7 @@ export const useDailyScrumDraft = ({
 
     return () => {
       loadDailyProjectsRequestRef.current += 1;
+      hasLoadedInitialDateRef.current = false;
     };
   }, [loadDailyProjects, selectedDateStr]);
 
