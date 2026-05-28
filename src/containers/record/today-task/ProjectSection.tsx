@@ -9,6 +9,8 @@ type ProjectSheetStep = "tag" | "title" | "task";
 interface ProjectSectionProps {
   projects: AddedProject[];
   canAddProject: boolean;
+  showProjectAddButton: boolean;
+  isTodayWithExistingRecord: boolean;
   openedProjectMenuId: number | null;
   onOpenProjectSheet: () => void;
   onToggleProjectMenu: (projectId: number) => void;
@@ -19,6 +21,8 @@ interface ProjectSectionProps {
 const ProjectSection = ({
   projects,
   canAddProject,
+  showProjectAddButton,
+  isTodayWithExistingRecord,
   openedProjectMenuId,
   onOpenProjectSheet,
   onToggleProjectMenu,
@@ -42,41 +46,43 @@ const ProjectSection = ({
                 titleClassName="mt-2 mb-1"
                 contentClassName="mt-0"
                 rightSlot={
-                  <div className="relative" data-project-menu>
-                    <button
-                      type="button"
-                      aria-expanded={openedProjectMenuId === project.id}
-                      aria-label={`${project.title} 더보기`}
-                      onClick={() => onToggleProjectMenu(project.id)}
-                      className="flex size-8 cursor-pointer items-center justify-center text-gray-500">
-                      <ThreeDotsIcon className="size-5" />
-                    </button>
+                  !isTodayWithExistingRecord ? (
+                    <div className="relative" data-project-menu>
+                      <button
+                        type="button"
+                        aria-expanded={openedProjectMenuId === project.id}
+                        aria-label={`${project.title} 더보기`}
+                        onClick={() => onToggleProjectMenu(project.id)}
+                        className="flex size-8 cursor-pointer items-center justify-center text-gray-500">
+                        <ThreeDotsIcon className="size-5" />
+                      </button>
 
-                    {openedProjectMenuId === project.id && (
-                      <Popover
-                        className="absolute top-0 right-2 z-10 mt-1"
-                        onClose={() => onToggleProjectMenu(project.id)}
-                        items={[
-                          {
-                            label: "삭제하기",
-                            onClick: () => onDeleteProject(project.id),
-                          },
-                          {
-                            label: "프로젝트 태그 변경",
-                            onClick: () => onOpenProjectEditSheet(project, "tag"),
-                          },
-                          {
-                            label: "제목 변경",
-                            onClick: () => onOpenProjectEditSheet(project, "title"),
-                          },
-                          {
-                            label: "작업 변경",
-                            onClick: () => onOpenProjectEditSheet(project, "task"),
-                          },
-                        ]}
-                      />
-                    )}
-                  </div>
+                      {openedProjectMenuId === project.id && (
+                        <Popover
+                          className="absolute top-0 right-2 z-10 mt-1"
+                          onClose={() => onToggleProjectMenu(project.id)}
+                          items={[
+                            {
+                              label: "삭제하기",
+                              onClick: () => onDeleteProject(project.id),
+                            },
+                            {
+                              label: "프로젝트 태그 변경",
+                              onClick: () => onOpenProjectEditSheet(project, "tag"),
+                            },
+                            {
+                              label: "제목 변경",
+                              onClick: () => onOpenProjectEditSheet(project, "title"),
+                            },
+                            {
+                              label: "작업 변경",
+                              onClick: () => onOpenProjectEditSheet(project, "task"),
+                            },
+                          ]}
+                        />
+                      )}
+                    </div>
+                  ) : null
                 }>
                 <ol className="flex flex-col gap-0.5">
                   {project.tasks.map((task, index) => (
@@ -98,13 +104,15 @@ const ProjectSection = ({
           </div>
         )}
 
-        <CTA
-          leftIcon={<PlusIcon />}
-          disabled={!canAddProject}
-          className="mt-3.5 mb-4 shrink-0"
-          onClick={onOpenProjectSheet}>
-          프로젝트 추가하기
-        </CTA>
+        {showProjectAddButton ? (
+          <CTA
+            leftIcon={<PlusIcon />}
+            disabled={!canAddProject}
+            className="mt-3.5 mb-4 shrink-0"
+            onClick={onOpenProjectSheet}>
+            프로젝트 추가하기
+          </CTA>
+        ) : null}
       </div>
     </div>
   );

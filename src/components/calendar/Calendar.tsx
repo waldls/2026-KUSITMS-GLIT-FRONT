@@ -127,7 +127,11 @@ const Calendar = ({
             }
 
             const handleDayButtonClick = (event: React.MouseEvent<HTMLButtonElement>) => {
-              const { calendar: hasScrum, disabled: isDisabled } = dayButtonProps.modifiers;
+              const {
+                calendar: hasScrum,
+                recordLocked,
+                disabled: isDisabled,
+              } = dayButtonProps.modifiers;
 
               if (isDisabled) {
                 event.preventDefault();
@@ -135,7 +139,7 @@ const Calendar = ({
                 return;
               }
 
-              if (hasScrum && onCalendarDayClick) {
+              if ((hasScrum || recordLocked) && onCalendarDayClick) {
                 event.preventDefault();
                 event.stopPropagation();
                 onCalendarDayClick(dayButtonProps.day.date);

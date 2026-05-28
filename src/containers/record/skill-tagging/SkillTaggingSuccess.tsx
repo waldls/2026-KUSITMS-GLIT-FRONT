@@ -15,12 +15,17 @@ import {
   getHomeSummary,
   type ReportModalType,
 } from "@/lib/apis/record/record";
-import { clearRecordSession, markRecordFlowCompleted } from "@/lib/utils/recordSession";
+import {
+  clearRecordSession,
+  clearTodayTaskSubmittedDates,
+  markRecordFlowCompleted,
+} from "@/lib/utils/recordSession";
 import { useRecordDraftStore } from "@/store/recordDraftStore";
 
 const finalizeRecordFlow = () => {
   useRecordDraftStore.getState().reset();
   clearRecordSession();
+  clearTodayTaskSubmittedDates();
   markRecordFlowCompleted();
 };
 

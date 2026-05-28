@@ -51,6 +51,7 @@ const getProjectTitleJobLabel = (jobRoleName: string) => {
 };
 
 export const useDailyScrumProjectSheet = () => {
+  const isTodayWithExistingRecord = useRecordDraftStore(state => state.isTodayWithExistingRecord);
   const addedProjects = useRecordDraftStore(state => state.addedProjects);
   const setDraft = useRecordDraftStore(state => state.setDraft);
   const [isProjectSheetOpen, setIsProjectSheetOpen] = useState(false);
@@ -96,7 +97,15 @@ export const useDailyScrumProjectSheet = () => {
     projectSheetMode === "edit" && projectSheetStep === "task"
       ? Math.max(0, 5 - totalTaskCount + editingProjectTaskCount)
       : Math.max(0, 5 - totalTaskCount);
-  const canAddProject = totalTaskCount < 5;
+  const canAddProject = !isTodayWithExistingRecord && totalTaskCount < 5;
+  const showProjectAddButton = !isTodayWithExistingRecord;
+
+  const blockIfTodayRecordExists = () => {
+    if (!isTodayWithExistingRecord) return false;
+
+    showProjectTagToast("오늘은 이미 기록이 있어요");
+    return true;
+  };
   const projectTitlePlaceholder = `6/6 ${getProjectTitleJobLabel(jobRoleName)} 작업`;
   const projectTaskPlaceholder = `어드민 페이지 로그인 화면 작업`;
 
@@ -153,6 +162,8 @@ export const useDailyScrumProjectSheet = () => {
   }, [openedProjectMenuId]);
 
   const openProjectSheet = () => {
+    if (blockIfTodayRecordExists()) return;
+
     setProjectSheetMode("create");
     setProjectSheetStep("tag");
     setEditingProjectId(null);
@@ -170,6 +181,8 @@ export const useDailyScrumProjectSheet = () => {
   };
 
   const openProjectEditSheet = (project: AddedProject, step: ProjectSheetStep) => {
+    if (blockIfTodayRecordExists()) return;
+
     setProjectSheetMode("edit");
     setEditingProjectId(project.id);
     setProjectSheetStep(step);
@@ -300,10 +313,14 @@ export const useDailyScrumProjectSheet = () => {
   };
 
   const toggleProjectMenu = (projectId: number) => {
+    if (blockIfTodayRecordExists()) return;
+
     setOpenedProjectMenuId(currentId => (currentId === projectId ? null : projectId));
   };
 
   const deleteProject = (projectId: number) => {
+    if (blockIfTodayRecordExists()) return;
+
     setAddedProjects(currentProjects =>
       currentProjects.filter(currentProject => currentProject.id !== projectId),
     );
@@ -497,6 +514,7 @@ export const useDailyScrumProjectSheet = () => {
     projectTagToastMessage,
     isProjectExitModalOpen,
     canAddProject,
+    showProjectAddButton,
     maxProjectTasks,
     totalTaskCount,
     projectTitlePlaceholder,

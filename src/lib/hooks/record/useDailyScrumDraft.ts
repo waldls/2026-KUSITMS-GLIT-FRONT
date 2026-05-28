@@ -11,14 +11,14 @@ import {
 import { parseApiDate } from "@/lib/utils/calendar";
 import {
   buildTodayTaskScrumsSession,
-  consumeRecordFlowCompleted,
   getTodayTaskScrums,
+  isTodayTaskSubmitted,
   mapStoredScrumsToAddedProjects,
+  markTodayTaskSubmitted,
   TODAY_TASK_SCRUMS_KEY,
 } from "@/lib/utils/recordSession";
 import { type AddedProject, useRecordDraftStore } from "@/store/recordDraftStore";
 
-import type { ScrumToastState } from "./useDailyScrumProjectSheet";
 import type { ProjectTag } from "./useProjects";
 
 type UseDailyScrumDraftParams = {
@@ -28,6 +28,8 @@ type UseDailyScrumDraftParams = {
   projectTasks: string[];
   totalTaskCount: number;
   showProjectTagToast: (message: string) => void;
+  showScrumToast: (message: string) => void;
+  isStarDate: (date: Date) => boolean;
 };
 
 const normalizeTasks = (tasks: string[]) => tasks.map(task => task.trim()).filter(Boolean);
@@ -162,6 +164,9 @@ const mapSessionGroupsToAddedProjects = (
     };
   });
 
+const isSameCalendarDay = (left: Date, right: Date) =>
+  formatDateForApi(left) === formatDateForApi(right);
+
 export const useDailyScrumDraft = ({
   projectTagItems,
   selectedProjectTag,
@@ -169,6 +174,8 @@ export const useDailyScrumDraft = ({
   projectTasks,
   totalTaskCount,
   showProjectTagToast,
+  showScrumToast,
+  isStarDate,
 }: UseDailyScrumDraftParams) => {
   const selectedDateStr = useRecordDraftStore(state => state.selectedDate);
   const addedProjects = useRecordDraftStore(state => state.addedProjects);
@@ -177,9 +184,13 @@ export const useDailyScrumDraft = ({
   const projectTagItemsRef = useRef(projectTagItems);
   const loadDailyProjectsRequestRef = useRef(0);
   const hasLoadedInitialDateRef = useRef(false);
-  const [scrumToastState, setScrumToastState] = useState<ScrumToastState>("hidden");
-  const [scrumToastMessage, setScrumToastMessage] = useState("");
   const [isSaving, setIsSaving] = useState(false);
+  const [hasTodayRecordFromServer, setHasTodayRecordFromServer] = useState(false);
+  const todayDateKey = formatDateForApi(getToday());
+  const isSelectedToday = isSameCalendarDay(selectedDate, getToday());
+  const isTodayWithExistingRecord =
+    isSelectedToday &&
+    (isTodayTaskSubmitted(todayDateKey) || isStarDate(selectedDate) || hasTodayRecordFromServer);
 
   useEffect(() => {
     projectTagItemsRef.current = projectTagItems;
@@ -218,11 +229,6 @@ export const useDailyScrumDraft = ({
     setDraft({ addedProjects: nextProjects });
   };
 
-  const showScrumToast = (message: string) => {
-    setScrumToastMessage(message);
-    setScrumToastState("visible");
-  };
-
   const loadDailyProjects = useCallback(
     async (date: Date, options?: { preferSession?: boolean }) => {
       const dateKey = formatDateForApi(date);
@@ -234,11 +240,6 @@ export const useDailyScrumDraft = ({
         setDraft(draft);
       };
 
-      if (consumeRecordFlowCompleted()) {
-        applyDraft({ selectedDate: dateKey, addedProjects: [] });
-        return;
-      }
-
       if (options?.preferSession) {
         const sessionScrums = getTodayTaskScrums();
         if (sessionScrums?.date === dateKey && sessionScrums.projects.length > 0) {
@@ -249,6 +250,9 @@ export const useDailyScrumDraft = ({
 
           if (restoredProjects.length > 0) {
             applyDraft({ selectedDate: dateKey, addedProjects: restoredProjects });
+            if (dateKey === todayDateKey && isTodayTaskSubmitted(dateKey)) {
+              setHasTodayRecordFromServer(true);
+            }
             return;
           }
         }
@@ -262,11 +266,15 @@ export const useDailyScrumDraft = ({
         );
 
         applyDraft({ selectedDate: dateKey, addedProjects: loadedProjects });
+        setHasTodayRecordFromServer(dateKey === todayDateKey && loadedProjects.length > 0);
       } catch {
         applyDraft({ selectedDate: dateKey, addedProjects: [] });
+        if (dateKey === todayDateKey) {
+          setHasTodayRecordFromServer(false);
+        }
       }
     },
-    [setDraft],
+    [setDraft, todayDateKey],
   );
 
   useEffect(() => {
@@ -283,29 +291,45 @@ export const useDailyScrumDraft = ({
     };
   }, [loadDailyProjects, selectedDateStr]);
 
-  useEffect(() => {
-    if (scrumToastState === "hidden") return;
+  const setIsTodayWithExistingRecord = useRecordDraftStore(
+    state => state.setIsTodayWithExistingRecord,
+  );
 
-    const toastTimer = window.setTimeout(
-      () => {
-        setScrumToastState(scrumToastState === "visible" ? "fading" : "hidden");
-      },
-      scrumToastState === "visible" ? 1700 : 300,
-    );
+  useEffect(() => {
+    const currentValue = useRecordDraftStore.getState().isTodayWithExistingRecord;
+    if (currentValue === isTodayWithExistingRecord) return;
+
+    setIsTodayWithExistingRecord(isTodayWithExistingRecord);
+  }, [isTodayWithExistingRecord, setIsTodayWithExistingRecord]);
+
+  useEffect(() => {
+    const handleLockedNextClick = () => {
+      if (!isTodayWithExistingRecord) return;
+
+      showScrumToast("오늘은 이미 기록이 있어요");
+    };
+
+    window.addEventListener("today-task-locked-next-click", handleLockedNextClick);
 
     return () => {
-      window.clearTimeout(toastTimer);
+      window.removeEventListener("today-task-locked-next-click", handleLockedNextClick);
     };
-  }, [scrumToastState]);
+  }, [isTodayWithExistingRecord, showScrumToast]);
 
   useEffect(() => {
+    const canProceed =
+      !isTodayWithExistingRecord &&
+      selectedDate !== null &&
+      addedProjects.length > 0 &&
+      totalTaskCount <= 5 &&
+      !isSaving;
+
     window.dispatchEvent(
       new CustomEvent("today-task-ready-change", {
-        detail:
-          selectedDate !== null && addedProjects.length > 0 && totalTaskCount <= 5 && !isSaving,
+        detail: canProceed,
       }),
     );
-  }, [selectedDate, addedProjects.length, isSaving, totalTaskCount]);
+  }, [addedProjects.length, isSaving, isTodayWithExistingRecord, selectedDate, totalTaskCount]);
 
   useEffect(() => {
     window.dispatchEvent(new CustomEvent("today-task-saving-change", { detail: isSaving }));
@@ -351,6 +375,15 @@ export const useDailyScrumDraft = ({
 
       const date = formatDateForApi(selectedDate);
 
+      if (
+        isSameCalendarDay(selectedDate, getToday()) &&
+        (isTodayTaskSubmitted(date) || isStarDate(selectedDate) || hasTodayRecordFromServer)
+      ) {
+        showScrumToast("오늘은 이미 기록이 있어요");
+        submitEvent.detail?.onError?.();
+        return;
+      }
+
       const save = async () => {
         setIsSaving(true);
 
@@ -394,6 +427,10 @@ export const useDailyScrumDraft = ({
             TODAY_TASK_SCRUMS_KEY,
             JSON.stringify(buildTodayTaskScrumsSession(date, sessionGroups)),
           );
+          if (date === todayDateKey) {
+            markTodayTaskSubmitted(date);
+            setHasTodayRecordFromServer(true);
+          }
           submitEvent.detail?.onSuccess?.();
         } catch {
           showProjectTagToast("오늘의 작업을 저장하지 못했어요");
@@ -411,18 +448,25 @@ export const useDailyScrumDraft = ({
     return () => {
       window.removeEventListener("today-task-submit", handleSubmit);
     };
-  }, [addedProjects, isSaving, selectedDate, setDraft, showProjectTagToast]);
+  }, [
+    addedProjects,
+    hasTodayRecordFromServer,
+    isSaving,
+    isStarDate,
+    selectedDate,
+    setDraft,
+    showProjectTagToast,
+    showScrumToast,
+    todayDateKey,
+  ]);
 
   return {
     selectedDate,
     addedProjects,
-    scrumToastState,
-    scrumToastMessage,
     isSaving,
-    setScrumToastState,
+    isTodayWithExistingRecord,
     setSelectedDate,
     setAddedProjects,
-    showScrumToast,
     loadDailyProjects,
   };
 };

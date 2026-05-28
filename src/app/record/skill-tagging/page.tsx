@@ -7,6 +7,7 @@ import LoadingScreen from "@/components/common/LoadingScreen";
 import SkillTaggingFail from "@/containers/record/skill-tagging/SkillTaggingFail";
 import SkillTaggingSuccess from "@/containers/record/skill-tagging/SkillTaggingSuccess";
 import { type AiTaggingResultResponse, getAiTaggingResult } from "@/lib/apis/record/record";
+import { SKILL_TAGGING_STATE_KEY, STAR_LOG_TASKS_KEY } from "@/lib/utils/recordSession";
 
 interface SkillTaggingTask {
   id: number;
@@ -21,11 +22,11 @@ interface SkillTaggingTask {
 function getStoredTasks() {
   if (typeof window === "undefined") return [];
 
-  if (!window.sessionStorage.getItem("star-log-tasks")) return [];
+  if (!window.sessionStorage.getItem(STAR_LOG_TASKS_KEY)) return [];
 
   try {
     return ((parsedTasks: SkillTaggingTask[]) => (parsedTasks.length > 0 ? parsedTasks : []))(
-      JSON.parse(window.sessionStorage.getItem("star-log-tasks") ?? "[]") as SkillTaggingTask[],
+      JSON.parse(window.sessionStorage.getItem(STAR_LOG_TASKS_KEY) ?? "[]") as SkillTaggingTask[],
     );
   } catch {
     return [];
@@ -36,7 +37,7 @@ const SkillTaggingContent = () => {
   const searchParams = useSearchParams();
   const queryState = searchParams.get("state");
   const storedState =
-    typeof window === "undefined" ? null : window.sessionStorage.getItem("skill-tagging-state");
+    typeof window === "undefined" ? null : window.sessionStorage.getItem(SKILL_TAGGING_STATE_KEY);
   const state = queryState === "fail" ? queryState : storedState;
   const [results, setResults] = useState<AiTaggingResultResponse[] | null>(null);
   const [hasError, setHasError] = useState(false);

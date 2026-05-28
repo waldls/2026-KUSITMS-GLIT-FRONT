@@ -15,7 +15,11 @@ import SkillBlur from "@/components/record/stones/SkillBlur";
 import { type Competency, updateCompetency } from "@/lib/apis/record/scrum";
 import { useSkillPopover } from "@/lib/hooks/record/useSkillPopover";
 import { navigateRecord } from "@/lib/utils/recordNavigation";
-import { DEEP_LOG_SELECTED_SCRUMS_KEY, type DeepLogProject } from "@/lib/utils/recordSession";
+import {
+  DEEP_LOG_SELECTED_SCRUMS_KEY,
+  type DeepLogProject,
+  STAR_LOG_TASKS_KEY,
+} from "@/lib/utils/recordSession";
 
 const SELECT_SKILL_OPTIONS = RECORD_SKILL_TAGS;
 
@@ -134,7 +138,7 @@ const Page = () => {
           competency: getCompetency(task.skillId),
         })),
       });
-      window.sessionStorage.setItem("star-log-tasks", JSON.stringify(orderedTasks));
+      window.sessionStorage.setItem(STAR_LOG_TASKS_KEY, JSON.stringify(orderedTasks));
       navigateRecord("/record/star-log?step=s");
     } catch {
       setIsSavingCompetencies(false);

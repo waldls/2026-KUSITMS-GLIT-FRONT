@@ -1,14 +1,66 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { useDailyScrumCalendar } from "@/lib/hooks/record/useDailyScrumCalendar";
 import { useDailyScrumDraft } from "@/lib/hooks/record/useDailyScrumDraft";
-import { useDailyScrumProjectSheet } from "@/lib/hooks/record/useDailyScrumProjectSheet";
+import {
+  type ScrumToastState,
+  useDailyScrumProjectSheet,
+} from "@/lib/hooks/record/useDailyScrumProjectSheet";
+import { parseApiDate } from "@/lib/utils/calendar";
+import { useRecordDraftStore } from "@/store/recordDraftStore";
 
 export type { AddedProject } from "@/store/recordDraftStore";
 
+const getToday = () => {
+  const today = new Date();
+
+  return new Date(today.getFullYear(), today.getMonth(), today.getDate());
+};
+
+const formatDateForApi = (date: Date) =>
+  `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
+
 export const useDailyScrum = () => {
   const [isDateFieldSelected, setIsDateFieldSelected] = useState(false);
+  const [scrumToastState, setScrumToastState] = useState<ScrumToastState>("hidden");
+  const [scrumToastMessage, setScrumToastMessage] = useState("");
+  const setDraft = useRecordDraftStore(state => state.setDraft);
+  const selectedDateStr = useRecordDraftStore(state => state.selectedDate);
+  const isTodayWithExistingRecord = useRecordDraftStore(state => state.isTodayWithExistingRecord);
+
+  const showScrumToast = (message: string) => {
+    setScrumToastMessage(message);
+    setScrumToastState("visible");
+  };
+
+  const calendarSelectedDate = selectedDateStr ? parseApiDate(selectedDateStr) : getToday();
+
+  useEffect(() => {
+    if (scrumToastState === "hidden") return;
+
+    const toastTimer = window.setTimeout(
+      () => {
+        setScrumToastState(scrumToastState === "visible" ? "fading" : "hidden");
+      },
+      scrumToastState === "visible" ? 1700 : 300,
+    );
+
+    return () => {
+      window.clearTimeout(toastTimer);
+    };
+  }, [scrumToastState]);
+
   const projectSheet = useDailyScrumProjectSheet();
+
+  const calendar = useDailyScrumCalendar({
+    selectedDate: isDateFieldSelected ? calendarSelectedDate : null,
+    onConfirmDate: date => {
+      setDraft({ selectedDate: formatDateForApi(date) });
+      setIsDateFieldSelected(true);
+    },
+    showScrumToast,
+  });
+
   const draft = useDailyScrumDraft({
     projectTagItems: projectSheet.projectTagItems,
     selectedProjectTag: projectSheet.selectedProjectTag,
@@ -16,24 +68,19 @@ export const useDailyScrum = () => {
     projectTasks: projectSheet.projectTasks,
     totalTaskCount: projectSheet.totalTaskCount,
     showProjectTagToast: projectSheet.showProjectTagToast,
-  });
-  const calendar = useDailyScrumCalendar({
-    selectedDate: isDateFieldSelected ? draft.selectedDate : null,
-    onConfirmDate: date => {
-      draft.setSelectedDate(date);
-      setIsDateFieldSelected(true);
-    },
-    showScrumToast: draft.showScrumToast,
+    showScrumToast,
+    isStarDate: calendar.isStarDate,
   });
 
   return {
     selectedDate: draft.selectedDate,
     isDateFieldSelected,
+    isTodayWithExistingRecord,
     addedProjects: draft.addedProjects,
-    scrumToastState: draft.scrumToastState,
-    scrumToastMessage: draft.scrumToastMessage,
+    scrumToastState,
+    scrumToastMessage,
     isSaving: draft.isSaving,
-    setScrumToastState: draft.setScrumToastState,
+    setScrumToastState,
     calendarDraftDate: calendar.calendarDraftDate,
     calendarStarDates: calendar.calendarStarDates,
     isCalendarOpen: calendar.isCalendarOpen,
@@ -42,6 +89,7 @@ export const useDailyScrum = () => {
     loadCalendarScrumDates: calendar.loadCalendarScrumDates,
     isScrumDate: calendar.isScrumDate,
     isStarDate: calendar.isStarDate,
+    isRecordDateLocked: calendar.isRecordDateLocked,
     handleCalendarDateClick: calendar.handleCalendarDateClick,
     closeCalendarSheet: calendar.closeCalendarSheet,
     confirmCalendarDate: calendar.confirmCalendarDate,
@@ -62,6 +110,7 @@ export const useDailyScrum = () => {
     projectTagToastMessage: projectSheet.projectTagToastMessage,
     isProjectExitModalOpen: projectSheet.isProjectExitModalOpen,
     canAddProject: projectSheet.canAddProject,
+    showProjectAddButton: projectSheet.showProjectAddButton,
     maxProjectTasks: projectSheet.maxProjectTasks,
     projectTitlePlaceholder: projectSheet.projectTitlePlaceholder,
     projectTaskPlaceholder: projectSheet.projectTaskPlaceholder,

@@ -9,7 +9,7 @@ import Modal from "@/components/common/Modal";
 import NavigationBar from "@/components/common/NavigationBar";
 import { cn } from "@/lib/utils/cn";
 import { navigateRecord, RECORD_ROUTE_CHANGE_EVENT } from "@/lib/utils/recordNavigation";
-import { clearRecordSession, markRecordFlowCompleted } from "@/lib/utils/recordSession";
+import { clearRecordSession } from "@/lib/utils/recordSession";
 import { useRecordDraftStore } from "@/store/recordDraftStore";
 
 import DeepLogPage from "./deep-log/page";
@@ -47,6 +47,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   const isStarLog = currentPathname === "/record/star-log";
   const isSkillTagging = currentPathname === "/record/skill-tagging";
   const [canGoDeepLog, setCanGoDeepLog] = useState(false);
+  const isTodayWithExistingRecord = useRecordDraftStore(state => state.isTodayWithExistingRecord);
   const [isTodayTaskDirty, setIsTodayTaskDirty] = useState(false);
   const [isTodayTaskSubmitting, setIsTodayTaskSubmitting] = useState(false);
   const [isExitModalOpen, setIsExitModalOpen] = useState(false);
@@ -70,7 +71,6 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         setHasVisitedTodayTask(false);
         useRecordDraftStore.getState().reset();
         clearRecordSession();
-        markRecordFlowCompleted();
       }
       if (nextPathname === "/record/today-task") {
         setHasVisitedTodayTask(true);
@@ -148,7 +148,14 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   }, []);
 
   const handleTodayTaskNextClick = () => {
-    if (!canGoDeepLog || isTodayTaskSubmitting) return;
+    if (isTodayTaskSubmitting) return;
+
+    if (isTodayWithExistingRecord) {
+      window.dispatchEvent(new CustomEvent("today-task-locked-next-click"));
+      return;
+    }
+
+    if (!canGoDeepLog) return;
 
     setIsTodayTaskSubmitting(true);
 
@@ -263,10 +270,14 @@ export default function Layout({ children }: { children: React.ReactNode }) {
               ? () => setIsExitModalOpen(true)
               : undefined
           }
-          onRightClick={isTodayTask && canGoDeepLog ? handleTodayTaskNextClick : undefined}
-          rightDisabled={isTodayTask && (!canGoDeepLog || isTodayTaskSubmitting)}
+          onRightClick={isTodayTask ? handleTodayTaskNextClick : undefined}
+          rightDisabled={
+            isTodayTask && !isTodayWithExistingRecord && (!canGoDeepLog || isTodayTaskSubmitting)
+          }
           rightLabelClassName={
-            isTodayTask && canGoDeepLog && !isTodayTaskSubmitting ? "text-sea-blue-500" : undefined
+            isTodayTask && !isTodayWithExistingRecord && canGoDeepLog && !isTodayTaskSubmitting
+              ? "text-sea-blue-500"
+              : undefined
           }
         />
       )}

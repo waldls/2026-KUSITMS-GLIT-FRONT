@@ -38,7 +38,9 @@ const Page = () => {
     projectTagToastState,
     projectTagToastMessage,
     isProjectExitModalOpen,
+    isTodayWithExistingRecord,
     canAddProject,
+    showProjectAddButton,
     maxProjectTasks,
     projectTitlePlaceholder,
     projectTaskPlaceholder,
@@ -54,7 +56,7 @@ const Page = () => {
     openCalendarSheet,
     loadCalendarScrumDates,
     isScrumDate,
-    isStarDate,
+    isRecordDateLocked,
     handleCalendarDateClick,
     closeCalendarSheet,
     confirmCalendarDate,
@@ -118,6 +120,8 @@ const Page = () => {
       <ProjectSection
         projects={addedProjects}
         canAddProject={canAddProject}
+        showProjectAddButton={showProjectAddButton}
+        isTodayWithExistingRecord={isTodayWithExistingRecord}
         openedProjectMenuId={openedProjectMenuId}
         onOpenProjectSheet={openProjectSheet}
         onToggleProjectMenu={toggleProjectMenu}
@@ -129,7 +133,7 @@ const Page = () => {
         isOpen={isCalendarOpen}
         selectedDate={calendarDraftDate}
         isScrumDate={isScrumDate}
-        isStarDate={isStarDate}
+        isRecordDateLocked={isRecordDateLocked}
         doneEnabled={calendarDraftDate !== null}
         onClose={closeCalendarSheet}
         onConfirm={confirmCalendarDate}

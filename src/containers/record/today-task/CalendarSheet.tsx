@@ -7,7 +7,7 @@ interface CalendarSheetProps {
   isOpen: boolean;
   selectedDate: Date | null;
   isScrumDate: (date: Date) => boolean;
-  isStarDate: (date: Date) => boolean;
+  isRecordDateLocked: (date: Date) => boolean;
   doneEnabled: boolean;
   onClose: () => void;
   onConfirm: () => void;
@@ -20,7 +20,7 @@ const CalendarSheet = ({
   isOpen,
   selectedDate,
   isScrumDate,
-  isStarDate,
+  isRecordDateLocked,
   doneEnabled,
   onClose,
   onConfirm,
@@ -33,7 +33,7 @@ const CalendarSheet = ({
     doneEnabled &&
     selectedDate !== null &&
     isWithinSelectableRecordRange(selectedDate) &&
-    !isStarDate(selectedDate);
+    !isRecordDateLocked(selectedDate);
 
   return (
     <BottomSheet
@@ -67,6 +67,7 @@ const CalendarSheet = ({
           modifiers={{
             otherSelected: new Date(),
             calendar: isScrumDate,
+            recordLocked: isRecordDateLocked,
           }}
         />
       </div>

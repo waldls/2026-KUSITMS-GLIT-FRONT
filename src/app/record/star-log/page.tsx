@@ -29,6 +29,11 @@ import { updateStep } from "@/lib/apis/record/starRecord";
 import { useMe } from "@/lib/hooks/user/userClient";
 import { cn } from "@/lib/utils/cn";
 import { navigateRecord, replaceRecordHistory } from "@/lib/utils/recordNavigation";
+import {
+  SKILL_TAGGING_STATE_KEY,
+  STAR_LOG_COMPLETED_STAR_RECORD_IDS_KEY,
+  STAR_LOG_TASKS_KEY,
+} from "@/lib/utils/recordSession";
 import type { Competency } from "@/types/competency";
 
 const STAR_STEPS = [
@@ -93,7 +98,7 @@ const ANALYZING_STATUS_POLL_LIMIT = 20;
 const getInitialTasks = () => {
   if (typeof window === "undefined") return [];
 
-  const storedTasks = window.sessionStorage.getItem("star-log-tasks");
+  const storedTasks = window.sessionStorage.getItem(STAR_LOG_TASKS_KEY);
 
   if (!storedTasks) return [];
 
@@ -108,7 +113,7 @@ const getInitialTasks = () => {
 const getInitialCompletedStarRecordIds = () => {
   if (typeof window === "undefined") return [];
 
-  const storedIds = window.sessionStorage.getItem("star-log-completed-star-record-ids");
+  const storedIds = window.sessionStorage.getItem(STAR_LOG_COMPLETED_STAR_RECORD_IDS_KEY);
   if (!storedIds) return [];
 
   try {
@@ -120,7 +125,7 @@ const getInitialCompletedStarRecordIds = () => {
 };
 
 const saveCompletedStarRecordIds = (ids: number[]) => {
-  window.sessionStorage.setItem("star-log-completed-star-record-ids", JSON.stringify(ids));
+  window.sessionStorage.setItem(STAR_LOG_COMPLETED_STAR_RECORD_IDS_KEY, JSON.stringify(ids));
 };
 
 const getUploadImageMimeType = async (file: File) => {
@@ -235,7 +240,7 @@ const replaceSkillTagging = (
   state: "success" | "fail",
   setViewState: (viewState: ViewState) => void,
 ) => {
-  window.sessionStorage.setItem("skill-tagging-state", state);
+  window.sessionStorage.setItem(SKILL_TAGGING_STATE_KEY, state);
   replaceRecordHistory("/record/skill-tagging");
   setViewState(state === "success" ? "skillTaggingSuccess" : "skillTaggingFail");
 };
