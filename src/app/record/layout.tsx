@@ -66,6 +66,11 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       setIsExitModalOpen(false);
       setAnimationDirection(getAnimationDirection(prevPathnameRef.current, nextPathname));
       setHasRouteTransition(prevPathnameRef.current !== nextPathname);
+      if (nextPathname === "/record") {
+        setHasVisitedTodayTask(false);
+        useRecordDraftStore.getState().reset();
+        clearRecordSession();
+      }
       if (nextPathname === "/record/today-task") {
         setHasVisitedTodayTask(true);
       }
@@ -100,6 +105,13 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       window.clearTimeout(timer);
     };
   }, [currentPathname, hasRouteTransition]);
+
+  useEffect(() => {
+    return () => {
+      useRecordDraftStore.getState().reset();
+      clearRecordSession();
+    };
+  }, []);
 
   useEffect(() => {
     const handleTodayTaskReadyChange = (event: Event) => {

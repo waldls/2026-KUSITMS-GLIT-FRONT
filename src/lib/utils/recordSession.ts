@@ -1,5 +1,6 @@
 export const TODAY_TASK_SCRUMS_KEY = "today-task-scrums";
 export const DEEP_LOG_SELECTED_SCRUMS_KEY = "deep-log-selected-scrums";
+export const RECORD_FLOW_COMPLETED_KEY = "record-flow-completed";
 
 export type StoredScrumItem = {
   scrumId?: number;
@@ -121,6 +122,26 @@ export const clearRecordSession = () => {
 
   window.sessionStorage.removeItem(TODAY_TASK_SCRUMS_KEY);
   window.sessionStorage.removeItem(DEEP_LOG_SELECTED_SCRUMS_KEY);
+  window.sessionStorage.removeItem("star-log-tasks");
+  window.sessionStorage.removeItem("star-log-completed-star-record-ids");
+  window.sessionStorage.removeItem("skill-tagging-state");
+};
+
+export const markRecordFlowCompleted = () => {
+  if (typeof window === "undefined") return;
+
+  window.sessionStorage.setItem(RECORD_FLOW_COMPLETED_KEY, "true");
+};
+
+export const consumeRecordFlowCompleted = () => {
+  if (typeof window === "undefined") return false;
+
+  const isCompleted = window.sessionStorage.getItem(RECORD_FLOW_COMPLETED_KEY) === "true";
+  if (isCompleted) {
+    window.sessionStorage.removeItem(RECORD_FLOW_COMPLETED_KEY);
+  }
+
+  return isCompleted;
 };
 
 export const buildTodayTaskScrumsSession = (

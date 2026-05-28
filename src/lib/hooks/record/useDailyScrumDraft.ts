@@ -11,6 +11,7 @@ import {
 import { parseApiDate } from "@/lib/utils/calendar";
 import {
   buildTodayTaskScrumsSession,
+  consumeRecordFlowCompleted,
   getTodayTaskScrums,
   mapStoredScrumsToAddedProjects,
   TODAY_TASK_SCRUMS_KEY,
@@ -232,6 +233,11 @@ export const useDailyScrumDraft = ({
 
         setDraft(draft);
       };
+
+      if (consumeRecordFlowCompleted()) {
+        applyDraft({ selectedDate: dateKey, addedProjects: [] });
+        return;
+      }
 
       if (options?.preferSession) {
         const sessionScrums = getTodayTaskScrums();

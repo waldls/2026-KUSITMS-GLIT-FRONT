@@ -1,9 +1,20 @@
 import Link from "next/link";
+import { useEffect } from "react";
 
-import HeartImage from "@/assets/images/record/heart-filled.svg";
 import CTA from "@/components/common/CTA";
+import { clearRecordSession, markRecordFlowCompleted } from "@/lib/utils/recordSession";
+import { useRecordDraftStore } from "@/store/recordDraftStore";
+
+const finalizeRecordFlow = () => {
+  useRecordDraftStore.getState().reset();
+  clearRecordSession();
+  markRecordFlowCompleted();
+};
 
 function SkillTaggingFail() {
+  useEffect(() => {
+    finalizeRecordFlow();
+  }, []);
   return (
     <section className="relative -mx-5 flex min-h-0 flex-1 flex-col overflow-hidden px-5">
       <div className="flex min-h-0 flex-1 flex-col items-center justify-center">
@@ -17,7 +28,7 @@ function SkillTaggingFail() {
         </p>
       </div>
       <div className="relative z-10 shrink-0 pb-10">
-        <Link href="/">
+        <Link href="/" onClick={finalizeRecordFlow}>
           <CTA>홈으로 돌아가기</CTA>
         </Link>
       </div>
