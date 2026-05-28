@@ -22,19 +22,21 @@ const Page = () => {
 
   return (
     <div className="flex h-full w-full flex-col">
-      <div className="scrollbar-hide mt-9 flex-1 overflow-y-auto px-4">
-        <CalendarSwiper
-          selectedDate={selectedDate}
-          today={today}
-          scrumDates={calendarDays
-            .filter(day => day.hasScrums && day.date)
-            .map(day => new Date(day.date!))}
-          exceededMatcher={exceededMatcher}
-          onSelect={handleSelect}
-          onMonthChange={loadMonth}
-        />
+      <div className="scrollbar-hide mt-9 flex flex-1 flex-col overflow-y-auto px-4">
+        <div className="shrink-0">
+          <CalendarSwiper
+            selectedDate={selectedDate}
+            today={today}
+            scrumDates={calendarDays
+              .filter(day => day.hasScrums && day.date)
+              .map(day => new Date(day.date!))}
+            exceededMatcher={exceededMatcher}
+            onSelect={handleSelect}
+            onMonthChange={loadMonth}
+          />
+        </div>
 
-        <div className="mt-10.5 px-1 pb-9">
+        <div className="mt-10.5 flex flex-1 flex-col px-1 pb-9">
           <CalendarScrumPreview
             selectedDate={selectedDate}
             dateKey={dateKey}

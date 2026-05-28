@@ -21,7 +21,7 @@ const CONFIG: Record<
 const CalendarEmptyState = ({ type }: { type: CalendarEmptyStateType }) => {
   const { graphic, text, whitespace } = CONFIG[type];
   return (
-    <div className="flex flex-col items-center gap-2 pt-18">
+    <div className="flex flex-1 flex-col items-center justify-center gap-2">
       {graphic}
       <p className={`body-2 text-center text-gray-800 ${whitespace ? "whitespace-pre-line" : ""}`}>
         {text}

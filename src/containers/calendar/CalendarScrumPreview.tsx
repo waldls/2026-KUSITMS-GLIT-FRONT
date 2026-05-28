@@ -21,7 +21,7 @@ const CalendarScrumPreview = ({
   onDetailClick,
 }: CalendarScrumPreviewProps) => {
   return (
-    <>
+    <div className="flex h-full flex-col">
       <div className="mb-5.5 flex items-center justify-between">
         <h2 className="head-5 text-white">{formatDateTitle(selectedDate)}</h2>
         <button
@@ -33,24 +33,26 @@ const CalendarScrumPreview = ({
         </button>
       </div>
 
-      {exceeded && !hasScrums ? (
-        <CalendarEmptyState type="exceeded" />
-      ) : !hasScrums ? (
-        <CalendarEmptyState type="noScrum" />
-      ) : (
-        <div className="flex flex-col gap-2">
-          {previewScrums.map(scrum => (
-            <CalendarProjectCard
-              key={scrum.titleId}
-              name={scrum.freeText ?? ""}
-              pjName={scrum.projectName ?? ""}
-              date={formatDateShort(selectedDate)}
-              skillTags={scrum.primaryCategories?.map(category => PRIMARY_CATEGORY_MAP[category])}
-            />
-          ))}
-        </div>
-      )}
-    </>
+      <div className="flex flex-1 flex-col">
+        {exceeded && !hasScrums ? (
+          <CalendarEmptyState type="exceeded" />
+        ) : !hasScrums ? (
+          <CalendarEmptyState type="noScrum" />
+        ) : (
+          <div className="flex flex-col gap-2">
+            {previewScrums.map(scrum => (
+              <CalendarProjectCard
+                key={scrum.titleId}
+                name={scrum.freeText ?? ""}
+                pjName={scrum.projectName ?? ""}
+                date={formatDateShort(selectedDate)}
+                skillTags={scrum.primaryCategories?.map(category => PRIMARY_CATEGORY_MAP[category])}
+              />
+            ))}
+          </div>
+        )}
+      </div>
+    </div>
   );
 };
 

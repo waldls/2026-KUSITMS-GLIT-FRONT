@@ -102,7 +102,7 @@ const CalendarProjectCard = ({
               {isDelete && (
                 <button
                   type="button"
-                  className="flex size-6 shrink-0 cursor-pointer items-center justify-center"
+                  className="flex size-4 shrink-0 cursor-pointer items-center justify-center"
                   onClick={() => onScrumDelete?.(i)}
                   aria-label="삭제">
                   <DeleteIcon className="size-4" />
@@ -110,15 +110,13 @@ const CalendarProjectCard = ({
               )}
               <div
                 className={cn(
-                  "flex items-center",
-                  item.highlight
-                    ? cn("border-l-4 pl-0.5", TAG_BORDER_CLASS[item.highlight])
-                    : "pl-1.5",
+                  "flex items-center border-l-4 py-0.5 pl-0.5",
+                  item.highlight ? TAG_BORDER_CLASS[item.highlight] : "border-transparent",
                   !isDelete && item.onClick ? "cursor-pointer" : "",
                 )}
                 onClick={!isDelete ? item.onClick : undefined}
                 role={!isDelete && item.onClick ? "button" : undefined}>
-                <span className="body-5 text-gray-400">
+                <span className="body-4 text-gray-400">
                   {i + 1}. {item.content}
                 </span>
               </div>

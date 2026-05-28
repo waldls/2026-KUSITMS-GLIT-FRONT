@@ -1,3 +1,5 @@
+"use client";
+
 import Image from "next/image";
 
 import Tag from "@/components/common/Tag";
@@ -10,19 +12,6 @@ interface ScrumInfoCardProps {
   detailTags?: string[];
   images?: { imageId?: number; imageUrl?: string; sortOrder?: number }[];
 }
-
-const normalizeImageUrl = (url?: string) => {
-  if (!url) return "";
-  let normalized = url;
-  if (normalized.startsWith("http://")) {
-    normalized = normalized.replace("http://", "https://");
-  }
-  if (normalized.startsWith("/")) {
-    const apiBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL ?? "";
-    normalized = `${apiBaseUrl}${normalized}`;
-  }
-  return normalized;
-};
 
 const ScrumInfoCard = ({
   freeText,
@@ -50,26 +39,22 @@ const ScrumInfoCard = ({
             </Tag>
           ))}
         </div>
-        <div className="flex flex-row gap-3">
-          {images?.map((img, index) =>
+      </div>
+      {images?.some(img => img.imageUrl) && (
+        <div className="mt-3 flex flex-row gap-3">
+          {images.map((img, index) =>
             img.imageUrl ? (
               <div
                 key={img.imageId ?? index}
                 className="rounded-8 relative size-23.5 overflow-hidden">
-                <Image
-                  src={normalizeImageUrl(img.imageUrl)}
-                  alt=""
-                  fill
-                  className="object-cover"
-                  unoptimized
-                />
+                <Image src={img.imageUrl} alt="" fill className="object-cover" />
               </div>
             ) : (
               <div key={img.imageId ?? index} className="rounded-8 size-23.5 bg-gray-200" />
             ),
           )}
         </div>
-      </div>
+      )}
     </div>
   );
 };
