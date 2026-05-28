@@ -8,14 +8,15 @@ import { useEffect, useState } from "react";
 
 import { meQueryKey, useMe } from "@/lib/hooks/user/userClient";
 
+import AuthGate from "./AuthGate";
+
 const REACT_QUERY_SESSION_CACHE_KEY = "glit-react-query-cache";
 
 function ProvidersContent({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
-
   useMe({ enabled: !pathname.startsWith("/auth") });
 
-  return children;
+  return <>{children}</>;
 }
 
 export default function Providers({ children }: { children: React.ReactNode }) {
@@ -40,7 +41,9 @@ export default function Providers({ children }: { children: React.ReactNode }) {
   if (!persister) {
     return (
       <QueryClientProvider client={queryClient}>
-        <ProvidersContent>{children}</ProvidersContent>
+        <AuthGate>
+          <ProvidersContent>{children}</ProvidersContent>
+        </AuthGate>
       </QueryClientProvider>
     );
   }
@@ -55,7 +58,9 @@ export default function Providers({ children }: { children: React.ReactNode }) {
             Array.isArray(query.queryKey) && query.queryKey[0] === meQueryKey[0],
         },
       }}>
-      <ProvidersContent>{children}</ProvidersContent>
+      <AuthGate>
+        <ProvidersContent>{children}</ProvidersContent>
+      </AuthGate>
     </PersistQueryClientProvider>
   );
 }
