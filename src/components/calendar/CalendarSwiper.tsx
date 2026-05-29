@@ -2,7 +2,7 @@
 
 import "swiper/css";
 
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { flushSync } from "react-dom";
 import type { Swiper as SwiperType } from "swiper";
 import { Swiper, SwiperSlide } from "swiper/react";
@@ -30,11 +30,6 @@ const CalendarSwiper = ({
     () => new Date(today.getFullYear(), today.getMonth()),
   );
   const isResettingRef = useRef(false);
-  const swiperRef = useRef<SwiperType | null>(null);
-
-  useEffect(() => {
-    swiperRef.current?.updateAutoHeight(0);
-  }, [baseMonth]);
 
   const slideMonths = [
     new Date(baseMonth.getFullYear(), baseMonth.getMonth() - 1),
@@ -52,20 +47,14 @@ const CalendarSwiper = ({
       setBaseMonth(nextBaseMonth);
     });
     swiper.slideTo(1, 0, false);
+    swiper.updateAutoHeight(0);
     isResettingRef.current = false;
     onMonthChange?.(nextBaseMonth);
   };
 
   return (
     <>
-      <Swiper
-        initialSlide={1}
-        speed={250}
-        autoHeight
-        onSwiper={swiper => {
-          swiperRef.current = swiper;
-        }}
-        onTransitionEnd={handleTransitionEnd}>
+      <Swiper initialSlide={1} speed={250} autoHeight onTransitionEnd={handleTransitionEnd}>
         {slideMonths.map((month, i) => (
           <SwiperSlide key={i}>
             <Calendar
