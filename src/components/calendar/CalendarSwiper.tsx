@@ -2,7 +2,7 @@
 
 import "swiper/css";
 
-import { useRef, useState } from "react";
+import { useLayoutEffect, useRef, useState } from "react";
 import { flushSync } from "react-dom";
 import type { Swiper as SwiperType } from "swiper";
 import { Swiper, SwiperSlide } from "swiper/react";
@@ -29,13 +29,36 @@ const CalendarSwiper = ({
   const [baseMonth, setBaseMonth] = useState<Date>(
     () => new Date(today.getFullYear(), today.getMonth()),
   );
+  const [swiperHeight, setSwiperHeight] = useState<number>();
   const isResettingRef = useRef(false);
+  const swiperRef = useRef<SwiperType | null>(null);
+  const slideContentRefs = useRef<(HTMLDivElement | null)[]>([]);
 
   const slideMonths = [
     new Date(baseMonth.getFullYear(), baseMonth.getMonth() - 1),
     baseMonth,
     new Date(baseMonth.getFullYear(), baseMonth.getMonth() + 1),
   ];
+
+  const updateHeight = (index = swiperRef.current?.activeIndex ?? 1) => {
+    const target = slideContentRefs.current[index];
+
+    if (!target) return;
+
+    setSwiperHeight(Math.ceil(target.getBoundingClientRect().height));
+  };
+
+  useLayoutEffect(() => {
+    updateHeight(1);
+
+    const target = slideContentRefs.current[1];
+    if (!target) return;
+
+    const observer = new ResizeObserver(() => updateHeight(1));
+    observer.observe(target);
+
+    return () => observer.disconnect();
+  }, [baseMonth]);
 
   const handleTransitionEnd = (swiper: SwiperType) => {
     if (isResettingRef.current || swiper.activeIndex === 1) return;
@@ -47,24 +70,42 @@ const CalendarSwiper = ({
       setBaseMonth(nextBaseMonth);
     });
     swiper.slideTo(1, 0, false);
-    swiper.updateAutoHeight(0);
+    requestAnimationFrame(() => updateHeight(1));
     isResettingRef.current = false;
     onMonthChange?.(nextBaseMonth);
   };
 
   return (
     <>
-      <Swiper initialSlide={1} speed={250} autoHeight onTransitionEnd={handleTransitionEnd}>
+      <Swiper
+        initialSlide={1}
+        speed={250}
+        onSwiper={swiper => {
+          swiperRef.current = swiper;
+          requestAnimationFrame(() => updateHeight(swiper.activeIndex));
+        }}
+        onSlideChange={swiper => updateHeight(swiper.activeIndex)}
+        onTransitionEnd={handleTransitionEnd}
+        style={{
+          height: swiperHeight ? `${swiperHeight}px` : undefined,
+          transition: "height 250ms ease",
+        }}>
         {slideMonths.map((month, i) => (
           <SwiperSlide key={i}>
-            <Calendar
-              type="page"
-              mode="single"
-              month={month}
-              selected={selectedDate}
-              onSelect={onSelect}
-              modifiers={{ calendar: scrumDates, exceeded: exceededMatcher, otherSelected: today }}
-            />
+            <div ref={element => void (slideContentRefs.current[i] = element)}>
+              <Calendar
+                type="page"
+                mode="single"
+                month={month}
+                selected={selectedDate}
+                onSelect={onSelect}
+                modifiers={{
+                  calendar: scrumDates,
+                  exceeded: exceededMatcher,
+                  otherSelected: today,
+                }}
+              />
+            </div>
           </SwiperSlide>
         ))}
       </Swiper>
