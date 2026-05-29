@@ -22,8 +22,12 @@ type TokenPair = {
 let refreshPromise: Promise<TokenPair> | null = null;
 
 async function requestReissue(): Promise<TokenPair> {
+  const isHttps = typeof window !== "undefined" && window.location.protocol === "https:";
   const { refreshToken } = useAuthStore.getState();
-  const options = refreshToken ? { json: { refreshToken } } : {};
+
+  // HTTP(로컬): body에 refreshToken 전송
+  // HTTPS(원격): 백엔드가 OAuth 시 발급한 HttpOnly 쿠키를 credentials로 자동 전송
+  const options = !isHttps && refreshToken ? { json: { refreshToken } } : {};
 
   const json = await baseKy
     .post(getUrl("/api/auth/reissue"), options)

@@ -14,6 +14,7 @@ interface GlowingSkillStoneProps {
   animate?: boolean;
   ariaLabel?: string;
   className?: string;
+  blurClassName?: string;
 }
 
 const getStoneElement = (skillId: SkillStoneId, ariaLabel: string) => {
@@ -53,6 +54,7 @@ const GlowingSkillStone = ({
   animate = false,
   ariaLabel,
   className,
+  blurClassName,
 }: GlowingSkillStoneProps) => {
   const resolvedAriaLabel = ariaLabel ?? getAriaLabel(skillId);
 
@@ -63,7 +65,11 @@ const GlowingSkillStone = ({
         className,
       )}>
       {getStoneElement(skillId, resolvedAriaLabel)}
-      <SkillBlur skillId={skillId} animate={animate} className="inset-[-16%] z-20 blur-[8.75cqw]" />
+      <SkillBlur
+        skillId={skillId}
+        animate={animate}
+        className={cn("inset-[-16%] z-20 blur-[8.75cqw]", blurClassName)}
+      />
     </div>
   );
 };

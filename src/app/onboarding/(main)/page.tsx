@@ -9,9 +9,9 @@ import Header from "@/components/common/Header";
 import ProgressBar from "@/components/common/ProgressBar";
 import TextField from "@/components/common/TextField";
 import SelectionCardGrid from "@/components/onboarding/SelectionCardGrid";
+import { JOB_OPTIONS, STATUS_OPTIONS } from "@/constants/onboarding";
 import { NICKNAME_REGEX } from "@/constants/regex";
 import OnboardingStepHeader from "@/containers/onboarding/OnboardingStepHeader";
-import { JOB_OPTIONS, STATUS_OPTIONS } from "@/data/onboarding";
 import { getNicknameError } from "@/lib/utils/validation";
 import { useOnboardingStore } from "@/store/onboardingStore";
 

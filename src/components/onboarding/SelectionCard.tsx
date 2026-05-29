@@ -1,8 +1,11 @@
+import type { StaticImageData } from "next/image";
+import Image from "next/image";
+
 import { cn } from "@/lib/utils/cn";
 
 interface SelectionCardProps {
-  icon?: React.ReactNode;
-  selectedIcon?: React.ReactNode;
+  icon?: StaticImageData;
+  selectedIcon?: StaticImageData;
   label: string;
   selected?: boolean;
   onClick?: () => void;
@@ -28,8 +31,33 @@ const SelectionCard = ({
           : "border-[1.6px] border-transparent opacity-[0.76]",
         className,
       )}>
-      <div className="relative h-24.75 w-34 overflow-visible [&_img]:h-full [&_img]:w-full [&_svg]:h-full [&_svg]:w-full">
-        {selected ? (selectedIcon ?? icon) : icon}
+      <div className="relative h-24.75 w-34 overflow-visible">
+        {icon && (
+          <Image
+            src={icon}
+            alt={label}
+            fill
+            sizes="136px"
+            className={cn(
+              "object-contain transition-opacity duration-200",
+              selected ? "opacity-0" : "opacity-100",
+            )}
+            priority
+          />
+        )}
+        {selectedIcon && (
+          <Image
+            src={selectedIcon}
+            alt={label}
+            fill
+            sizes="136px"
+            className={cn(
+              "object-contain transition-opacity duration-200",
+              selected ? "opacity-100" : "opacity-0",
+            )}
+            priority
+          />
+        )}
       </div>
       <span className={cn("body-3", selected ? "text-white" : "text-gray-600")}>{label}</span>
     </button>

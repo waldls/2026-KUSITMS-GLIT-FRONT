@@ -17,9 +17,11 @@ const getCookie = (name: string): string | null => {
   );
 };
 
+const isHttps = () => typeof window !== "undefined" && window.location.protocol === "https:";
+
 const setCookie = (name: string, value: string, maxAge: number) => {
-  const secure = window.location.protocol === "https:" ? "; secure" : "";
-  document.cookie = `${name}=${value}; path=/; samesite=lax; max-age=${maxAge}${secure}`;
+  const secure = isHttps() ? "; Secure" : "";
+  document.cookie = `${name}=${value}; path=/; SameSite=Lax; max-age=${maxAge}${secure}`;
 };
 
 const deleteCookie = (name: string) => {
@@ -29,17 +31,22 @@ const deleteCookie = (name: string) => {
 export const useAuthStore = create<AuthState>()(set => ({
   accessToken: getCookie("accessToken"),
   refreshToken: getCookie("refreshToken"),
+
   setTokens: (accessToken, refreshToken) => {
     setCookie("accessToken", accessToken, 60 * 60 * 2);
-    if (refreshToken) setCookie("refreshToken", refreshToken, 60 * 60 * 24 * 5);
+
+    if (!isHttps() && refreshToken) {
+      setCookie("refreshToken", refreshToken, 60 * 60 * 24 * 5);
+    }
     set(state => ({
       accessToken,
       refreshToken: refreshToken ?? state.refreshToken,
     }));
   },
+
   clearTokens: () => {
     deleteCookie("accessToken");
-    deleteCookie("refreshToken");
+    if (!isHttps()) deleteCookie("refreshToken");
     set({ accessToken: null, refreshToken: null });
   },
 }));

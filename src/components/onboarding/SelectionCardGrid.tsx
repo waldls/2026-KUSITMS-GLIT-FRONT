@@ -1,12 +1,6 @@
 import SelectionCard from "@/components/onboarding/SelectionCard";
+import { SelectionOption } from "@/constants/onboarding";
 import { cn } from "@/lib/utils/cn";
-
-interface SelectionOption {
-  value: string;
-  label: string;
-  icon?: React.ReactNode;
-  selectedIcon?: React.ReactNode;
-}
 
 interface SelectionCardGridProps {
   options: readonly SelectionOption[];

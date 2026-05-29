@@ -47,6 +47,7 @@ const StarCalendarSection = ({
       />
       {dateRecords.length > 0 && (
         <ScrumDatePopover
+          key={dateKey}
           scrums={dateRecords}
           selectedIds={selectedIds}
           onToggle={onToggle}

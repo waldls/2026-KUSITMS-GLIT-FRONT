@@ -3,7 +3,7 @@ import { useState } from "react";
 
 import SelectionCard from "@/components/onboarding/SelectionCard";
 import SelectionCardGrid from "@/components/onboarding/SelectionCardGrid";
-import { JOB_OPTIONS, STATUS_OPTIONS } from "@/data/onboarding";
+import { JOB_OPTIONS, STATUS_OPTIONS } from "@/constants/onboarding";
 
 const meta = {
   title: "Onboarding/SelectionCard",

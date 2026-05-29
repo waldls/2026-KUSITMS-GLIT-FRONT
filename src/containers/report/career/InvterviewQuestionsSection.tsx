@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 import type { InterviewQuestion } from "@/types/report/report";
 
 interface InvterviewQuestionsSectionProps {
@@ -16,9 +18,12 @@ const InvterviewQuestionsSection = ({ interviewQuestions }: InvterviewQuestionsS
             </div>
             <div className="flex flex-col gap-1">
               {item.evidences.map(record => (
-                <p key={record.id} className="body-5 text-gray-700 underline">
+                <Link
+                  key={record.id}
+                  href={`/calendar/${record.createdAt.split("T")[0]}/${record.id}`}
+                  className="body-5 text-gray-700 underline">
                   [{record.scrumTitle}] {record.createdAt}
-                </p>
+                </Link>
               ))}
             </div>
           </div>

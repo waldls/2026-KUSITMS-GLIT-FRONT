@@ -22,6 +22,7 @@ export const useSelectableRecords = (initialRecords: SelectableRecord[] = []) =>
       return;
     }
 
+    setDateRecords([]);
     const data = await getSelectableRecords(date);
     const records: DailySelectableRecord[] = data?.starRecords ?? [];
     cacheRef.current.set(date, records);

@@ -37,7 +37,7 @@ const CareerReportSection = async () => {
                 <StarTwoIcon className="size-15 text-gray-700" />
                 <p className="body-2 text-offwhite-800">아직 발행된 리포트가 없어요!</p>
               </div>
-              <Link href="/record">
+              <Link href="/record/today-task">
                 <Button className="bg-white active:bg-gray-300">지금 기록하러 가기</Button>
               </Link>
             </div>

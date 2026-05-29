@@ -47,7 +47,7 @@ const Page = () => {
   return (
     <div className="flex h-screen w-full flex-col">
       <Header title="커리어 리포트" onLeftClick={() => router.push("/report")} />
-      <div className="scrollbar-hide flex-1 overflow-y-auto px-5 pt-4 pb-4">
+      <div className="scrollbar-hide flex-1 overflow-y-auto px-5 pt-4 pb-15.25">
         <div className="flex flex-col gap-3">
           <div>
             <p className="body-5 pb-0.5 text-gray-600">{createdAt}</p>
