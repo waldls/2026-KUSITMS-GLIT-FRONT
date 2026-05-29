@@ -1,5 +1,6 @@
 import "@/app/globals.css";
 
+import { GoogleAnalytics } from "@next/third-parties/google";
 import type { Metadata, Viewport } from "next";
 
 import Providers from "@/providers/Providers";
@@ -46,6 +47,7 @@ export default function RootLayout({
           </main>
         </Providers>
       </body>
+      <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_ID!} />
     </html>
   );
 }
