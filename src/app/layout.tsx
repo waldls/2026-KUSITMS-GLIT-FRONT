@@ -32,7 +32,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="ko" className="h-dvh overflow-hidden bg-gray-300">
+    <html lang="ko" className="h-dvh overflow-hidden bg-gray-900">
       <head>
         <link rel="preconnect" href="https://cdn.jsdelivr.net" />
         <link

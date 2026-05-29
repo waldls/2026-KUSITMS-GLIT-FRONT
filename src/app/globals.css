@@ -2,7 +2,7 @@
 
 .app-viewport-bg {
   --app-shell-width: min(100vw, 26.875rem);
-  background-color: var(--color-gray-300);
+  background-color: var(--color-gray-900);
 }
 
 .app-viewport-bg::before {

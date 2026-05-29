@@ -2,7 +2,7 @@
 
 import "swiper/css";
 
-import { useLayoutEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { flushSync } from "react-dom";
 import type { Swiper as SwiperType } from "swiper";
 import { Swiper, SwiperSlide } from "swiper/react";
@@ -29,9 +29,8 @@ const CalendarSwiper = ({
   const [baseMonth, setBaseMonth] = useState<Date>(
     () => new Date(today.getFullYear(), today.getMonth()),
   );
-  const [swiperHeight, setSwiperHeight] = useState<number>();
   const isResettingRef = useRef(false);
-  const measureRef = useRef<HTMLDivElement | null>(null);
+  const swiperRef = useRef<SwiperType | null>(null);
 
   const slideMonths = [
     new Date(baseMonth.getFullYear(), baseMonth.getMonth() - 1),
@@ -39,10 +38,18 @@ const CalendarSwiper = ({
     new Date(baseMonth.getFullYear(), baseMonth.getMonth() + 1),
   ];
 
-  useLayoutEffect(() => {
-    if (measureRef.current) {
-      setSwiperHeight(measureRef.current.offsetHeight);
-    }
+  useEffect(() => {
+    const swiper = swiperRef.current;
+    if (!swiper) return;
+
+    const activeSlide = swiper.slides[swiper.activeIndex];
+    if (!activeSlide) return;
+
+    swiper.updateAutoHeight(0);
+
+    const ro = new ResizeObserver(() => swiper.updateAutoHeight(0));
+    ro.observe(activeSlide);
+    return () => ro.disconnect();
   }, [baseMonth]);
 
   const handleTransitionEnd = (swiper: SwiperType) => {
@@ -55,49 +62,38 @@ const CalendarSwiper = ({
       setBaseMonth(nextBaseMonth);
     });
     swiper.slideTo(1, 0, false);
+    swiper.updateAutoHeight(0);
     isResettingRef.current = false;
     onMonthChange?.(nextBaseMonth);
   };
 
   return (
     <>
-      <div className="relative">
-        {/* Swiper 외부에서 현재 달 높이 측정 — Swiper CSS 영향 없음 */}
-        <div className="pointer-events-none invisible absolute w-full" aria-hidden="true">
-          <div ref={measureRef}>
+      <Swiper
+        initialSlide={1}
+        speed={250}
+        autoHeight
+        onSwiper={swiper => {
+          swiperRef.current = swiper;
+        }}
+        onTransitionEnd={handleTransitionEnd}>
+        {slideMonths.map((month, i) => (
+          <SwiperSlide key={i} style={{ height: "auto", alignSelf: "flex-start" }}>
             <Calendar
               type="page"
               mode="single"
-              month={baseMonth}
+              month={month}
               selected={selectedDate}
-              onSelect={() => {}}
-              modifiers={{ calendar: scrumDates, exceeded: exceededMatcher, otherSelected: today }}
+              onSelect={onSelect}
+              modifiers={{
+                calendar: scrumDates,
+                exceeded: exceededMatcher,
+                otherSelected: today,
+              }}
             />
-          </div>
-        </div>
-        <Swiper
-          initialSlide={1}
-          speed={250}
-          style={{ height: swiperHeight ? `${swiperHeight}px` : undefined }}
-          onTransitionEnd={handleTransitionEnd}>
-          {slideMonths.map((month, i) => (
-            <SwiperSlide key={i} style={{ height: "auto" }}>
-              <Calendar
-                type="page"
-                mode="single"
-                month={month}
-                selected={selectedDate}
-                onSelect={onSelect}
-                modifiers={{
-                  calendar: scrumDates,
-                  exceeded: exceededMatcher,
-                  otherSelected: today,
-                }}
-              />
-            </SwiperSlide>
-          ))}
-        </Swiper>
-      </div>
+          </SwiperSlide>
+        ))}
+      </Swiper>
       <div className="mt-4.5 flex items-center gap-1 px-1.5">
         <div className="size-2 rounded-full bg-gray-700" />
         <span className="body-5 text-gray-100">기록 남긴 날</span>
