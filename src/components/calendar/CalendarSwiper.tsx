@@ -58,7 +58,7 @@ const CalendarSwiper = ({
     <>
       <Swiper initialSlide={1} speed={250} autoHeight onTransitionEnd={handleTransitionEnd}>
         {slideMonths.map((month, i) => (
-          <SwiperSlide key={i}>
+          <SwiperSlide key={i} style={{ height: "auto" }}>
             <Calendar
               type="page"
               mode="single"
