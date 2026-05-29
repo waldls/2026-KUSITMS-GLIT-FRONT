@@ -2,7 +2,7 @@
 
 import "swiper/css";
 
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { flushSync } from "react-dom";
 import type { Swiper as SwiperType } from "swiper";
 import { Swiper, SwiperSlide } from "swiper/react";
@@ -30,27 +30,12 @@ const CalendarSwiper = ({
     () => new Date(today.getFullYear(), today.getMonth()),
   );
   const isResettingRef = useRef(false);
-  const swiperRef = useRef<SwiperType | null>(null);
 
   const slideMonths = [
     new Date(baseMonth.getFullYear(), baseMonth.getMonth() - 1),
     baseMonth,
     new Date(baseMonth.getFullYear(), baseMonth.getMonth() + 1),
   ];
-
-  useEffect(() => {
-    const swiper = swiperRef.current;
-    if (!swiper) return;
-
-    const activeSlide = swiper.slides[swiper.activeIndex];
-    if (!activeSlide) return;
-
-    swiper.updateAutoHeight(0);
-
-    const ro = new ResizeObserver(() => swiper.updateAutoHeight(0));
-    ro.observe(activeSlide);
-    return () => ro.disconnect();
-  }, [baseMonth]);
 
   const handleTransitionEnd = (swiper: SwiperType) => {
     if (isResettingRef.current || swiper.activeIndex === 1) return;
@@ -62,29 +47,22 @@ const CalendarSwiper = ({
       setBaseMonth(nextBaseMonth);
     });
     swiper.slideTo(1, 0, false);
-    swiper.updateAutoHeight(0);
     isResettingRef.current = false;
     onMonthChange?.(nextBaseMonth);
   };
 
   return (
     <>
-      <Swiper
-        initialSlide={1}
-        speed={250}
-        autoHeight
-        onSwiper={swiper => {
-          swiperRef.current = swiper;
-        }}
-        onTransitionEnd={handleTransitionEnd}>
+      <Swiper initialSlide={1} speed={250} onTransitionEnd={handleTransitionEnd}>
         {slideMonths.map((month, i) => (
-          <SwiperSlide key={i} style={{ height: "auto", alignSelf: "flex-start" }}>
+          <SwiperSlide key={i}>
             <Calendar
               type="page"
               mode="single"
               month={month}
               selected={selectedDate}
               onSelect={onSelect}
+              fixedWeeks
               modifiers={{
                 calendar: scrumDates,
                 exceeded: exceededMatcher,
