@@ -43,7 +43,13 @@ const SocialLoginSection = () => {
           onClick={() => handleLogin(provider)}
         />
       ))}
-      <p className="body-4 text-center text-gray-500">개인정보 처리방침</p>
+      <a
+        href="https://pie-adapter-6d6.notion.site/36edf277bb9880579bf2c487f834c58b"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="body-4 text-center text-gray-500">
+        개인정보 처리방침
+      </a>
     </div>
   );
 };
