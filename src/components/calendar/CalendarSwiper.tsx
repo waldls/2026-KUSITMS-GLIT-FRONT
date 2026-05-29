@@ -87,11 +87,11 @@ const CalendarSwiper = ({
         onSlideChange={swiper => updateHeight(swiper.activeIndex)}
         onTransitionEnd={handleTransitionEnd}
         style={{
-          height: swiperHeight ? `${swiperHeight}px` : undefined,
+          height: swiperHeight ? `${swiperHeight}px` : "auto",
           transition: "height 250ms ease",
         }}>
         {slideMonths.map((month, i) => (
-          <SwiperSlide key={i}>
+          <SwiperSlide key={i} style={{ height: "auto" }}>
             <div ref={element => void (slideContentRefs.current[i] = element)}>
               <Calendar
                 type="page"
