@@ -48,6 +48,7 @@ const NavigationBar = ({ activeHrefOverride, calendarOverlay, className }: Navig
           <Link
             key={href}
             href={href}
+            prefetch={false}
             className={cn(
               "relative flex flex-col items-center transition-all duration-300 hover:text-white",
               isActive ? "text-white" : "text-gray-700",

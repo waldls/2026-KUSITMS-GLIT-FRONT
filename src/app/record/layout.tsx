@@ -1,5 +1,6 @@
 "use client";
 
+import dynamic from "next/dynamic";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 
@@ -12,12 +13,13 @@ import { navigateRecord, RECORD_ROUTE_CHANGE_EVENT } from "@/lib/utils/recordNav
 import { clearRecordSession } from "@/lib/utils/recordSession";
 import { useRecordDraftStore } from "@/store/recordDraftStore";
 
-import DeepLogPage from "./deep-log/page";
 import RecordHomePage from "./page";
-import SelectSkillsPage from "./select-skills/page";
-import SkillTaggingPage from "./skill-tagging/page";
-import StarLogPage from "./star-log/page";
 import TodayTaskPage from "./today-task/page";
+
+const DeepLogPage = dynamic(() => import("./deep-log/page"));
+const SelectSkillsPage = dynamic(() => import("./select-skills/page"));
+const StarLogPage = dynamic(() => import("./star-log/page"));
+const SkillTaggingPage = dynamic(() => import("./skill-tagging/page"));
 
 const getAnimationDirection = (prevPathname: string, pathname: string) => {
   const recordRouteOrder = [
@@ -61,6 +63,22 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   const pageAnimationClass =
     hasRouteTransition &&
     (animationDirection === "left" ? "animate-slide-in-left" : "animate-slide-in-right");
+
+  useEffect(() => {
+    if (currentPathname !== "/record") return;
+
+    const prefetchTodayTask = () => {
+      void import("./today-task/page");
+    };
+
+    const idleCallback = window.requestIdleCallback?.(prefetchTodayTask);
+    if (idleCallback !== undefined) {
+      return () => window.cancelIdleCallback(idleCallback);
+    }
+
+    const timer = window.setTimeout(prefetchTodayTask, 2000);
+    return () => window.clearTimeout(timer);
+  }, [currentPathname]);
 
   useEffect(() => {
     const updateCurrentPathname = (nextPathname: string) => {

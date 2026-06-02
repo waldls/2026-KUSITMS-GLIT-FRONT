@@ -10,6 +10,7 @@ import RouteTransitionProvider from "@/providers/RouteTransitionProvider";
 const pretendard = localFont({
   src: "../font/PretendardVariable.woff2",
   display: "swap",
+  preload: true,
   variable: "--font-pretendard",
 });
 
@@ -33,11 +34,13 @@ export const viewport: Viewport = {
   userScalable: false,
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const gaId = process.env.NEXT_PUBLIC_GA_ID;
+
   return (
     <html lang="ko" className={`h-dvh overflow-hidden bg-gray-900 ${pretendard.variable}`}>
       <body className="app-viewport-bg h-dvh overflow-hidden">
@@ -47,7 +50,7 @@ export default function RootLayout({
           </main>
         </Providers>
       </body>
-      <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_ID!} />
+      {gaId ? <GoogleAnalytics gaId={gaId} /> : null}
     </html>
   );
 }

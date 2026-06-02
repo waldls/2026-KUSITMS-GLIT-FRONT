@@ -3,59 +3,79 @@
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 
-import LoadingScreen from "@/components/common/LoadingScreen";
 import { reissue } from "@/lib/apis/client";
 import { isTokenExpired } from "@/lib/utils/token";
 import { useAuthStore } from "@/store/authStore";
 import { ApiError } from "@/types/api";
 
-export default function AuthGate({ children }: { children: React.ReactNode }) {
+interface AuthGateProps {
+  children: React.ReactNode;
+}
+
+const AuthGatePlaceholder = () => (
+  <div className="h-dvh w-full bg-gray-900" aria-busy="true" aria-label="로딩 중" />
+);
+
+export default function AuthGate({ children }: AuthGateProps) {
   const router = useRouter();
   const pathname = usePathname();
   const isAuthPath = pathname.startsWith("/auth");
 
-  const [ready, setReady] = useState(false);
+  const accessToken = useAuthStore(state => state.accessToken);
+  const refreshToken = useAuthStore(state => state.refreshToken);
+  const setTokens = useAuthStore(state => state.setTokens);
+  const clearTokens = useAuthStore(state => state.clearTokens);
 
-  const routerRef = useRef(router);
+  const [isRedirecting, setIsRedirecting] = useState(false);
+  const reissueInFlightRef = useRef(false);
+  const redirectStartedRef = useRef(false);
+
+  const hasValidToken = !!accessToken && !isTokenExpired(accessToken);
+  const isHttps = typeof window !== "undefined" && window.location.protocol === "https:";
+  const canReissue = !!refreshToken || isHttps;
+
+  const shouldRedirect = !isAuthPath && !hasValidToken && !canReissue;
+  const needsReissue = !isAuthPath && !hasValidToken && canReissue;
 
   useEffect(() => {
-    if (isAuthPath) return;
-
-    const { accessToken, refreshToken, setTokens, clearTokens } = useAuthStore.getState();
-
-    if (accessToken && !isTokenExpired(accessToken)) {
-      Promise.resolve().then(() => setReady(true));
+    if (!shouldRedirect) {
+      redirectStartedRef.current = false;
       return;
     }
+    if (redirectStartedRef.current) return;
+    redirectStartedRef.current = true;
+    clearTokens();
+    router.replace("/auth");
+  }, [shouldRedirect, clearTokens, router]);
 
-    const canReissue = !!refreshToken || window.location.protocol === "https:";
-    if (!canReissue) {
-      clearTokens();
-      routerRef.current.replace("/auth");
-      return;
-    }
+  useEffect(() => {
+    if (!needsReissue || hasValidToken || isRedirecting || reissueInFlightRef.current) return;
 
+    reissueInFlightRef.current = true;
     let active = true;
+
+    const redirectToAuth = () => {
+      setIsRedirecting(true);
+      clearTokens();
+      router.replace("/auth");
+    };
 
     const attemptReissue = (retryCount = 0) => {
       reissue()
         .then(tokens => {
           if (!active) return;
           setTokens(tokens.accessToken, tokens.refreshToken);
-          setReady(true);
         })
         .catch(error => {
           if (!active) return;
           if (error instanceof ApiError) {
-            clearTokens();
-            routerRef.current.replace("/auth");
+            redirectToAuth();
           } else if (retryCount < 1) {
             setTimeout(() => {
               if (active) attemptReissue(retryCount + 1);
             }, 2000);
           } else {
-            clearTokens();
-            routerRef.current.replace("/auth");
+            redirectToAuth();
           }
         });
     };
@@ -64,9 +84,12 @@ export default function AuthGate({ children }: { children: React.ReactNode }) {
 
     return () => {
       active = false;
+      reissueInFlightRef.current = false;
     };
-  }, [isAuthPath]);
+  }, [needsReissue, hasValidToken, isRedirecting, setTokens, clearTokens, router]);
 
-  if (!ready && !isAuthPath) return <LoadingScreen />;
-  return <>{children}</>;
+  if (isAuthPath || hasValidToken) return <>{children}</>;
+  if (shouldRedirect || isRedirecting) return null;
+
+  return <AuthGatePlaceholder />;
 }

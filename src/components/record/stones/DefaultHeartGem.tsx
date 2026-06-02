@@ -1,6 +1,7 @@
+import Image from "next/image";
 import type { CSSProperties } from "react";
 
-import HeartDefaultImage from "@/assets/images/record/heart-default.svg";
+import { HEART_GEM_ASSETS } from "@/constants/skillStoneAssets";
 import { cn } from "@/lib/utils/cn";
 
 interface DefaultHeartGemProps {
@@ -36,10 +37,13 @@ const DefaultHeartGem = ({
         )}
       />
     </div>
-    <HeartDefaultImage
-      role="img"
+    <Image
+      src={HEART_GEM_ASSETS.default.src}
+      alt={ariaHidden ? "" : ariaLabel}
       aria-hidden={ariaHidden}
-      aria-label={ariaHidden ? undefined : ariaLabel}
+      width={HEART_GEM_ASSETS.default.width}
+      height={HEART_GEM_ASSETS.default.height}
+      sizes="128px"
       className="relative z-10 size-full object-contain"
     />
   </div>

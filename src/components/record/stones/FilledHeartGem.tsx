@@ -1,6 +1,7 @@
+import Image from "next/image";
 import type { CSSProperties } from "react";
 
-import HeartFilledImage from "@/assets/images/record/heart-filled.svg";
+import { HEART_GEM_ASSETS } from "@/constants/skillStoneAssets";
 import { cn } from "@/lib/utils/cn";
 
 interface FilledHeartGemProps {
@@ -59,10 +60,13 @@ const FilledHeartGem = ({
         }
       />
     </div>
-    <HeartFilledImage
-      role="img"
+    <Image
+      src={HEART_GEM_ASSETS.filled.src}
+      alt={ariaHidden ? "" : ariaLabel}
       aria-hidden={ariaHidden}
-      aria-label={ariaHidden ? undefined : ariaLabel}
+      width={HEART_GEM_ASSETS.filled.width}
+      height={HEART_GEM_ASSETS.filled.height}
+      sizes="128px"
       className="relative z-10 size-full object-contain"
     />
   </div>

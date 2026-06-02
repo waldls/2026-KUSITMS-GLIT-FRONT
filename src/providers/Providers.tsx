@@ -19,7 +19,11 @@ function ProvidersContent({ children }: { children: React.ReactNode }) {
   return <>{children}</>;
 }
 
-export default function Providers({ children }: { children: React.ReactNode }) {
+interface ProvidersProps {
+  children: React.ReactNode;
+}
+
+export default function Providers({ children }: ProvidersProps) {
   const [queryClient] = useState(() => new QueryClient());
   const [persister, setPersister] = useState<ReturnType<typeof createSyncStoragePersister> | null>(
     null,
@@ -35,17 +39,27 @@ export default function Providers({ children }: { children: React.ReactNode }) {
   }, []);
 
   useEffect(() => {
-    import("@/lib/utils/fcm");
+    const loadFcm = () => {
+      void import("@/lib/utils/fcm");
+    };
+
+    const idleCallback = window.requestIdleCallback?.(loadFcm);
+    if (idleCallback !== undefined) {
+      return () => window.cancelIdleCallback(idleCallback);
+    }
+
+    const timer = window.setTimeout(loadFcm, 3000);
+    return () => window.clearTimeout(timer);
   }, []);
 
+  const authGate = (
+    <AuthGate>
+      <ProvidersContent>{children}</ProvidersContent>
+    </AuthGate>
+  );
+
   if (!persister) {
-    return (
-      <QueryClientProvider client={queryClient}>
-        <AuthGate>
-          <ProvidersContent>{children}</ProvidersContent>
-        </AuthGate>
-      </QueryClientProvider>
-    );
+    return <QueryClientProvider client={queryClient}>{authGate}</QueryClientProvider>;
   }
 
   return (
@@ -58,9 +72,7 @@ export default function Providers({ children }: { children: React.ReactNode }) {
             Array.isArray(query.queryKey) && query.queryKey[0] === meQueryKey[0],
         },
       }}>
-      <AuthGate>
-        <ProvidersContent>{children}</ProvidersContent>
-      </AuthGate>
+      {authGate}
     </PersistQueryClientProvider>
   );
 }

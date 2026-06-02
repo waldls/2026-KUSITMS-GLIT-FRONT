@@ -4,8 +4,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState, useSyncExternalStore } from "react";
 
-import characterHome from "@/assets/images/home/character_home.png";
-import characterHomeGlaring from "@/assets/images/home/character_home_glaring.png";
+import characterHome from "@/assets/images/home/character_home.webp";
+import characterHomeGlaring from "@/assets/images/home/character_home_glaring.webp";
 import glaringBlur from "@/assets/images/home/glaring_blur.png";
 import CTA from "@/components/common/CTA";
 import NavigationBar from "@/components/common/NavigationBar";

@@ -41,6 +41,7 @@ const Page = () => {
           width={168}
           height={196}
           priority
+          sizes="168px"
           className="h-auto w-full max-w-52.25 object-contain"
         />
       </div>

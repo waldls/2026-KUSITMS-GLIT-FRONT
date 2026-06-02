@@ -1,14 +1,16 @@
 "use client";
 
+import dynamic from "next/dynamic";
 import { MyPageIcon } from "@/assets/icons";
 import Modal from "@/components/common/Modal";
 import Toast from "@/components/common/Toast";
-import CalendarSheet from "@/containers/record/today-task/CalendarSheet";
 import DateSection from "@/containers/record/today-task/DateSection";
 import ProjectSection from "@/containers/record/today-task/ProjectSection";
-import ProjectSheet from "@/containers/record/today-task/ProjectSheet";
 import { useDailyScrum } from "@/lib/hooks/record/useDailyScrum";
 import { cn } from "@/lib/utils/cn";
+
+const CalendarSheet = dynamic(() => import("@/containers/record/today-task/CalendarSheet"));
+const ProjectSheet = dynamic(() => import("@/containers/record/today-task/ProjectSheet"));
 
 const formatDate = (date: Date) =>
   `${date.getFullYear()}.${String(date.getMonth() + 1).padStart(2, "0")}.${String(date.getDate()).padStart(2, "0")}`;
@@ -129,55 +131,59 @@ const Page = () => {
         onOpenProjectEditSheet={openProjectEditSheet}
       />
 
-      <CalendarSheet
-        isOpen={isCalendarOpen}
-        selectedDate={calendarDraftDate}
-        isScrumDate={isScrumDate}
-        isRecordDateLocked={isRecordDateLocked}
-        doneEnabled={calendarDraftDate !== null}
-        onClose={closeCalendarSheet}
-        onConfirm={confirmCalendarDate}
-        onSelectDate={setCalendarDraftDate}
-        onMonthChange={loadCalendarScrumDates}
-        onCalendarDayClick={handleCalendarDateClick}
-      />
+      {isCalendarOpen ? (
+        <CalendarSheet
+          isOpen={isCalendarOpen}
+          selectedDate={calendarDraftDate}
+          isScrumDate={isScrumDate}
+          isRecordDateLocked={isRecordDateLocked}
+          doneEnabled={calendarDraftDate !== null}
+          onClose={closeCalendarSheet}
+          onConfirm={confirmCalendarDate}
+          onSelectDate={setCalendarDraftDate}
+          onMonthChange={loadCalendarScrumDates}
+          onCalendarDayClick={handleCalendarDateClick}
+        />
+      ) : null}
 
-      <ProjectSheet
-        isOpen={isProjectSheetOpen}
-        mode={projectSheetMode}
-        step={projectSheetStep}
-        selectedProjectTag={selectedProjectTag}
-        projectTags={projectTags}
-        createdProjectTags={createdProjectTags}
-        isProjectTagEditing={isProjectTagEditing}
-        editingProjectTag={editingProjectTag}
-        editingProjectTagValue={editingProjectTagValue}
-        isAddingProjectTag={isAddingProjectTag}
-        projectTitle={projectTitle}
-        projectTasks={projectTasks}
-        projectTitlePlaceholder={projectTitlePlaceholder}
-        projectTaskPlaceholder={projectTaskPlaceholder}
-        canEditProjectTags={createdProjectTags.length > 0}
-        isProjectActionEnabled={getIsProjectActionEnabled()}
-        maxProjectTasks={maxProjectTasks}
-        onClose={requestCloseProjectSheet}
-        onOverlayClick={closeProjectSheet}
-        onHeaderTextClick={handleProjectSheetHeaderTextClick}
-        onSelectProjectTag={toggleSelectedProjectTag}
-        onStartProjectTagEdit={startProjectTagEdit}
-        onCancelProjectTagEdit={cancelProjectTagEdit}
-        onChangeEditingProjectTagValue={setEditingProjectTagValue}
-        onConfirmProjectTagEdit={confirmProjectTagEdit}
-        onDeleteProjectTag={deleteProjectTag}
-        onStartAddingProjectTag={startAddingProjectTag}
-        onCancelAddingProjectTag={() => setIsAddingProjectTag(false)}
-        onCommitNewProjectTag={commitNewProjectTag}
-        onChangeProjectTitle={setProjectTitle}
-        onClearProjectTitle={() => setProjectTitle("")}
-        onChangeProjectTasks={setProjectTasks}
-        onPrevious={handleProjectPrevious}
-        onNext={handleProjectNext}
-      />
+      {isProjectSheetOpen ? (
+        <ProjectSheet
+          isOpen={isProjectSheetOpen}
+          mode={projectSheetMode}
+          step={projectSheetStep}
+          selectedProjectTag={selectedProjectTag}
+          projectTags={projectTags}
+          createdProjectTags={createdProjectTags}
+          isProjectTagEditing={isProjectTagEditing}
+          editingProjectTag={editingProjectTag}
+          editingProjectTagValue={editingProjectTagValue}
+          isAddingProjectTag={isAddingProjectTag}
+          projectTitle={projectTitle}
+          projectTasks={projectTasks}
+          projectTitlePlaceholder={projectTitlePlaceholder}
+          projectTaskPlaceholder={projectTaskPlaceholder}
+          canEditProjectTags={createdProjectTags.length > 0}
+          isProjectActionEnabled={getIsProjectActionEnabled()}
+          maxProjectTasks={maxProjectTasks}
+          onClose={requestCloseProjectSheet}
+          onOverlayClick={closeProjectSheet}
+          onHeaderTextClick={handleProjectSheetHeaderTextClick}
+          onSelectProjectTag={toggleSelectedProjectTag}
+          onStartProjectTagEdit={startProjectTagEdit}
+          onCancelProjectTagEdit={cancelProjectTagEdit}
+          onChangeEditingProjectTagValue={setEditingProjectTagValue}
+          onConfirmProjectTagEdit={confirmProjectTagEdit}
+          onDeleteProjectTag={deleteProjectTag}
+          onStartAddingProjectTag={startAddingProjectTag}
+          onCancelAddingProjectTag={() => setIsAddingProjectTag(false)}
+          onCommitNewProjectTag={commitNewProjectTag}
+          onChangeProjectTitle={setProjectTitle}
+          onClearProjectTitle={() => setProjectTitle("")}
+          onChangeProjectTasks={setProjectTasks}
+          onPrevious={handleProjectPrevious}
+          onNext={handleProjectNext}
+        />
+      ) : null}
 
       {isProjectExitModalOpen && (
         <div className="fixed inset-y-0 left-1/2 z-70 w-full max-w-107.5 min-w-93.75 -translate-x-1/2">
