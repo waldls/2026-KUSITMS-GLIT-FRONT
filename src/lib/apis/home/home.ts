@@ -1,4 +1,4 @@
-import { api } from "@/api/client";
+import { api } from "@/lib/apis/client";
 import type { ActivityStatsData, MonthlyGrassData } from "@/types/home/home";
 
 // 역량 레이더 차트 조회

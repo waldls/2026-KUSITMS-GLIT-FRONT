@@ -12,7 +12,7 @@ import SkillTag, { RECORD_SKILL_TAGS } from "@/components/record/SkillTag";
 import DefaultHeartGem from "@/components/record/stones/DefaultHeartGem";
 import GlowingSkillStone, { type SkillStoneId } from "@/components/record/stones/GlowingSkillStone";
 import SkillBlur from "@/components/record/stones/SkillBlur";
-import { type Competency, updateCompetency } from "@/lib/apis/record/scrum";
+import { patchCompetencies } from "@/lib/apis/record/scrum";
 import { useSkillPopover } from "@/lib/hooks/record/useSkillPopover";
 import { navigateRecord } from "@/lib/utils/recordNavigation";
 import {
@@ -20,6 +20,7 @@ import {
   type DeepLogProject,
   STAR_LOG_TASKS_KEY,
 } from "@/lib/utils/recordSession";
+import type { Competency } from "@/types/competency";
 
 const SELECT_SKILL_OPTIONS = RECORD_SKILL_TAGS;
 
@@ -132,7 +133,7 @@ const Page = () => {
     );
 
     try {
-      await updateCompetency({
+      await patchCompetencies({
         items: orderedTasks.map(task => ({
           scrumId: task.id,
           competency: getCompetency(task.skillId),

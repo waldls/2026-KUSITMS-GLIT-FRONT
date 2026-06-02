@@ -1,6 +1,6 @@
-import type { ActivityCategory } from "@/types/home/home";
+import type { Competency } from "@/types/competency";
 
-export const RADAR_CATEGORIES: { key: ActivityCategory; label: string }[] = [
+export const RADAR_CATEGORIES: { key: Competency; label: string }[] = [
   { key: "DISCOVERY_ANALYSIS", label: "발견/분석" },
   { key: "REFLECTION_GROWTH", label: "성찰/성장" },
   { key: "COLLABORATION", label: "협업/조율" },

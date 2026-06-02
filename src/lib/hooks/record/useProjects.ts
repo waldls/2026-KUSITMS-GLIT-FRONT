@@ -1,11 +1,11 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 import {
-  createProject,
-  deleteProject,
+  deleteProjectId,
   getProjects,
+  patchProjectId,
+  postProjects,
   type ProjectSummary,
-  updateProject,
 } from "@/lib/apis/record/project";
 
 export type ProjectTag = {
@@ -44,7 +44,7 @@ export const useCreateProject = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: createProject,
+    mutationFn: postProjects,
     onSuccess: createdProject => {
       if (!createdProject?.projectId || !createdProject.name) return;
 
@@ -71,7 +71,7 @@ export const useUpdateProject = () => {
 
   return useMutation({
     mutationFn: ({ projectId, name }: { projectId: number; name: string }) =>
-      updateProject(projectId, { name }),
+      patchProjectId(projectId, { name }),
     onSuccess: (_, { projectId, name }) => {
       queryClient.setQueryData<ProjectTag[]>(
         projectsQueryKey,
@@ -88,7 +88,7 @@ export const useDeleteProject = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: deleteProject,
+    mutationFn: deleteProjectId,
     onSuccess: (_, projectId) => {
       queryClient.setQueryData<ProjectTag[]>(
         projectsQueryKey,

@@ -3,8 +3,8 @@
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 
-import { reissue } from "@/api/client";
 import LoadingScreen from "@/components/common/LoadingScreen";
+import { reissue } from "@/lib/apis/client";
 import { isTokenExpired } from "@/lib/utils/token";
 import { useAuthStore } from "@/store/authStore";
 import { ApiError } from "@/types/api";

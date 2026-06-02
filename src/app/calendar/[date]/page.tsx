@@ -10,8 +10,8 @@ import NavigationBar from "@/components/common/NavigationBar";
 import Toast from "@/components/common/Toast";
 import { PRIMARY_CATEGORY_MAP } from "@/constants/competency";
 import CalendarLogCard from "@/containers/calendar/CalendarLogCard";
-import { getDailyCalendar } from "@/lib/apis/record/calendar";
-import { deleteScrum, deleteScrumTitle } from "@/lib/apis/record/scrum";
+import { getDaily } from "@/lib/apis/record/calendar";
+import { deleteScrumId, deleteTitleId } from "@/lib/apis/record/scrum";
 import { useMe } from "@/lib/hooks/user/userClient";
 import type { DailyCalendarData } from "@/types/record/calendar";
 
@@ -24,7 +24,7 @@ const Page = () => {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [deleteTargetId, setDeleteTargetId] = useState<number | null>(null);
   const [isScrumDeleteModalOpen, setIsScrumDeleteModalOpen] = useState(false);
-  const [deleteScrumId, setDeleteScrumId] = useState<number | null>(null);
+  const [targetScrumId, setTargetScrumId] = useState<number | null>(null);
   const [deleteScrumHasStar, setDeleteScrumHasStar] = useState(false);
   const [toastContent, setToastContent] = useState<string | null>(null);
 
@@ -39,7 +39,7 @@ const Page = () => {
 
     const loadDailyCalendar = async () => {
       try {
-        const dailyCalendar = await getDailyCalendar(date);
+        const dailyCalendar = await getDaily(date);
         if (!ignore) setDailyData(dailyCalendar);
       } catch {
         if (!ignore) setDailyData({ groups: [] });
@@ -56,8 +56,8 @@ const Page = () => {
   const handleDeleteConfirm = async () => {
     if (deleteTargetId === null) return;
     try {
-      await deleteScrumTitle(deleteTargetId);
-      const updated = await getDailyCalendar(date);
+      await deleteTitleId(deleteTargetId);
+      const updated = await getDaily(date);
       if (!updated || (updated.groups?.length ?? 0) === 0) {
         router.back();
         return;
@@ -74,10 +74,10 @@ const Page = () => {
   };
 
   const handleScrumDeleteConfirm = async () => {
-    if (deleteScrumId === null) return;
+    if (targetScrumId === null) return;
     try {
-      await deleteScrum(deleteScrumId);
-      const updated = await getDailyCalendar(date);
+      await deleteScrumId(targetScrumId);
+      const updated = await getDaily(date);
       if (!updated || (updated.groups?.length ?? 0) === 0) {
         router.back();
         return;
@@ -88,7 +88,7 @@ const Page = () => {
       setToastContent("삭제에 실패했어요");
     } finally {
       setIsScrumDeleteModalOpen(false);
-      setDeleteScrumId(null);
+      setTargetScrumId(null);
       setDeleteScrumHasStar(false);
       setIsEditMode(false);
     }
@@ -136,7 +136,7 @@ const Page = () => {
                     : undefined,
               }))}
               onScrumDelete={i => {
-                setDeleteScrumId(group.items?.[i].scrumId ?? null);
+                setTargetScrumId(group.items?.[i].scrumId ?? null);
                 setDeleteScrumHasStar(group.items?.[i].hasStar ?? false);
                 setIsScrumDeleteModalOpen(true);
               }}

@@ -183,8 +183,9 @@ const ProjectSheet = ({
                   state={isCreatedTag ? "default" : "unselected"}
                   leftIcon={
                     isCreatedTag ? (
-                      <button
-                        type="button"
+                      <span
+                        role="button"
+                        tabIndex={0}
                         aria-label={`${projectTag} 삭제`}
                         onClick={event => {
                           event.stopPropagation();
@@ -192,7 +193,7 @@ const ProjectSheet = ({
                         }}
                         className="flex size-4 shrink-0 cursor-pointer items-center justify-center">
                         <CancelIcon className="size-4" />
-                      </button>
+                      </span>
                     ) : undefined
                   }
                   onClick={() => {

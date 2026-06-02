@@ -1,4 +1,4 @@
-import { serverApi } from "@/api/server";
+import { serverApi } from "@/lib/apis/server";
 import type { UserProfile } from "@/types/user/user";
 
 // 내 정보 조회

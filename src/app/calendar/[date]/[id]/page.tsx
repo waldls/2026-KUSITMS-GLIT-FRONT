@@ -3,7 +3,7 @@ import ActionSection from "@/containers/calendar/ActionSection";
 import ResultSection from "@/containers/calendar/ResultSection";
 import ScrumInfoCard from "@/containers/calendar/ScrumInfoCard";
 import SituationTaskSection from "@/containers/calendar/SituationTaskSection";
-import { getStarDetailServer } from "@/lib/apis/record/starRecord.server";
+import { getStarRecordId } from "@/lib/apis/record/starRecord.server";
 
 interface PageProps {
   params: Promise<{ date: string; id: string }>;
@@ -12,9 +12,9 @@ interface PageProps {
 const page = async ({ params }: PageProps) => {
   const { id } = await params;
 
-  let data: Awaited<ReturnType<typeof getStarDetailServer>> | null = null;
+  let data: Awaited<ReturnType<typeof getStarRecordId>> | null = null;
   try {
-    data = await getStarDetailServer(Number(id));
+    data = await getStarRecordId(Number(id));
   } catch {
     data = null;
   }

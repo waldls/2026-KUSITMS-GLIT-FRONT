@@ -10,7 +10,7 @@ import CompetencyStatsSection from "@/containers/report/mini/CompetencyStatsSect
 import MostRecordSection from "@/containers/report/mini/MostRecordSection";
 import NextFocusPointSection from "@/containers/report/mini/NextFocusPointSection";
 import TopDetailTagsSection from "@/containers/report/mini/TopDetailTagsSection";
-import { getReportDetail } from "@/lib/apis/report/report";
+import { getReportId } from "@/lib/apis/report/report";
 import { useMe } from "@/lib/hooks/user/userClient";
 import type { MiniReportDetail } from "@/types/report/report";
 
@@ -21,7 +21,7 @@ const Page = () => {
   const [data, setData] = useState<MiniReportDetail | null>(null);
 
   useEffect(() => {
-    getReportDetail(Number(params.id))
+    getReportId(Number(params.id))
       .then(res => {
         if (res?.reportType === "MINI") setData(res);
         else router.push("/report");

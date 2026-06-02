@@ -1,6 +1,6 @@
 import { type QueryClient, useQuery, useQueryClient } from "@tanstack/react-query";
 
-import { api } from "@/api/client";
+import { api } from "@/lib/apis/client";
 import { useAuthStore } from "@/store/authStore";
 import type { UserProfile } from "@/types/user/user";
 

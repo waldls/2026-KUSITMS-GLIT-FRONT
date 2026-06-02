@@ -11,7 +11,6 @@ import GlowingSkillStone, { type SkillStoneId } from "@/components/record/stones
 import { PRIMARY_CATEGORY_MAP } from "@/constants/competency";
 import {
   type AiTaggingResultResponse,
-  type Competency,
   getHomeSummary,
   type ReportModalType,
 } from "@/lib/apis/record/record";
@@ -21,6 +20,7 @@ import {
   markRecordFlowCompleted,
 } from "@/lib/utils/recordSession";
 import { useRecordDraftStore } from "@/store/recordDraftStore";
+import type { Competency } from "@/types/competency";
 
 const finalizeRecordFlow = () => {
   useRecordDraftStore.getState().reset();

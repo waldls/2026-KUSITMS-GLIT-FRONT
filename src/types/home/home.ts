@@ -1,17 +1,11 @@
 import type { ApiResponse } from "@/types/api";
+import type { Competency } from "@/types/competency";
 
 // 역량 레이더 차트 조회 response
-export type ActivityCategory =
-  | "DISCOVERY_ANALYSIS"
-  | "PLANNING_EXECUTION"
-  | "COLLABORATION"
-  | "PROBLEM_SOLVING"
-  | "REFLECTION_GROWTH";
-
 export interface ActivityStatsData {
   min: number;
   max: number;
-  categories: Record<ActivityCategory, number>;
+  categories: Record<Competency, number>;
 }
 
 export type ActivityStatsResponse = ApiResponse<ActivityStatsData>;

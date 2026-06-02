@@ -1,6 +1,7 @@
-import { api } from "@/api/client";
+import { api } from "@/lib/apis/client";
+import type { SocialProvider } from "@/types/auth/auth";
 
-export type SocialProvider = "kakao" | "naver" | "google";
+export type { SocialProvider };
 
 // 소셜 로그인
 export const loginWithSocial = (provider: SocialProvider) => {

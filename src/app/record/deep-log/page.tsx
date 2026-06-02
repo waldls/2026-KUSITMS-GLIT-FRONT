@@ -8,7 +8,7 @@ import LoadingScreen from "@/components/common/LoadingScreen";
 import Modal from "@/components/common/Modal";
 import RecordProjectCard from "@/components/record/RecordProjectCard";
 import DefaultHeartGem from "@/components/record/stones/DefaultHeartGem";
-import { bulkCreate } from "@/lib/apis/record/starRecord";
+import { postBulk } from "@/lib/apis/record/starRecord";
 import { cn } from "@/lib/utils/cn";
 import { navigateRecord } from "@/lib/utils/recordNavigation";
 import {
@@ -81,7 +81,7 @@ const Page = () => {
       const selectedScrumIds = projects.flatMap(project =>
         project.tasks.filter(task => selectedTaskIds.includes(task.id)).map(task => task.id),
       );
-      const response = await bulkCreate({
+      const response = await postBulk({
         items: selectedScrumIds.map(scrumId => ({ scrumId })),
       });
 

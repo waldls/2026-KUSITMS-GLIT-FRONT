@@ -5,7 +5,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 
 import characterLiedown from "@/assets/images/report/character_liedown.png";
-import { createReport, getReportStatus, retryReport } from "@/lib/apis/report/report";
+import { getStatus, postReports, postRetry } from "@/lib/apis/report/report";
 import { getProgressStep } from "@/lib/utils/report";
 import type { ReportCreateRequest, ReportStatus } from "@/types/report/report";
 
@@ -30,7 +30,7 @@ const Page = () => {
 
     const body = JSON.parse(raw) as ReportCreateRequest;
     const typeParam = body.reportType === "MINI" ? "mini" : "career";
-    createReport(body).then(res => {
+    postReports(body).then(res => {
       if (res?.reportId) {
         const id = String(res.reportId);
         setReportId(id);
@@ -44,7 +44,7 @@ const Page = () => {
     if (!reportId || status === "SUCCESS" || status === "FAILED") return;
 
     const poll = setInterval(async () => {
-      const res = await getReportStatus(Number(reportId));
+      const res = await getStatus(Number(reportId));
       if (res) {
         retryAvailableRef.current = res.retryAvailable;
         setStatus(res.status);
@@ -64,7 +64,7 @@ const Page = () => {
     }
 
     const retry = async () => {
-      const res = await retryReport(Number(reportId));
+      const res = await postRetry(Number(reportId));
       if (res) {
         retryAvailableRef.current = null;
         setAnimatedProgress(0);

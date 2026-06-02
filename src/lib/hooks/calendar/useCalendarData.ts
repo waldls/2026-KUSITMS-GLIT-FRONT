@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 
-import { getDailyCalendarPreview, getMonthlyCalendar } from "@/lib/apis/calendar/calendar";
+import { getDailyPreview, getMonthly } from "@/lib/apis/calendar/calendar";
 import { formatMonthKey, toDateKey } from "@/lib/utils/calendar";
 import type { CalendarDayInfo, CalendarTitlePreview } from "@/types/calendar/calendar";
 
@@ -26,7 +26,7 @@ export const useCalendarData = (today: Date) => {
 
     void (async () => {
       try {
-        const data = await getMonthlyCalendar(monthKey);
+        const data = await getMonthly(monthKey);
         const days = data?.days ?? [];
         monthCacheRef.current[monthKey] = days;
         if (activeMonthKeyRef.current === monthKey) setCalendarDays(days);
@@ -56,7 +56,7 @@ export const useCalendarData = (today: Date) => {
 
     void (async () => {
       try {
-        const data = await getDailyCalendarPreview(dateKey);
+        const data = await getDailyPreview(dateKey);
         if (ignore) return;
         const titles = data?.titles ?? [];
         previewCacheRef.current[dateKey] = titles;

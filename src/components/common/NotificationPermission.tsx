@@ -3,8 +3,8 @@
 import { getToken } from "firebase/messaging";
 import { useEffect } from "react";
 
-import { postDeviceToken } from "@/lib/apis/auth/deviceToken";
-import { patchAlarmSettings } from "@/lib/apis/user/notification";
+import { postDeviceTokens } from "@/lib/apis/auth/deviceToken";
+import { patchNotificationSettings } from "@/lib/apis/user/notification";
 import { getMessagingInstance } from "@/lib/utils/fcm";
 
 export const requestNotificationPermission = async () => {
@@ -12,7 +12,7 @@ export const requestNotificationPermission = async () => {
 
   const permission = await Notification.requestPermission();
   if (permission !== "granted") {
-    await patchAlarmSettings({ isActive: false }).catch(console.error);
+    await patchNotificationSettings({ isActive: false }).catch(console.error);
     return;
   }
 
@@ -30,9 +30,9 @@ export const requestNotificationPermission = async () => {
       return;
     }
     console.log("FCM token:", token);
-    await postDeviceToken(token);
+    await postDeviceTokens(token);
     // 알림 권한 허용시 기본값 평일 22:00
-    await patchAlarmSettings({
+    await patchNotificationSettings({
       isActive: true,
       daysOfWeek: ["MON", "TUE", "WED", "THU", "FRI"],
       notifyTime: "22:00",

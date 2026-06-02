@@ -20,12 +20,17 @@ import StarTaskComplete from "@/containers/record/star-log/StarTaskComplete";
 import { getStarGuideExample } from "@/data/record/starGuides";
 import {
   type AiTaggingResultResponse,
-  getAiTaggingResult,
-  getAiTaggingStatus,
-  triggerAiTagging,
+  getResult,
+  getStatus,
+  postAiTagging,
 } from "@/lib/apis/record/record";
-import { confirmImage, deleteImage, getImages, uploadImage } from "@/lib/apis/record/starImage";
-import { updateStep } from "@/lib/apis/record/starRecord";
+import {
+  deleteImageId,
+  getImages,
+  postConfirm,
+  postPresignedUrl,
+} from "@/lib/apis/record/starImage";
+import { postSteps } from "@/lib/apis/record/starRecord";
 import { useMe } from "@/lib/hooks/user/userClient";
 import { cn } from "@/lib/utils/cn";
 import { navigateRecord, replaceRecordHistory } from "@/lib/utils/recordNavigation";
@@ -158,7 +163,7 @@ const getUploadImageMimeType = async (file: File) => {
 const uploadStarImage = async (starRecordId: number, image: StarImageAttachment) => {
   if (!image.file) throw new Error("업로드할 이미지 파일이 없습니다");
   const mimeType = await getUploadImageMimeType(image.file);
-  const uploadTargets = await uploadImage(starRecordId, {
+  const uploadTargets = await postPresignedUrl(starRecordId, {
     mimeTypes: [mimeType],
   });
   const uploadTarget = uploadTargets?.[0];
@@ -175,7 +180,7 @@ const uploadStarImage = async (starRecordId: number, image: StarImageAttachment)
 
   if (!response.ok) throw new Error("이미지를 업로드하지 못했어요");
 
-  await confirmImage(starRecordId, { imageKeys: [uploadTarget.imageKey] });
+  await postConfirm(starRecordId, { imageKeys: [uploadTarget.imageKey] });
 };
 
 const getInitialStepIndex = () => {
@@ -365,7 +370,7 @@ const StarLogContent = () => {
       try {
         aiTaggingStatusPollCountRef.current += 1;
 
-        const statuses = await Promise.all(aiTaggingStarRecordIds.map(getAiTaggingStatus));
+        const statuses = await Promise.all(aiTaggingStarRecordIds.map(getStatus));
         if (ignore) return;
 
         if (statuses.some(status => status?.status === "FAILED")) {
@@ -374,7 +379,7 @@ const StarLogContent = () => {
         }
 
         if (statuses.every(status => status?.status === "SUCCESS")) {
-          const nextResults = await Promise.all(aiTaggingStarRecordIds.map(getAiTaggingResult));
+          const nextResults = await Promise.all(aiTaggingStarRecordIds.map(getResult));
           if (ignore) return;
 
           if (nextResults.some(result => result?.status !== "SUCCESS")) {
@@ -410,7 +415,7 @@ const StarLogContent = () => {
         }
 
         if (!triggeredAiTaggingKeys.has(taggingStorageKey)) {
-          await Promise.all(aiTaggingStarRecordIds.map(triggerAiTagging));
+          await Promise.all(aiTaggingStarRecordIds.map(postAiTagging));
           triggeredAiTaggingKeys.add(taggingStorageKey);
         }
 
@@ -563,7 +568,7 @@ const StarLogContent = () => {
     }
 
     try {
-      await deleteImage(currentStarRecordId, image.starImageId);
+      await deleteImageId(currentStarRecordId, image.starImageId);
       setImageAttachments(prev => ({
         ...prev,
         [taskId]: (prev[taskId] ?? []).filter(item => item.id !== image.id),
@@ -608,7 +613,7 @@ const StarLogContent = () => {
     setApiErrorMessage("");
 
     try {
-      await updateStep(currentStarRecordId, currentStep.apiStep, { userAnswer: answer.trim() });
+      await postSteps(currentStarRecordId, currentStep.apiStep, { userAnswer: answer.trim() });
     } catch (error) {
       setApiErrorMessage(
         error instanceof Error && error.message ? error.message : "심화기록을 저장하지 못했어요",

@@ -1,4 +1,4 @@
-import { api } from "@/api/client";
+import { api } from "@/lib/apis/client";
 import type { PatchMeBody } from "@/types/user/user";
 
 // 회원 탈퇴

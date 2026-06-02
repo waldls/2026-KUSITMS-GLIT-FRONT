@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 import LoadingScreen from "@/components/common/LoadingScreen";
 import SkillTaggingFail from "@/containers/record/skill-tagging/SkillTaggingFail";
 import SkillTaggingSuccess from "@/containers/record/skill-tagging/SkillTaggingSuccess";
-import { type AiTaggingResultResponse, getAiTaggingResult } from "@/lib/apis/record/record";
+import { type AiTaggingResultResponse, getResult } from "@/lib/apis/record/record";
 import { SKILL_TAGGING_STATE_KEY, STAR_LOG_TASKS_KEY } from "@/lib/utils/recordSession";
 
 interface SkillTaggingTask {
@@ -55,7 +55,7 @@ const SkillTaggingContent = () => {
 
         if (starRecordIds.length === 0) throw new Error("AI 태깅 결과를 찾지 못했어요");
 
-        const nextResults = await Promise.all(starRecordIds.map(getAiTaggingResult));
+        const nextResults = await Promise.all(starRecordIds.map(getResult));
 
         if (nextResults.some(result => result?.status !== "SUCCESS")) {
           throw new Error("AI 태깅이 완료되지 않았어요");

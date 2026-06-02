@@ -12,7 +12,7 @@ import InterviewQuestionsSection from "@/containers/report/career/InvterviewQues
 import NarrativeSummarySection from "@/containers/report/career/NarrativeSummarySection";
 import PatternSection from "@/containers/report/career/PatternSection";
 import StrengthsSection from "@/containers/report/career/StrengthsSection";
-import { getReportDetail } from "@/lib/apis/report/report";
+import { getReportId } from "@/lib/apis/report/report";
 import { useMe } from "@/lib/hooks/user/userClient";
 import type { CareerReportDetail } from "@/types/report/report";
 
@@ -23,7 +23,7 @@ const Page = () => {
   const [data, setData] = useState<CareerReportDetail | null>(null);
 
   useEffect(() => {
-    getReportDetail(Number(params.id))
+    getReportId(Number(params.id))
       .then(res => {
         if (res?.reportType === "CAREER") setData(res);
         else router.push("/report");

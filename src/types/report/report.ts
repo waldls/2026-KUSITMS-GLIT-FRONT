@@ -71,8 +71,7 @@ export interface ReportCreateResponse {
   reportId: number;
 }
 
-// API: GET /api/reports/{reportId}
-// 면접관이 파고들 포인트 + 강점 심화 기록
+// 리포트 상세 조회
 export interface EvidenceRecord {
   id: number;
   scrumTitle: string;
@@ -80,20 +79,17 @@ export interface EvidenceRecord {
   projectName: string;
 }
 
-// 강점
 export interface Strength {
   title: string;
   description: string;
   evidences: EvidenceRecord[];
 }
 
-// 도출 근거 태크 + 개수
 export interface TopTag {
   tag: string;
   count: number;
 }
 
-// 면접관이 파고들 포인트
 export interface InterviewQuestion {
   question: string;
   evidences: EvidenceRecord[];
@@ -110,7 +106,6 @@ export interface CareerReportContent {
   experienceHighlights: string[];
 }
 
-// 미니 리포트 5대 역량 + 개수
 export interface CompetencyStat {
   competency: Competency;
   count: number;

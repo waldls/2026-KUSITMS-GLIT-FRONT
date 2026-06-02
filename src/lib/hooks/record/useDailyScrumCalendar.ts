@@ -1,6 +1,6 @@
 import { useRef, useState } from "react";
 
-import { getMonthlyCalendar } from "@/lib/apis/calendar/calendar";
+import { getMonthly } from "@/lib/apis/calendar/calendar";
 import { isWithinSelectableRecordRange, parseApiDate } from "@/lib/utils/calendar";
 import { isTodayTaskSubmitted } from "@/lib/utils/recordSession";
 import { useRecordDraftStore } from "@/store/recordDraftStore";
@@ -94,7 +94,7 @@ export const useDailyScrumCalendar = ({
 
     const load = async () => {
       try {
-        const monthlyCalendar = await getMonthlyCalendar(requestMonth);
+        const monthlyCalendar = await getMonthly(requestMonth);
         if (lastRequestedMonthRef.current !== requestMonth) return;
 
         const starDates =

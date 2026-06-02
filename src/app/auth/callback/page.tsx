@@ -3,7 +3,7 @@
 import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense, useEffect } from "react";
 
-import { getOnboardingStatus } from "@/lib/apis/user/onboarding";
+import { getStatus } from "@/lib/apis/user/onboarding";
 import { useAuthStore } from "@/store/authStore";
 
 const CallbackHandler = () => {
@@ -24,7 +24,7 @@ const CallbackHandler = () => {
     const handleCallback = async () => {
       setTokens(accessToken, refreshToken);
       try {
-        const status = await getOnboardingStatus();
+        const status = await getStatus();
         router.replace(status?.isOnboardingCompleted ? "/" : "/onboarding");
       } catch {
         router.replace("/auth");

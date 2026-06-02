@@ -1,5 +1,19 @@
 import type { Competency } from "@/types/competency";
 
+// POST /api/star-records/{starRecordId}/steps/{step}
+export interface StarRecordStepUpdateRequest {
+  userAnswer: string;
+}
+
+// POST /api/star-records/bulk
+export interface StarRecordBulkCreateRequest {
+  items: { scrumId: number }[];
+}
+
+export interface StarRecordBulkCreateResponse {
+  items?: { starRecordId?: number }[];
+}
+
 interface StarImage {
   imageId?: number;
   imageUrl?: string;

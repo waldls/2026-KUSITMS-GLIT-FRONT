@@ -3,11 +3,11 @@ import NavigationBar from "@/components/common/NavigationBar";
 import GaugeBar from "@/components/report/GaugeBar";
 import CareerReportSection from "@/containers/report/CareerReportSection";
 import CreateReportCTA from "@/containers/report/CreateReportCTA";
-import { getReportGauge } from "@/lib/apis/report/report.server";
+import { getGauge } from "@/lib/apis/report/report.server";
 import { cn } from "@/lib/utils/cn";
 
 const page = async () => {
-  const progress = await getReportGauge();
+  const progress = await getGauge();
   if (!progress) return null;
 
   return (
