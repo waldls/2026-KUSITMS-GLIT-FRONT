@@ -4,8 +4,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState, useSyncExternalStore } from "react";
 
-import CharacterHome from "@/assets/images/home/character_home.svg";
-import CharacterHomeGlaring from "@/assets/images/home/character_home_glaring.svg";
+import characterHome from "@/assets/images/home/character_home.png";
+import characterHomeGlaring from "@/assets/images/home/character_home_glaring.png";
 import glaringBlur from "@/assets/images/home/glaring_blur.png";
 import CTA from "@/components/common/CTA";
 import NavigationBar from "@/components/common/NavigationBar";
@@ -80,14 +80,23 @@ const Page = () => {
             />
           )}
           {me?.glaring ? (
-            <CharacterHomeGlaring
-              aria-label="캐릭터"
+            <Image
+              src={characterHomeGlaring}
+              alt="캐릭터"
               width={228}
-              height={182}
+              height={188}
+              priority
               className="relative z-10"
             />
           ) : (
-            <CharacterHome aria-label="캐릭터" width={228} height={182} className="relative z-10" />
+            <Image
+              src={characterHome}
+              alt="캐릭터"
+              width={228}
+              height={198}
+              priority
+              className="relative z-10"
+            />
           )}
         </div>
         <div className="flex flex-col gap-7 pt-2">

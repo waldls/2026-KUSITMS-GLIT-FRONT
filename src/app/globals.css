@@ -19,8 +19,7 @@
 
 /* Tailwind 디자인 시스템 토큰 */
 @theme inline {
-  --font-sans:
-    "Pretendard Variable", "Pretendard", "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
+  --font-sans: var(--font-pretendard), "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
 
   /* =========================
     Primitive Tokens

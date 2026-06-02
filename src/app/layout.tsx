@@ -2,9 +2,16 @@ import "@/app/globals.css";
 
 import { GoogleAnalytics } from "@next/third-parties/google";
 import type { Metadata, Viewport } from "next";
+import localFont from "next/font/local";
 
 import Providers from "@/providers/Providers";
 import RouteTransitionProvider from "@/providers/RouteTransitionProvider";
+
+const pretendard = localFont({
+  src: "../font/PretendardVariable.woff2",
+  display: "swap",
+  variable: "--font-pretendard",
+});
 
 export const metadata: Metadata = {
   title: "글릿",
@@ -32,14 +39,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="ko" className="h-dvh overflow-hidden bg-gray-900">
-      <head>
-        <link rel="preconnect" href="https://cdn.jsdelivr.net" />
-        <link
-          rel="stylesheet"
-          href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/variable/pretendardvariable-dynamic-subset.min.css"
-        />
-      </head>
+    <html lang="ko" className={`h-dvh overflow-hidden bg-gray-900 ${pretendard.variable}`}>
       <body className="app-viewport-bg h-dvh overflow-hidden">
         <Providers>
           <main className="relative z-10 mx-auto flex h-dvh w-full max-w-107.5 min-w-0 overflow-hidden bg-gray-900">
