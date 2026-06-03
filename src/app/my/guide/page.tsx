@@ -32,7 +32,8 @@ const Page = () => {
                   alt={guide.title}
                   width={268}
                   height={414}
-                  loading="eager"
+                  priority={index === 0}
+                  loading={index === 0 ? "eager" : "lazy"}
                 />
               </div>
             </SwiperSlide>

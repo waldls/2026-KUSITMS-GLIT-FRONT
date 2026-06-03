@@ -1,6 +1,7 @@
 "use client";
 
 import dynamic from "next/dynamic";
+
 import { MyPageIcon } from "@/assets/icons";
 import Modal from "@/components/common/Modal";
 import Toast from "@/components/common/Toast";

@@ -1,5 +1,6 @@
 "use client";
 
+import dynamic from "next/dynamic";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState, useSyncExternalStore } from "react";
@@ -13,9 +14,17 @@ import NotificationPermission, {
   requestNotificationPermission,
 } from "@/components/common/NotificationPermission";
 import SpeechBubble from "@/components/home/SpeechBubble";
-import HeatmapSection from "@/containers/home/HeatmapSection";
-import RadarChartSection from "@/containers/home/RadarChartSection";
 import { useInvalidateMe, useMe } from "@/lib/hooks/user/userClient";
+
+const HeatmapSection = dynamic(() => import("@/containers/home/HeatmapSection"), {
+  ssr: false,
+  loading: () => <div className="bg-card rounded-12 h-52.5 animate-pulse" />,
+});
+
+const RadarChartSection = dynamic(() => import("@/containers/home/RadarChartSection"), {
+  ssr: false,
+  loading: () => <div className="bg-card rounded-12 h-88 animate-pulse" />,
+});
 
 const noop = () => () => {};
 

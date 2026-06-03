@@ -1,5 +1,6 @@
 "use client";
 
+import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
@@ -7,7 +8,12 @@ import Chip from "@/components/common/Chip";
 import Header from "@/components/common/Header";
 import Toast from "@/components/common/Toast";
 import Toggle from "@/components/common/Toggle";
-import WheelTimePicker, { type TimeValue } from "@/components/my/WheelTimePicker";
+import type { TimeValue } from "@/components/my/WheelTimePicker";
+
+const WheelTimePicker = dynamic(() => import("@/components/my/WheelTimePicker"), {
+  ssr: false,
+  loading: () => <div className="h-43.5 animate-pulse rounded-lg bg-gray-800" />,
+});
 import { getNotificationSettings, patchNotificationSettings } from "@/lib/apis/user/notification";
 import { cn } from "@/lib/utils/cn";
 import { type Day, fromAlarmData, toAlarmData } from "@/lib/utils/notification";
