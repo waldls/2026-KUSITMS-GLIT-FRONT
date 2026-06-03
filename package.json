@@ -40,6 +40,13 @@
     "tailwind-merge": "^3.5.0",
     "zustand": "^5.0.12"
   },
+  "browserslist": [
+    "chrome >= 87",
+    "firefox >= 78",
+    "safari >= 14",
+    "edge >= 88",
+    "not dead"
+  ],
   "devDependencies": {
     "@storybook/addon-a11y": "^10.3.5",
     "@storybook/addon-docs": "^10.3.5",

@@ -2,10 +2,10 @@ import Tag from "@/components/common/Tag";
 import type { TopTag } from "@/types/report/report";
 
 interface Props {
-  topDetailTags: TopTag[];
+  topDetailTags?: TopTag[];
 }
 
-const BrandingEvidenceSection = ({ topDetailTags }: Props) => {
+const BrandingEvidenceSection = ({ topDetailTags = [] }: Props) => {
   const topTags = topDetailTags.slice(0, 3);
 
   return (

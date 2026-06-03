@@ -3,11 +3,14 @@ import Link from "next/link";
 import { StarTwoIcon } from "@/assets/icons";
 import Button from "@/components/common/Button";
 import ReportCard from "@/components/report/ReportCard";
-import { getReports } from "@/lib/apis/report/report.server";
+import type { ReportsData } from "@/types/report/report";
 
-const CareerReportSection = async () => {
-  const data = await getReports();
-  const reports = data?.reports ?? [];
+interface Props {
+  reportsData: ReportsData | null;
+}
+
+const CareerReportSection = ({ reportsData }: Props) => {
+  const reports = reportsData?.reports ?? [];
 
   const parseDate = (d: string) => new Date(d.replace(/\./g, "-"));
 

@@ -1,9 +1,9 @@
 interface ExperienceHighlightsSectionProps {
-  experienceHighlights: string[];
+  experienceHighlights?: string[];
 }
 
 const ExperienceHighlightsSection = ({
-  experienceHighlights,
+  experienceHighlights = [],
 }: ExperienceHighlightsSectionProps) => {
   return (
     <div className="bg-gray-850 rounded-12 p-4">

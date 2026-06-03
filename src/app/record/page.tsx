@@ -3,6 +3,7 @@
 import Image from "next/image";
 
 import { ChevronRightIcon, StarOneIcon } from "@/assets/icons";
+import recordCharacter from "@/assets/images/record/record_character.png";
 import Tag from "@/components/common/Tag";
 import { useMe } from "@/lib/hooks/user/userClient";
 import { navigateRecord } from "@/lib/utils/recordNavigation";
@@ -36,7 +37,7 @@ const Page = () => {
       {/* 캐릭터 이미지 */}
       <div className="flex shrink-0 justify-center pt-24.25">
         <Image
-          src="/images/record/record_character.png"
+          src={recordCharacter}
           alt="기록 캐릭터"
           width={168}
           height={196}

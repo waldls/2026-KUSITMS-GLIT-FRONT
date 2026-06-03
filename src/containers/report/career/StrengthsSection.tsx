@@ -3,7 +3,7 @@ import Link from "next/link";
 import type { Strength } from "@/types/report/report";
 
 interface StrengthsSectionProps {
-  strengths: Strength[];
+  strengths?: Strength[];
 }
 
 const StrengthCard = ({ strength }: { strength: Strength }) => (
@@ -14,7 +14,7 @@ const StrengthCard = ({ strength }: { strength: Strength }) => (
         <p className="body-4 text-gray-900">{strength.description}</p>
       </div>
       <div className="flex flex-col gap-1">
-        {strength.evidences.map(record => (
+        {(strength.evidences ?? []).map(record => (
           <Link
             key={record.id}
             href={`/calendar/${record.createdAt.split("T")[0]}/${record.id}`}
@@ -27,7 +27,7 @@ const StrengthCard = ({ strength }: { strength: Strength }) => (
   </div>
 );
 
-const StrengthsSection = ({ strengths }: StrengthsSectionProps) => {
+const StrengthsSection = ({ strengths = [] }: StrengthsSectionProps) => {
   const pair = strengths.slice(0, 2);
   const rest = strengths.slice(2);
 

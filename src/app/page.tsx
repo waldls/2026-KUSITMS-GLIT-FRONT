@@ -10,10 +10,11 @@ import characterHomeGlaring from "@/assets/images/home/character_home_glaring.we
 import glaringBlur from "@/assets/images/home/glaring_blur.png";
 import CTA from "@/components/common/CTA";
 import NavigationBar from "@/components/common/NavigationBar";
-import NotificationPermission, {
-  requestNotificationPermission,
-} from "@/components/common/NotificationPermission";
 import SpeechBubble from "@/components/home/SpeechBubble";
+
+const NotificationPermission = dynamic(() => import("@/components/common/NotificationPermission"), {
+  ssr: false,
+});
 import { useInvalidateMe, useMe } from "@/lib/hooks/user/userClient";
 
 const HeatmapSection = dynamic(() => import("@/containers/home/HeatmapSection"), {
@@ -54,10 +55,13 @@ const Page = () => {
 
   const handleFirstClick = () => {
     if (typeof window === "undefined") return;
+    if (!("Notification" in window)) return;
     if (Notification.permission === "denied") return;
     if (localStorage.getItem("notification_asked")) return;
     localStorage.setItem("notification_asked", "true");
-    requestNotificationPermission();
+    import("@/components/common/NotificationPermission").then(m =>
+      m.requestNotificationPermission(),
+    );
   };
 
   return (

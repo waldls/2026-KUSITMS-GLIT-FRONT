@@ -3,11 +3,11 @@ import NavigationBar from "@/components/common/NavigationBar";
 import GaugeBar from "@/components/report/GaugeBar";
 import CareerReportSection from "@/containers/report/CareerReportSection";
 import CreateReportCTA from "@/containers/report/CreateReportCTA";
-import { getGauge } from "@/lib/apis/report/report.server";
+import { getGauge, getReports } from "@/lib/apis/report/report.server";
 import { cn } from "@/lib/utils/cn";
 
 const page = async () => {
-  const progress = await getGauge();
+  const [progress, reportsData] = await Promise.all([getGauge(), getReports()]);
   if (!progress) return null;
 
   return (
@@ -36,7 +36,7 @@ const page = async () => {
           </div>
           <GaugeBar progressRate={progress.progressRate} isGeneratable={progress.isGeneratable} />
         </div>
-        <CareerReportSection />
+        <CareerReportSection reportsData={reportsData} />
       </div>
       <div className="px-5 pb-5.75">
         <CreateReportCTA isGeneratable={progress.isGeneratable} />
