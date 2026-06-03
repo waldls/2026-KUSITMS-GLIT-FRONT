@@ -24,7 +24,7 @@ const page = async ({ params }: PageProps) => {
   return (
     <div className="flex h-screen w-full flex-col">
       <Header title={data.projectTag ?? ""} />
-      <div className="scrollbar-hide flex-1 overflow-y-auto px-5 py-4">
+      <div className="scrollbar-hide flex-1 overflow-y-auto px-5 pt-4 pb-15.25">
         <div className="flex flex-col gap-6.25">
           <ScrumInfoCard
             freeText={data.freeText}

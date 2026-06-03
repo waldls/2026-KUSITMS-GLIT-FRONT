@@ -18,6 +18,7 @@ const page = () => (
           aria-hidden
           width={170}
           height={208}
+          priority
           className="relative z-1"
         />
       </div>

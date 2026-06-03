@@ -12,7 +12,11 @@ export const requestNotificationPermission = async () => {
 
   const permission = await Notification.requestPermission();
   if (permission !== "granted") {
-    await patchNotificationSettings({ isActive: false }).catch(console.error);
+    await patchNotificationSettings({
+      isActive: false,
+      daysOfWeek: ["MON", "TUE", "WED", "THU", "FRI"],
+      notifyTime: "22:00",
+    }).catch(console.error);
     return;
   }
 

@@ -84,8 +84,10 @@ const Page = () => {
               alt="blur"
               width={340}
               height={340}
+              priority
               aria-hidden
               className="pointer-events-none absolute top-[calc(50%-15px)] left-[calc(50%-20px)] max-w-none -translate-x-1/2 -translate-y-1/2"
+              style={{ height: "auto" }}
             />
           )}
           {me?.glaring ? (

@@ -1,7 +1,7 @@
 "use client";
 
 import { usePathname, useRouter } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 
 import { reissue } from "@/lib/apis/client";
 import { isTokenExpired } from "@/lib/utils/token";
@@ -26,12 +26,18 @@ export default function AuthGate({ children }: AuthGateProps) {
   const setTokens = useAuthStore(state => state.setTokens);
   const clearTokens = useAuthStore(state => state.clearTokens);
 
+  const isClient = useSyncExternalStore(
+    () => () => {},
+    () => true,
+    () => false,
+  );
+
   const [isRedirecting, setIsRedirecting] = useState(false);
   const reissueInFlightRef = useRef(false);
   const redirectStartedRef = useRef(false);
 
   const hasValidToken = !!accessToken && !isTokenExpired(accessToken);
-  const isHttps = typeof window !== "undefined" && window.location.protocol === "https:";
+  const isHttps = isClient && window.location.protocol === "https:";
   const canReissue = !!refreshToken || isHttps;
 
   const shouldRedirect = !isAuthPath && !hasValidToken && !canReissue;
@@ -87,6 +93,8 @@ export default function AuthGate({ children }: AuthGateProps) {
       reissueInFlightRef.current = false;
     };
   }, [needsReissue, hasValidToken, isRedirecting, setTokens, clearTokens, router]);
+
+  if (!isClient) return isAuthPath ? <>{children}</> : null;
 
   if (isAuthPath || hasValidToken) return <>{children}</>;
   if (shouldRedirect || isRedirecting) return null;

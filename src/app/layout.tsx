@@ -8,7 +8,12 @@ import Providers from "@/providers/Providers";
 import RouteTransitionProvider from "@/providers/RouteTransitionProvider";
 
 const pretendard = localFont({
-  src: "../font/PretendardVariable.woff2",
+  src: [
+    { path: "../font/Pretendard-Regular.woff2", weight: "400" },
+    { path: "../font/Pretendard-Medium.woff2", weight: "500" },
+    { path: "../font/Pretendard-SemiBold.woff2", weight: "600" },
+    { path: "../font/Pretendard-ExtraBold.woff2", weight: "800" },
+  ],
   display: "swap",
   preload: true,
   variable: "--font-pretendard",
@@ -51,8 +56,12 @@ export default function RootLayout({
   const gaId = process.env.NEXT_PUBLIC_GA_ID;
 
   return (
-    <html lang="ko" className={`h-dvh overflow-hidden bg-gray-900 ${pretendard.variable}`}>
-      <head>{apiOrigin && <link rel="preconnect" href={apiOrigin} />}</head>
+    <html
+      lang="ko"
+      className={`h-dvh overflow-hidden bg-gray-900 font-sans ${pretendard.variable}`}>
+      <head>
+        {apiOrigin && <link rel="preconnect" href={apiOrigin} crossOrigin="use-credentials" />}
+      </head>
       <body className="app-viewport-bg h-dvh overflow-hidden">
         <Providers>
           <main className="relative z-10 mx-auto flex h-dvh w-full max-w-107.5 min-w-0 overflow-hidden bg-gray-900">
