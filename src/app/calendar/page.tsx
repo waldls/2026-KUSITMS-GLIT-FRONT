@@ -1,56 +1,29 @@
-"use client";
+import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 
-import { useRouter } from "next/navigation";
-import { useState } from "react";
+import CalendarPageClient from "@/app/calendar/CalendarPageClient";
+import { getServerQueryClient } from "@/lib/query/getServerQueryClient";
+import {
+  calendarDailyPreviewQueryOptions,
+  calendarMonthlyQueryOptions,
+} from "@/lib/query/queryOptions";
+import { formatMonthKey, getCalendarDateInTimeZone, toDateKey } from "@/lib/utils/calendar";
 
-import CalendarSwiper from "@/components/calendar/CalendarSwiper";
-import NavigationBar from "@/components/common/NavigationBar";
-import CalendarScrumPreview from "@/containers/calendar/CalendarScrumPreview";
-import { useCalendarData } from "@/lib/hooks/calendar/useCalendarData";
-import { exceededMatcher, isExceededDate, toDateKey } from "@/lib/utils/calendar";
+const page = async () => {
+  const today = getCalendarDateInTimeZone();
+  const monthKey = formatMonthKey(today);
+  const dateKey = toDateKey(today);
+  const queryClient = getServerQueryClient();
 
-const Page = () => {
-  const router = useRouter();
-  const [today] = useState(() => new Date());
-  const { selectedDate, calendarDays, previewScrums, handleSelect, loadMonth } =
-    useCalendarData(today);
-
-  const dateKey = toDateKey(selectedDate);
-  const dayData = calendarDays.find(day => day.date === dateKey);
-  const hasScrums = dayData?.hasScrums ?? false;
-  const exceeded = isExceededDate(selectedDate);
+  await Promise.all([
+    queryClient.prefetchQuery(calendarMonthlyQueryOptions(monthKey)),
+    queryClient.prefetchQuery(calendarDailyPreviewQueryOptions(dateKey)),
+  ]);
 
   return (
-    <div className="flex h-full w-full flex-col">
-      <div className="scrollbar-hide mt-9 flex flex-1 flex-col overflow-y-auto px-4">
-        <div className="shrink-0">
-          <CalendarSwiper
-            selectedDate={selectedDate}
-            today={today}
-            scrumDates={calendarDays
-              .filter(day => day.hasScrums && day.date)
-              .map(day => new Date(day.date!))}
-            exceededMatcher={exceededMatcher}
-            onSelect={handleSelect}
-            onMonthChange={loadMonth}
-          />
-        </div>
-
-        <div className="mt-10.5 flex flex-1 flex-col px-1 pb-9">
-          <CalendarScrumPreview
-            selectedDate={selectedDate}
-            dateKey={dateKey}
-            exceeded={exceeded}
-            hasScrums={hasScrums}
-            previewScrums={previewScrums}
-            onDetailClick={() => router.push(`/calendar/${dateKey}`)}
-          />
-        </div>
-      </div>
-
-      <NavigationBar />
-    </div>
+    <HydrationBoundary state={dehydrate(queryClient)}>
+      <CalendarPageClient initialDateKey={dateKey} />
+    </HydrationBoundary>
   );
 };
 
-export default Page;
+export default page;

@@ -1,7 +1,6 @@
 import { expect, type Page, test } from "@playwright/test";
 
-const FAKE_ACCESS_TOKEN =
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjk5OTk5OTk5OTksInN1YiI6InRlc3QifQ.fakesig";
+import { fulfillApiSuccess, setupAuthCookie } from "../helpers";
 
 const MOCK_USER = {
   profileImage: null,
@@ -13,21 +12,13 @@ const MOCK_USER = {
 };
 
 const waitForPage = async (page: Page) => {
-  await page
-    .context()
-    .addCookies([
-      { name: "accessToken", value: FAKE_ACCESS_TOKEN, domain: "localhost", path: "/" },
-    ]);
+  await setupAuthCookie(page);
 
-  await page.route("https://stg-api.glit.today/**", async route => {
+  await page.route(/\/api\//, async route => {
     const isGetMe =
       route.request().method() === "GET" && route.request().url().includes("/api/users/me");
 
-    await route.fulfill({
-      status: 200,
-      contentType: "application/json",
-      body: JSON.stringify({ success: true, data: isGetMe ? MOCK_USER : null }),
-    });
+    await route.fulfill(fulfillApiSuccess(isGetMe ? MOCK_USER : null));
   });
 
   await page.goto("/");

@@ -8,39 +8,36 @@ import LoadingScreen from "@/components/common/LoadingScreen";
 import Modal from "@/components/common/Modal";
 import RecordProjectCard from "@/components/record/RecordProjectCard";
 import DefaultHeartGem from "@/components/record/stones/DefaultHeartGem";
+import { preloadSkillStoneImages } from "@/constants/skillStoneAssets";
 import { postBulk } from "@/lib/apis/record/starRecord";
 import { cn } from "@/lib/utils/cn";
 import { navigateRecord } from "@/lib/utils/recordNavigation";
 import {
   type DeepLogProject,
-  getTodayTaskScrums,
-  mapTodayTaskScrumsToDeepLogProjects,
+  loadDeepLogState,
   saveDeepLogSelectedScrums,
 } from "@/lib/utils/recordSession";
 import { useRecordDraftStore } from "@/store/recordDraftStore";
 
-const getInitialDeepLogState = () => {
-  const storedScrums = getTodayTaskScrums();
-  const projects = storedScrums ? mapTodayTaskScrumsToDeepLogProjects(storedScrums) : [];
-  const validTaskIds = new Set(projects.flatMap(project => project.tasks.map(task => task.id)));
-  const selectedTaskIds = useRecordDraftStore
-    .getState()
-    .deepLogSelectedTaskIds.filter(id => validTaskIds.has(id));
-
-  return { projects, selectedTaskIds };
-};
-
 const Page = () => {
   const setDraft = useRecordDraftStore(state => state.setDraft);
-  const [initialState] = useState(getInitialDeepLogState);
-  const [projects] = useState<DeepLogProject[]>(initialState.projects);
-  const [selectedTaskIds, setSelectedTaskIds] = useState<number[]>(initialState.selectedTaskIds);
+  const [projects, setProjects] = useState<DeepLogProject[]>([]);
+  const [selectedTaskIds, setSelectedTaskIds] = useState<number[]>([]);
+  const [hasHydrated, setHasHydrated] = useState(false);
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
   const [isSavingSelectedScrums, setIsSavingSelectedScrums] = useState(false);
   const [apiErrorMessage, setApiErrorMessage] = useState("");
 
   useEffect(() => {
+    const { projects: nextProjects, selectedTaskIds: nextSelectedTaskIds } = loadDeepLogState(
+      useRecordDraftStore.getState().deepLogSelectedTaskIds,
+    );
+
+    setProjects(nextProjects);
+    setSelectedTaskIds(nextSelectedTaskIds);
+    setHasHydrated(true);
     window.dispatchEvent(new CustomEvent("today-task-navigate-complete"));
+    preloadSkillStoneImages();
   }, []);
 
   useEffect(() => {
@@ -106,6 +103,8 @@ const Page = () => {
       setIsSavingSelectedScrums(false);
     }
   };
+
+  if (!hasHydrated) return null;
 
   return (
     <div className="flex min-h-0 flex-1 flex-col">

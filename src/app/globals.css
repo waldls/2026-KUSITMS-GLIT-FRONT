@@ -376,6 +376,14 @@
   animation: star-complete-copy 600ms ease-out both;
 }
 
+@utility animate-select-skill-stone-out {
+  animation: select-skill-stone-out 420ms cubic-bezier(0.4, 0, 0.8, 1) forwards;
+}
+
+@utility animate-select-skill-stone-in {
+  animation: select-skill-stone-in 560ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
 @utility animate-slide-in-right {
   animation: slide-in-right 250ms ease-out both;
 }
@@ -579,6 +587,34 @@
   }
 }
 
+@keyframes select-skill-stone-out {
+  0% {
+    opacity: 1;
+    filter: blur(0);
+    transform: scale(1);
+  }
+
+  100% {
+    opacity: 0;
+    filter: blur(0.875rem);
+    transform: scale(0.9);
+  }
+}
+
+@keyframes select-skill-stone-in {
+  0% {
+    opacity: 0;
+    filter: blur(0.875rem);
+    transform: scale(0.94);
+  }
+
+  100% {
+    opacity: 1;
+    filter: blur(0);
+    transform: scale(1);
+  }
+}
+
 @keyframes heart-blur-flash {
   0%,
   100% {
@@ -637,6 +673,23 @@
   background:
     linear-gradient(var(--color-gray-900), var(--color-gray-900)) padding-box,
     var(--gradient-linear-100) border-box;
+}
+
+@keyframes skeleton-shimmer {
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+@utility skeleton-shimmer {
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.1) 50%,
+    transparent 100%
+  );
+  animation: skeleton-shimmer 1.5s ease-in-out infinite;
+  transform: translateX(-100%);
 }
 
 @utility scrollbar-hide {

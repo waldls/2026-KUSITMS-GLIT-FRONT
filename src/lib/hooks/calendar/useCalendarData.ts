@@ -1,80 +1,32 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useState } from "react";
 
-import { getDailyPreview, getMonthly } from "@/lib/apis/calendar/calendar";
-import { formatMonthKey, toDateKey } from "@/lib/utils/calendar";
-import type { CalendarDayInfo, CalendarTitlePreview } from "@/types/calendar/calendar";
+import { useCalendarDailyPreview, useCalendarMonth } from "@/lib/hooks/calendar/useCalendarQueries";
+import { toDateKey } from "@/lib/utils/calendar";
 
 export const useCalendarData = (today: Date) => {
   const [selectedDate, setSelectedDate] = useState<Date>(today);
-  const [calendarDays, setCalendarDays] = useState<CalendarDayInfo[]>([]);
-  const [previewScrums, setPreviewScrums] = useState<CalendarTitlePreview[]>([]);
+  const [viewMonth, setViewMonth] = useState<Date>(today);
 
-  const monthCacheRef = useRef<Record<string, CalendarDayInfo[]>>({});
-  const previewCacheRef = useRef<Record<string, CalendarTitlePreview[]>>({});
-  const activeMonthKeyRef = useRef<string | null>(null);
-
-  const loadMonth = useCallback((monthDate: Date) => {
-    const monthKey = formatMonthKey(monthDate);
-    activeMonthKeyRef.current = monthKey;
-
-    if (monthCacheRef.current[monthKey] !== undefined) {
-      setCalendarDays(monthCacheRef.current[monthKey]);
-      return;
-    }
-
-    void (async () => {
-      try {
-        const data = await getMonthly(monthKey);
-        const days = data?.days ?? [];
-        monthCacheRef.current[monthKey] = days;
-        if (activeMonthKeyRef.current === monthKey) setCalendarDays(days);
-      } catch {
-        if (activeMonthKeyRef.current === monthKey) setCalendarDays([]);
-      }
-    })();
-  }, []);
+  const monthQuery = useCalendarMonth(viewMonth);
+  const dateKey = toDateKey(selectedDate);
+  const previewQuery = useCalendarDailyPreview(dateKey);
 
   const handleSelect = (date: Date | undefined) => {
     if (date) setSelectedDate(date);
   };
 
-  useEffect(() => {
-    loadMonth(today);
-  }, [loadMonth, today]);
-
-  useEffect(() => {
-    const dateKey = toDateKey(selectedDate);
-
-    if (previewCacheRef.current[dateKey] !== undefined) {
-      setPreviewScrums(previewCacheRef.current[dateKey]);
-      return;
-    }
-
-    let ignore = false;
-
-    void (async () => {
-      try {
-        const data = await getDailyPreview(dateKey);
-        if (ignore) return;
-        const titles = data?.titles ?? [];
-        previewCacheRef.current[dateKey] = titles;
-        setPreviewScrums(titles);
-      } catch {
-        if (!ignore) setPreviewScrums([]);
-      }
-    })();
-
-    return () => {
-      ignore = true;
-    };
-  }, [selectedDate]);
+  const loadMonth = (monthDate: Date) => {
+    setViewMonth(monthDate);
+  };
 
   return {
     selectedDate,
-    calendarDays,
-    previewScrums,
+    calendarDays: monthQuery.data ?? [],
+    previewScrums: previewQuery.data ?? [],
+    isMonthLoading: monthQuery.isPending,
+    isPreviewLoading: previewQuery.isPending,
     handleSelect,
     loadMonth,
   };

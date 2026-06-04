@@ -2,7 +2,7 @@ import { PlusIcon, StarOneIcon, ThreeDotsIcon } from "@/assets/icons";
 import CTA from "@/components/common/CTA";
 import Popover from "@/components/common/Popover";
 import RecordProjectCard from "@/components/record/RecordProjectCard";
-import type { AddedProject } from "@/lib/hooks/record/useDailyScrum";
+import type { AddedProject } from "@/store/recordDraftStore";
 
 type ProjectSheetStep = "tag" | "title" | "task";
 
@@ -30,12 +30,12 @@ const ProjectSection = ({
   onOpenProjectEditSheet,
 }: ProjectSectionProps) => {
   return (
-    <div className="flex min-h-0 flex-1 flex-col">
+    <div className="flex flex-col">
       <div className="mb-2 inline-flex w-fit shrink-0 items-center gap-0.25">
         <StarOneIcon className="size-5 shrink-0 text-gray-100" />
         <span className="body-2 inline-flex items-center text-gray-100">프로젝트</span>
       </div>
-      <div className="min-h-0 flex-1 overflow-y-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+      <div>
         {projects.length > 0 ? (
           <div className="flex flex-col gap-3">
             {projects.map(project => (
@@ -107,6 +107,7 @@ const ProjectSection = ({
         {showProjectAddButton ? (
           <CTA
             leftIcon={<PlusIcon />}
+            data-testid="add-project-button"
             disabled={!canAddProject}
             className="mt-3.5 mb-4 shrink-0"
             onClick={onOpenProjectSheet}>

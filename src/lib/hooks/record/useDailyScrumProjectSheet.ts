@@ -1,40 +1,32 @@
+import { useQueryClient } from "@tanstack/react-query";
 import { type SetStateAction, useEffect, useState } from "react";
 
 import {
+  resolveProjectIdAfterCreate,
   useCreateProject,
   useDeleteProject,
   useProjects,
   useUpdateProject,
 } from "@/lib/hooks/record/useProjects";
 import { useMe } from "@/lib/hooks/user/userClient";
+import {
+  areTasksEqual,
+  isProjectStepReady,
+  normalizeTasks,
+  type ProjectSheetStep,
+} from "@/lib/utils/record/projectSheetValidation";
+import {
+  addCreatedProjectTag,
+  getCreatedProjectTagIds,
+  hydrateCreatedProjectTagIds,
+  removeCreatedProjectTagId,
+  removeCreatedProjectTagName,
+} from "@/lib/utils/recordCreatedProjectTags";
 import { type AddedProject, useRecordDraftStore } from "@/store/recordDraftStore";
 
-export type ProjectSheetStep = "tag" | "title" | "task";
+export type { ProjectSheetStep } from "@/lib/utils/record/projectSheetValidation";
 export type ProjectSheetMode = "create" | "edit";
 export type ScrumToastState = "hidden" | "visible" | "fading";
-
-const isProjectStepReady = (
-  step: ProjectSheetStep,
-  selectedTag: string | null,
-  title: string,
-  tasks: string[],
-) => {
-  if (step === "tag") return selectedTag !== null;
-  if (step === "title") return title.trim().length > 0;
-  return tasks.some(task => task.trim().length > 0);
-};
-
-const normalizeTasks = (tasks: string[]) => tasks.map(task => task.trim()).filter(Boolean);
-
-const areTasksEqual = (tasksA: string[], tasksB: string[]) => {
-  const normalizedTasksA = normalizeTasks(tasksA);
-  const normalizedTasksB = normalizeTasks(tasksB);
-
-  return (
-    normalizedTasksA.length === normalizedTasksB.length &&
-    normalizedTasksA.every((task, index) => task === normalizedTasksB[index])
-  );
-};
 
 const alignScrumIds = (scrumIds: (number | null)[] | undefined, taskCount: number) => {
   if (!scrumIds) return Array.from({ length: taskCount }, () => null);
@@ -69,7 +61,12 @@ export const useDailyScrumProjectSheet = () => {
   const [projectTagToastState, setProjectTagToastState] = useState<ScrumToastState>("hidden");
   const [projectTagToastMessage, setProjectTagToastMessage] = useState("");
   const [isProjectExitModalOpen, setIsProjectExitModalOpen] = useState(false);
-  const [createdProjectTagIds, setCreatedProjectTagIds] = useState<number[]>([]);
+  const [createdProjectTagIds, setCreatedProjectTagIds] = useState<number[]>(() => {
+    const storedIds = getCreatedProjectTagIds();
+    hydrateCreatedProjectTagIds(storedIds);
+    return [...new Set(storedIds.filter(id => Number.isFinite(id)))];
+  });
+  const queryClient = useQueryClient();
   const { data: profile } = useMe();
   const { data: projectTagItems = [], isError: isProjectsError } = useProjects();
   const createProjectMutation = useCreateProject();
@@ -142,6 +139,18 @@ export const useDailyScrumProjectSheet = () => {
   }, [projectTagToastState]);
 
   useEffect(() => {
+    const handleCreatedTagsCommitted = () => {
+      setCreatedProjectTagIds([]);
+    };
+
+    window.addEventListener("record-created-tags-committed", handleCreatedTagsCommitted);
+
+    return () => {
+      window.removeEventListener("record-created-tags-committed", handleCreatedTagsCommitted);
+    };
+  }, []);
+
+  useEffect(() => {
     if (openedProjectMenuId === null) return;
 
     const handlePointerDown = (event: PointerEvent) => {
@@ -206,6 +215,14 @@ export const useDailyScrumProjectSheet = () => {
     setIsProjectSheetOpen(false);
   };
 
+  const confirmAbandonProjectSheet = () => {
+    closeProjectSheet();
+  };
+
+  const dismissProjectSheetOnOverlay = () => {
+    closeProjectSheet();
+  };
+
   const requestCloseProjectSheet = () => {
     if (projectSheetMode === "create") {
       setIsProjectExitModalOpen(true);
@@ -215,7 +232,7 @@ export const useDailyScrumProjectSheet = () => {
     closeProjectSheet();
   };
 
-  const commitNewProjectTag = async (value: string) => {
+  const commitNewProjectTag = (value: string) => {
     const trimmedTag = value.trim();
 
     if (trimmedTag.length === 0) {
@@ -229,19 +246,29 @@ export const useDailyScrumProjectSheet = () => {
       return;
     }
 
-    try {
-      const createdProject = await createProjectMutation.mutateAsync({ name: trimmedTag });
-      if (!createdProject?.projectId || !createdProject.name) return;
+    const commitTask = async () => {
+      try {
+        const createdProject = await createProjectMutation.mutateAsync({ name: trimmedTag });
+        const createdProjectId = await resolveProjectIdAfterCreate(
+          queryClient,
+          createdProject,
+          trimmedTag,
+        );
+        if (createdProjectId === null) {
+          showProjectTagToast("프로젝트 태그를 추가하지 못했어요");
+          return;
+        }
 
-      const createdProjectId = createdProject.projectId;
-      setCreatedProjectTagIds(currentIds =>
-        currentIds.includes(createdProjectId) ? currentIds : [...currentIds, createdProjectId],
-      );
-      setSelectedProjectTag(createdProject.name);
-      setIsAddingProjectTag(false);
-    } catch {
-      showProjectTagToast("프로젝트 태그를 추가하지 못했어요");
-    }
+        addCreatedProjectTag({ projectId: createdProjectId, name: trimmedTag });
+        setCreatedProjectTagIds(getCreatedProjectTagIds());
+        setSelectedProjectTag(createdProject?.name ?? trimmedTag);
+        setIsAddingProjectTag(false);
+      } catch {
+        showProjectTagToast("프로젝트 태그를 추가하지 못했어요");
+      }
+    };
+
+    void commitTask();
   };
 
   const startProjectTagEdit = (projectTag: string) => {
@@ -295,9 +322,9 @@ export const useDailyScrumProjectSheet = () => {
 
     try {
       await deleteProjectMutation.mutateAsync(targetProjectTag.id);
-      setCreatedProjectTagIds(currentIds =>
-        currentIds.filter(currentId => currentId !== targetProjectTag.id),
-      );
+      removeCreatedProjectTagId(targetProjectTag.id);
+      removeCreatedProjectTagName(projectTag);
+      setCreatedProjectTagIds(getCreatedProjectTagIds());
       setSelectedProjectTag(currentTag => (currentTag === projectTag ? null : currentTag));
       setAddedProjects(currentProjects =>
         currentProjects.filter(project => project.projectId !== targetProjectTag.id),
@@ -529,6 +556,8 @@ export const useDailyScrumProjectSheet = () => {
     openProjectSheet,
     openProjectEditSheet,
     closeProjectSheet,
+    confirmAbandonProjectSheet,
+    dismissProjectSheetOnOverlay,
     requestCloseProjectSheet,
     closeProjectMenu,
     commitNewProjectTag,

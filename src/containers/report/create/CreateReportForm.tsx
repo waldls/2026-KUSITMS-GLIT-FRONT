@@ -10,21 +10,25 @@ import SelectedRecordSection from "@/containers/report/create/SelectedRecordSect
 import StarCalendarSection from "@/containers/report/create/StarCalendarSection";
 import type { SelectableRecord } from "@/lib/hooks/report/useSelectableRecords";
 import { useSelectableRecords } from "@/lib/hooks/report/useSelectableRecords";
-import { fromDateKeys, toDateKey } from "@/lib/utils/calendar";
+import { fromDateKeys, parseDateKey, toDateKey } from "@/lib/utils/calendar";
 import type { SelectableInfo } from "@/types/report/report";
 
 const MIN_SELECT: Record<SelectableInfo["reportType"], number> = { MINI: 10, CAREER: 20 };
+
+type CreateReportFormProps = SelectableInfo & {
+  initialDateKey: string;
+};
 
 const CreateReportForm = ({
   reportType,
   totalStarCount,
   autoSelectedStarRecords,
   starRecordDates,
-}: SelectableInfo) => {
+  initialDateKey,
+}: CreateReportFormProps) => {
   const router = useRouter();
 
-  // 선택된 날짜
-  const [selectedDate, setSelectedDate] = useState<Date>(() => new Date());
+  const [selectedDate, setSelectedDate] = useState<Date>(() => parseDateKey(initialDateKey));
   // 선택된 심화기록 ID 집합
   const [selectedIds, setSelectedIds] = useState<Set<number>>(
     () => new Set(autoSelectedStarRecords.map(r => r.starRecordId)),
@@ -39,7 +43,7 @@ const CreateReportForm = ({
 
   // 선택한 날짜 데이터
   const dateKey = toDateKey(selectedDate);
-  const { dateRecords, allRecords, fetchByDate } = useSelectableRecords(autoSelectedStarRecords);
+  const { dateRecords, allRecords } = useSelectableRecords(autoSelectedStarRecords, dateKey);
 
   const selectedIdItems: SelectableRecord[] = allRecords.filter(r =>
     selectedIds.has(r.starRecordId),
@@ -76,10 +80,6 @@ const CreateReportForm = ({
     );
     router.push(`/report/generate?type=${reportType === "MINI" ? "mini" : "career"}`);
   };
-
-  useEffect(() => {
-    fetchByDate(dateKey);
-  }, [dateKey, fetchByDate]);
 
   useEffect(() => {
     return () => {

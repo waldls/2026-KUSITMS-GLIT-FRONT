@@ -1,5 +1,6 @@
 "use client";
 
+import { type QueryClient, useQueryClient } from "@tanstack/react-query";
 import dynamic from "next/dynamic";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
@@ -8,8 +9,20 @@ import Header from "@/components/common/Header";
 import LoadingScreen from "@/components/common/LoadingScreen";
 import Modal from "@/components/common/Modal";
 import NavigationBar from "@/components/common/NavigationBar";
+import { preloadSkillStoneImages } from "@/constants/skillStoneAssets";
+import {
+  invalidateCalendar,
+  invalidateProjects,
+  invalidateSelectableRecords,
+} from "@/lib/query/invalidate";
 import { cn } from "@/lib/utils/cn";
-import { navigateRecord, RECORD_ROUTE_CHANGE_EVENT } from "@/lib/utils/recordNavigation";
+import { clearCreatedProjectTagIds } from "@/lib/utils/recordCreatedProjectTags";
+import { resolveRecordFlowPath } from "@/lib/utils/recordFlowGuard";
+import {
+  navigateRecord,
+  RECORD_ROUTE_CHANGE_EVENT,
+  replaceRecordHistory,
+} from "@/lib/utils/recordNavigation";
 import { clearRecordSession } from "@/lib/utils/recordSession";
 import { useRecordDraftStore } from "@/store/recordDraftStore";
 
@@ -39,7 +52,23 @@ const getAnimationDirection = (prevPathname: string, pathname: string) => {
   return currentIndex < prevIndex ? "left" : "right";
 };
 
+const isRecordFlowPath = (path: string) => path.startsWith("/record/");
+
+const exitsRecordFlow = (path: string) => path === "/record" || !path.startsWith("/record");
+
+const abandonRecordFlow = async (queryClient: QueryClient) => {
+  clearCreatedProjectTagIds();
+  await Promise.all([
+    invalidateProjects(queryClient),
+    invalidateCalendar(queryClient),
+    invalidateSelectableRecords(queryClient),
+  ]);
+  useRecordDraftStore.getState().reset();
+  clearRecordSession();
+};
+
 export default function Layout({ children }: { children: React.ReactNode }) {
+  const queryClient = useQueryClient();
   const pathname = usePathname();
   const [currentPathname, setCurrentPathname] = useState(pathname);
   const isRecordHome = currentPathname === "/record";
@@ -81,27 +110,75 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   }, [currentPathname]);
 
   useEffect(() => {
+    if (currentPathname !== "/record/deep-log") return;
+
+    const prefetchSelectSkills = () => {
+      void import("./select-skills/page");
+      preloadSkillStoneImages();
+    };
+
+    const idleCallback = window.requestIdleCallback?.(prefetchSelectSkills);
+    if (idleCallback !== undefined) {
+      return () => window.cancelIdleCallback(idleCallback);
+    }
+
+    const timer = window.setTimeout(prefetchSelectSkills, 500);
+    return () => window.clearTimeout(timer);
+  }, [currentPathname]);
+
+  useEffect(() => {
+    const initialHref = `${window.location.pathname}${window.location.search}`;
+    const resolvedInitialHref = resolveRecordFlowPath(initialHref);
+    const resolvedInitialPathname = new URL(resolvedInitialHref, window.location.origin).pathname;
+
+    if (resolvedInitialHref !== initialHref) {
+      replaceRecordHistory(resolvedInitialHref);
+      prevPathnameRef.current = resolvedInitialPathname;
+      setCurrentPathname(resolvedInitialPathname);
+    }
+
     const updateCurrentPathname = (nextPathname: string) => {
-      setIsExitModalOpen(false);
-      setAnimationDirection(getAnimationDirection(prevPathnameRef.current, nextPathname));
-      setHasRouteTransition(prevPathnameRef.current !== nextPathname);
-      if (nextPathname === "/record") {
-        setHasVisitedTodayTask(false);
-        useRecordDraftStore.getState().reset();
-        clearRecordSession();
+      const currentHref = `${nextPathname}${window.location.pathname === nextPathname ? window.location.search : ""}`;
+      const resolvedHref = resolveRecordFlowPath(currentHref);
+      const resolvedPathname = new URL(resolvedHref, window.location.origin).pathname;
+
+      if (resolvedHref !== `${window.location.pathname}${window.location.search}`) {
+        replaceRecordHistory(resolvedHref);
       }
-      if (nextPathname === "/record/today-task") {
+
+      const prevPathname = prevPathnameRef.current;
+
+      setIsExitModalOpen(false);
+      setAnimationDirection(getAnimationDirection(prevPathname, resolvedPathname));
+      setHasRouteTransition(prevPathname !== resolvedPathname);
+
+      if (isRecordFlowPath(prevPathname) && exitsRecordFlow(resolvedPathname)) {
+        setHasVisitedTodayTask(false);
+        void (async () => {
+          await abandonRecordFlow(queryClient);
+        })();
+      } else if (resolvedPathname === "/record/today-task") {
         setHasVisitedTodayTask(true);
       }
-      prevPathnameRef.current = nextPathname;
-      setCurrentPathname(nextPathname);
+
+      prevPathnameRef.current = resolvedPathname;
+      setCurrentPathname(resolvedPathname);
+    };
+
+    const handlePopState = () => {
+      const resolvedHref = resolveRecordFlowPath(
+        `${window.location.pathname}${window.location.search}`,
+      );
+
+      if (resolvedHref !== `${window.location.pathname}${window.location.search}`) {
+        replaceRecordHistory(resolvedHref);
+      }
+
+      updateCurrentPathname(new URL(resolvedHref, window.location.origin).pathname);
     };
 
     const handleRecordRouteChange = (event: Event) => {
       updateCurrentPathname((event as CustomEvent<{ pathname: string }>).detail.pathname);
-    };
-    const handlePopState = () => {
-      updateCurrentPathname(window.location.pathname);
     };
 
     window.addEventListener(RECORD_ROUTE_CHANGE_EVENT, handleRecordRouteChange);
@@ -111,10 +188,11 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       window.removeEventListener(RECORD_ROUTE_CHANGE_EVENT, handleRecordRouteChange);
       window.removeEventListener("popstate", handlePopState);
     };
-  }, []);
+  }, [queryClient]);
 
   useEffect(() => {
-    if (pathname !== window.location.pathname || pathname === currentPathname) return;
+    if (pathname === currentPathname) return;
+    if (pathname !== window.location.pathname) return;
 
     window.dispatchEvent(
       new CustomEvent(RECORD_ROUTE_CHANGE_EVENT, {
@@ -122,6 +200,15 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       }),
     );
   }, [pathname, currentPathname]);
+
+  useEffect(() => {
+    return () => {
+      if (!isRecordFlowPath(prevPathnameRef.current)) return;
+      if (window.location.pathname.startsWith("/record")) return;
+
+      void abandonRecordFlow(queryClient);
+    };
+  }, [queryClient]);
 
   useEffect(() => {
     if (!hasRouteTransition) return;
@@ -134,13 +221,6 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       window.clearTimeout(timer);
     };
   }, [currentPathname, hasRouteTransition]);
-
-  useEffect(() => {
-    return () => {
-      useRecordDraftStore.getState().reset();
-      clearRecordSession();
-    };
-  }, []);
 
   useEffect(() => {
     const handleTodayTaskReadyChange = (event: Event) => {
@@ -193,10 +273,18 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 
   const handleExitConfirm = () => {
     setIsExitModalOpen(false);
-    setHasVisitedTodayTask(false);
-    useRecordDraftStore.getState().reset();
-    clearRecordSession();
-    navigateRecord("/record");
+
+    void (async () => {
+      const path = window.location.pathname;
+      if (isRecordFlowPath(path)) {
+        setHasVisitedTodayTask(false);
+        await abandonRecordFlow(queryClient);
+        navigateRecord("/record");
+        return;
+      }
+
+      navigateRecord("/record");
+    })();
   };
 
   const renderRecordPage = () => {
@@ -210,7 +298,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             {keepTodayTaskMounted && (
               <div
                 className={cn(
-                  "flex min-h-0 flex-1 flex-col",
+                  "flex w-full flex-col",
                   !isTodayTask && "hidden",
                   isTodayTask && pageAnimationClass,
                 )}>
@@ -300,7 +388,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         />
       )}
 
-      <main className="flex min-h-0 flex-1 flex-col overflow-y-auto px-5 [-webkit-overflow-scrolling:touch] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+      <main className="scrollbar-hide flex min-h-0 flex-1 flex-col overflow-y-auto overscroll-y-contain px-5 [-webkit-overflow-scrolling:touch]">
         {renderRecordPage()}
       </main>
 

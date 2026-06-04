@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import { cn } from "@/lib/utils/cn";
 
@@ -37,39 +37,55 @@ const BottomSheet = ({
   height,
   hideScrollbar = false,
 }: BottomSheetProps) => {
-  const [shouldRender, setShouldRender] = useState(isOpen);
   const [isClosing, setIsClosing] = useState(false);
-  const [hasEntered, setHasEntered] = useState(isOpen);
+  const [hasEntered, setHasEntered] = useState(false);
+  const [shouldRender, setShouldRender] = useState(isOpen);
+  const [prevIsOpen, setPrevIsOpen] = useState(isOpen);
+  const closeCompleteRef = useRef<(() => void) | undefined>(undefined);
+
+  if (prevIsOpen !== isOpen) {
+    setPrevIsOpen(isOpen);
+    if (isOpen) {
+      setShouldRender(true);
+      setIsClosing(false);
+      setHasEntered(false);
+    } else {
+      setIsClosing(true);
+    }
+  }
 
   useEffect(() => {
     if (isOpen) {
-      const openTimer = window.setTimeout(() => {
-        setShouldRender(true);
-        setIsClosing(false);
-        setHasEntered(false);
-      }, 0);
+      closeCompleteRef.current = undefined;
+    }
+  }, [isOpen]);
 
-      return () => {
-        window.clearTimeout(openTimer);
-      };
+  const finishClose = () => {
+    const onComplete = closeCompleteRef.current;
+    closeCompleteRef.current = undefined;
+    setIsClosing(false);
+    setHasEntered(false);
+    setShouldRender(false);
+    onComplete?.();
+  };
+
+  const startCloseAnimation = (onComplete?: () => void) => {
+    closeCompleteRef.current = onComplete;
+    setIsClosing(true);
+  };
+
+  const handleOverlayClick = () => {
+    if (isClosing) return;
+
+    if (onOverlayClick) {
+      onOverlayClick();
+      return;
     }
 
-    if (!shouldRender) return;
+    if (!onClose) return;
 
-    const closingTimer = window.setTimeout(() => {
-      setIsClosing(true);
-    }, 0);
-    const closeTimer = window.setTimeout(() => {
-      setShouldRender(false);
-      setIsClosing(false);
-      setHasEntered(false);
-    }, 250);
-
-    return () => {
-      window.clearTimeout(closingTimer);
-      window.clearTimeout(closeTimer);
-    };
-  }, [isOpen, shouldRender]);
+    startCloseAnimation(onClose);
+  };
 
   useEffect(() => {
     if (!shouldRender) return;
@@ -90,8 +106,12 @@ const BottomSheet = ({
       <button
         type="button"
         aria-label="바텀시트 닫기"
-        onClick={onOverlayClick ?? onClose}
-        className={cn("absolute inset-0 cursor-default", hasOverlay && "bg-gray-900/75")}
+        onClick={handleOverlayClick}
+        className={cn(
+          "absolute inset-0 cursor-default transition-opacity duration-250 ease-out",
+          hasOverlay && "bg-gray-900/75",
+          isClosing && "opacity-0",
+        )}
       />
       <div
         role="dialog"
@@ -103,8 +123,17 @@ const BottomSheet = ({
           isClosing ? "animate-slide-out-down" : !hasEntered && "animate-slide-in-up",
           className,
         )}
-        onAnimationEnd={() => {
-          if (!isClosing) {
+        onAnimationEnd={event => {
+          if (event.target !== event.currentTarget) return;
+
+          if (isClosing) {
+            if (event.animationName === "slide-out-down") {
+              finishClose();
+            }
+            return;
+          }
+
+          if (event.animationName === "slide-in-up") {
             setHasEntered(true);
           }
         }}>

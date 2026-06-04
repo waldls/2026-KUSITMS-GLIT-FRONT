@@ -13,6 +13,7 @@ interface GlowingSkillStoneProps {
   ariaLabel?: string;
   className?: string;
   blurClassName?: string;
+  priority?: boolean;
 }
 
 const GlowingSkillStone = ({
@@ -21,6 +22,7 @@ const GlowingSkillStone = ({
   ariaLabel,
   className,
   blurClassName,
+  priority = false,
 }: GlowingSkillStoneProps) => {
   const stone = SKILL_STONE_ASSETS[skillId];
   const resolvedAriaLabel = ariaLabel ?? stone.label;
@@ -34,9 +36,10 @@ const GlowingSkillStone = ({
       <Image
         src={stone.src}
         alt={resolvedAriaLabel}
-        width={stone.width}
-        height={stone.height}
-        sizes="(max-width: 430px) 72px, 144px"
+        width={stone.src.width}
+        height={stone.src.height}
+        priority={priority}
+        sizes={`${stone.src.width}px`}
         className="relative z-10 size-full object-contain"
       />
       <SkillBlur

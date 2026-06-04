@@ -304,6 +304,7 @@ const ProjectSheet = ({
           {!isProjectTagEditing && (
             <Button
               size="lg"
+              data-testid="project-sheet-next-button"
               disabled={!isProjectActionEnabled}
               onClick={onNext}
               className={cn(

@@ -64,9 +64,10 @@ const FilledHeartGem = ({
       src={HEART_GEM_ASSETS.filled.src}
       alt={ariaHidden ? "" : ariaLabel}
       aria-hidden={ariaHidden}
-      width={HEART_GEM_ASSETS.filled.width}
-      height={HEART_GEM_ASSETS.filled.height}
-      sizes="128px"
+      width={HEART_GEM_ASSETS.filled.src.width}
+      height={HEART_GEM_ASSETS.filled.src.height}
+      quality={95}
+      sizes={`${HEART_GEM_ASSETS.filled.src.width}px`}
       className="relative z-10 size-full object-contain"
     />
   </div>

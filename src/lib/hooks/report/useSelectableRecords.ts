@@ -1,40 +1,58 @@
 "use client";
 
-import { useCallback, useRef, useState } from "react";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMemo } from "react";
 
-import { getSelectableRecords } from "@/lib/apis/report/report";
+import { queryKeys } from "@/lib/query/queryKeys";
+import { selectableRecordsQueryOptions } from "@/lib/query/queryOptions";
 import type { DailySelectableRecord } from "@/types/report/report";
 
 export type SelectableRecord = DailySelectableRecord & { date: string };
 
-// 날짜별 심화 기록 조회 및 캐싱을 담당하는 커스텀 훅
-export const useSelectableRecords = (initialRecords: SelectableRecord[] = []) => {
-  const [dateRecords, setDateRecords] = useState<DailySelectableRecord[]>([]);
-  const [allRecords, setAllRecords] = useState<SelectableRecord[]>(initialRecords);
-  const cacheRef = useRef<Map<string, DailySelectableRecord[]>>(new Map());
-  const latestDateRef = useRef<string | null>(null);
+export const useSelectableRecordsByDate = (dateKey: string) =>
+  useQuery(selectableRecordsQueryOptions(dateKey));
 
-  const fetchByDate = useCallback(async (date: string) => {
-    latestDateRef.current = date;
+export const useSelectableRecords = (initialRecords: SelectableRecord[] = [], dateKey: string) => {
+  const queryClient = useQueryClient();
+  const dateQuery = useSelectableRecordsByDate(dateKey);
 
-    if (cacheRef.current.has(date)) {
-      setDateRecords(cacheRef.current.get(date)!);
-      return;
+  const allRecords = useMemo(() => {
+    const byId = new Map<number, SelectableRecord>();
+
+    for (const record of initialRecords) {
+      byId.set(record.starRecordId, record);
     }
 
-    setDateRecords([]);
-    const data = await getSelectableRecords(date);
-    const records: DailySelectableRecord[] = data?.starRecords ?? [];
-    cacheRef.current.set(date, records);
-    if (latestDateRef.current === date) setDateRecords(records);
-    setAllRecords(prev => {
-      const existingIds = new Set(prev.map(r => r.starRecordId));
-      const newRecords = records
-        .filter(r => !existingIds.has(r.starRecordId))
-        .map(r => ({ ...r, date }));
-      return [...prev, ...newRecords];
+    const cachedQueries = queryClient.getQueriesData<DailySelectableRecord[]>({
+      queryKey: queryKeys.report.selectableAll,
     });
-  }, []);
 
-  return { dateRecords, allRecords, fetchByDate };
+    for (const [queryKey, records] of cachedQueries) {
+      if (!records) continue;
+
+      const cachedDateKey = queryKey[2];
+      if (typeof cachedDateKey !== "string") continue;
+
+      for (const record of records) {
+        if (byId.has(record.starRecordId)) continue;
+        byId.set(record.starRecordId, { ...record, date: cachedDateKey });
+      }
+    }
+
+    if (dateQuery.data) {
+      for (const record of dateQuery.data) {
+        if (byId.has(record.starRecordId)) continue;
+        byId.set(record.starRecordId, { ...record, date: dateKey });
+      }
+    }
+
+    return Array.from(byId.values());
+  }, [dateKey, dateQuery.data, initialRecords, queryClient]);
+
+  return {
+    dateRecords: dateQuery.data ?? [],
+    allRecords,
+    isLoading: dateQuery.isPending,
+    isFetching: dateQuery.isFetching,
+  };
 };

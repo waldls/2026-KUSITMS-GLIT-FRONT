@@ -1,7 +1,6 @@
 import { expect, type Page, test } from "@playwright/test";
 
-const FAKE_ACCESS_TOKEN =
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjk5OTk5OTk5OTksInN1YiI6InRlc3QifQ.fakesig";
+import { fulfillApiSuccess, setupAuthCookie } from "../helpers";
 
 const MOCK_USER = {
   profileImage: null,
@@ -13,21 +12,13 @@ const MOCK_USER = {
 };
 
 const waitForPage = async (page: Page) => {
-  await page
-    .context()
-    .addCookies([
-      { name: "accessToken", value: FAKE_ACCESS_TOKEN, domain: "localhost", path: "/" },
-    ]);
+  await setupAuthCookie(page);
 
-  await page.route("https://stg-api.glit.today/**", async route => {
+  await page.route(/\/api\//, async route => {
     const isGetMe =
       route.request().method() === "GET" && route.request().url().includes("/api/users/me");
 
-    await route.fulfill({
-      status: 200,
-      contentType: "application/json",
-      body: JSON.stringify({ success: true, data: isGetMe ? MOCK_USER : null }),
-    });
+    await route.fulfill(fulfillApiSuccess(isGetMe ? MOCK_USER : null));
   });
 
   await page.goto("/");
@@ -51,10 +42,10 @@ test.describe("홈 페이지", () => {
     await expect(page.getByRole("link", { name: "기록하러 가기" })).toBeVisible();
   });
 
-  test("기록하러 가기 링크가 /record/today-task 경로를 가리킨다", async ({ page }) => {
+  test("기록하러 가기 링크가 /record 경로를 가리킨다", async ({ page }) => {
     await expect(page.getByRole("link", { name: "기록하러 가기" })).toHaveAttribute(
       "href",
-      "/record/today-task",
+      "/record",
     );
   });
 
@@ -179,7 +170,6 @@ test.describe("알림 권한 요청 (NotificationPermission)", () => {
       .filter({ hasText: /님의 강점을 확인해보세요/ })
       .click();
 
-    // localStorage.setItem("notification_asked", "true")은 동기적으로 실행되므로 바로 확인 가능
     const asked = await page.evaluate(() => localStorage.getItem("notification_asked"));
     expect(asked).toBe("true");
   });

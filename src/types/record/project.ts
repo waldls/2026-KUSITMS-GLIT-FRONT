@@ -4,6 +4,7 @@ export interface ProjectNameRequest {
 
 export interface ProjectCreateResponse {
   projectId?: number;
+  id?: number;
   name?: string;
 }
 

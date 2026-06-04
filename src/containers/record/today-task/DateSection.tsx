@@ -21,6 +21,7 @@ const DateSection = ({ value, placeholder, selected, onOpenCalendar }: DateSecti
       </button>
       <TextField
         readOnly
+        data-testid="date-section-input"
         value={value}
         placeholder={placeholder}
         onClick={onOpenCalendar}

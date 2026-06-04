@@ -9,6 +9,7 @@ interface Props {
 
 const ProfileSection = ({ profile }: Props) => {
   const { nickname, jobRole, userStatus } = profile ?? {};
+
   return (
     <div className="flex flex-col items-center gap-3">
       <div className="size-31 overflow-hidden rounded-full">

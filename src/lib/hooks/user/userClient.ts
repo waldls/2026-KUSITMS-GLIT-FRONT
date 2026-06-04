@@ -1,18 +1,14 @@
 import { type QueryClient, useQuery, useQueryClient } from "@tanstack/react-query";
 
-import { api } from "@/lib/apis/client";
+import { invalidateMe as invalidateMeQueries } from "@/lib/query/invalidate";
+import { meQueryKey } from "@/lib/query/queryKeys";
+import { getMeQueryKey, meQueryOptions } from "@/lib/query/queryOptions";
 import { useAuthStore } from "@/store/authStore";
 import type { UserProfile } from "@/types/user/user";
 
-export const meQueryKey = ["me"] as const;
+export { getMeQueryKey, meQueryKey };
 
-export const getMeQueryKey = (accessToken: string | null) =>
-  [...meQueryKey, accessToken ? accessToken.slice(-12) : "anonymous"] as const;
-
-const fetchMeClient = () => api.get<UserProfile>("/api/users/me");
-
-export const invalidateMe = (queryClient: QueryClient) =>
-  queryClient.invalidateQueries({ queryKey: meQueryKey });
+export const invalidateMe = invalidateMeQueries;
 
 export const updateMeCache = (
   queryClient: QueryClient,
@@ -33,18 +29,9 @@ interface UseMeOptions {
 
 export const useMe = (options?: UseMeOptions) => {
   const accessToken = useAuthStore(state => state.accessToken);
+  const enabled = options?.enabled !== false;
 
-  return useQuery({
-    queryKey: getMeQueryKey(accessToken),
-    queryFn: fetchMeClient,
-    enabled: options?.enabled !== false && !!accessToken,
-    retry: false,
-    staleTime: Infinity,
-    gcTime: Infinity,
-    refetchOnMount: false,
-    refetchOnReconnect: false,
-    refetchOnWindowFocus: false,
-  });
+  return useQuery(meQueryOptions(accessToken, enabled));
 };
 
 export const useInvalidateMe = () => {

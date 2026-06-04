@@ -1,12 +1,14 @@
 "use client";
 
 import { createSyncStoragePersister } from "@tanstack/query-sync-storage-persister";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { QueryClientProvider } from "@tanstack/react-query";
 import { PersistQueryClientProvider } from "@tanstack/react-query-persist-client";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 
-import { meQueryKey, useMe } from "@/lib/hooks/user/userClient";
+import { useMe } from "@/lib/hooks/user/userClient";
+import { createQueryClient } from "@/lib/query/createQueryClient";
+import { meQueryKey } from "@/lib/query/queryKeys";
 
 import AuthGate from "./AuthGate";
 
@@ -24,7 +26,7 @@ interface ProvidersProps {
 }
 
 export default function Providers({ children }: ProvidersProps) {
-  const [queryClient] = useState(() => new QueryClient());
+  const [queryClient] = useState(createQueryClient);
   const [persister, setPersister] = useState<ReturnType<typeof createSyncStoragePersister> | null>(
     null,
   );

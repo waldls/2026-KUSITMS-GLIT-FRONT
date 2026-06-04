@@ -69,6 +69,7 @@ const Header = ({
         {hasRightContent && (
           <button
             type="button"
+            data-testid="header-right-button"
             disabled={rightDisabled}
             aria-label={rightButtonAriaLabel}
             className="flex cursor-pointer items-center justify-end gap-1 disabled:cursor-default"

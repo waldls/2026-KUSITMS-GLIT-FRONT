@@ -51,8 +51,8 @@ const StarTaskComplete = ({
     KOREAN_ORDINALS[completedTaskNumber - 1] ?? `${completedTaskNumber}번째`;
 
   return (
-    <section className="flex min-h-0 flex-1 flex-col items-center justify-center">
-      <div className="flex flex-1 flex-col items-center justify-center">
+    <section className="flex min-h-full flex-col items-center justify-center py-10">
+      <div className="flex flex-col items-center justify-center">
         <GlowingSkillStone
           skillId={completedTaskSkillId}
           animate
@@ -68,7 +68,7 @@ const StarTaskComplete = ({
           </div>
         </div>
       </div>
-      <div className="w-full shrink-0 pb-10">
+      <div className="w-full shrink-0 pt-6">
         <CTA onClick={onNextTaskClick}>다음 기록하기</CTA>
       </div>
     </section>

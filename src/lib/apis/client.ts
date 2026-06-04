@@ -125,11 +125,18 @@ export const clientApi = {
       .patch(getUrl(path), { json: body })
       .json<ApiResponse<T>>()
       .then(json => unwrap<T>(json)),
-  delete: <T>(path: string) =>
-    clientKy
-      .delete(getUrl(path))
-      .json<ApiResponse<T>>()
-      .then(json => unwrap<T>(json)),
+  delete: async <T>(path: string) => {
+    const response = await clientKy.delete(getUrl(path));
+
+    if (response.status === 204 || response.headers.get("content-length") === "0") {
+      return null as T | null;
+    }
+
+    const text = await response.text();
+    if (!text) return null as T | null;
+
+    return unwrap<T>(JSON.parse(text) as ApiResponse<T>);
+  },
 };
 
 export { clientApi as api };

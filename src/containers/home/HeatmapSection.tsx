@@ -2,34 +2,24 @@
 
 import "swiper/css";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 
+import HomeHeatmapSkeleton from "@/components/common/skeleton/HomeHeatmapSkeleton";
 import SwipeIndicator from "@/components/common/SwipeIndicator";
 import Heatmap from "@/components/home/Heatmap";
-import { getCompetencyStats } from "@/lib/apis/home/home";
-import type { MonthlyGrassData } from "@/types/home/home";
-
-const getLastThreeMonths = (): string[] => {
-  const now = new Date();
-  return Array.from({ length: 3 }, (_, i) => {
-    const d = new Date(now.getFullYear(), now.getMonth() - (2 - i), 1);
-    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`;
-  });
-};
+import { getLastThreeMonths, useCompetencyStatsQueries } from "@/lib/hooks/home/useHomeQueries";
 
 const months = getLastThreeMonths();
 const initialIndex = months.length - 1;
 
 const HeatmapSection = () => {
   const [activeIndex, setActiveIndex] = useState(initialIndex);
-  const [dataList, setDataList] = useState<(MonthlyGrassData | null)[] | null>(null);
+  const statsQueries = useCompetencyStatsQueries(months);
+  const isLoading = statsQueries.some(query => query.isPending);
+  const dataList = statsQueries.map(query => query.data ?? null);
 
-  useEffect(() => {
-    Promise.all(months.map(month => getCompetencyStats(month).catch(() => null))).then(setDataList);
-  }, []);
-
-  if (!dataList) return null;
+  if (isLoading) return <HomeHeatmapSkeleton />;
 
   return (
     <div className="flex flex-col gap-2">

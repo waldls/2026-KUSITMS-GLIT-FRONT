@@ -1,5 +1,36 @@
 const WEEKDAYS = ["일", "월", "화", "수", "목", "금", "토"] as const;
 
+/** 캘린더·리포트 날짜 키 기준 타임존 (서버 prefetch와 클라이언트 초기값 통일) */
+export const DEFAULT_CALENDAR_TIMEZONE = "Asia/Seoul";
+
+export const parseDateKey = (dateKey: string): Date => {
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(dateKey)) {
+    throw new Error(`Invalid date key format: "${dateKey}"`);
+  }
+  const [year, month, day] = dateKey.split("-").map(Number);
+  const date = new Date(year, month - 1, day);
+  if (date.getFullYear() !== year || date.getMonth() !== month - 1 || date.getDate() !== day) {
+    throw new Error(`Invalid date key value: "${dateKey}"`);
+  }
+  return date;
+};
+
+/** 지정 타임존 기준 "오늘"을 로컬 Date(연·월·일)로 반환 */
+export const getCalendarDateInTimeZone = (timeZone: string = DEFAULT_CALENDAR_TIMEZONE): Date => {
+  const parts = new Intl.DateTimeFormat("en-US", {
+    timeZone,
+    year: "numeric",
+    month: "numeric",
+    day: "numeric",
+  }).formatToParts(new Date());
+
+  const year = Number(parts.find(part => part.type === "year")?.value);
+  const month = Number(parts.find(part => part.type === "month")?.value);
+  const day = Number(parts.find(part => part.type === "day")?.value);
+
+  return new Date(year, month - 1, day);
+};
+
 export const formatMonthKey = (date: Date) =>
   `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}`;
 

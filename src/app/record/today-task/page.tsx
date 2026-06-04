@@ -17,70 +17,10 @@ const formatDate = (date: Date) =>
   `${date.getFullYear()}.${String(date.getMonth() + 1).padStart(2, "0")}.${String(date.getDate()).padStart(2, "0")}`;
 
 const Page = () => {
-  const {
-    selectedDate,
-    isDateFieldSelected,
-    calendarDraftDate,
-    isCalendarOpen,
-    isProjectSheetOpen,
-    projectSheetMode,
-    projectSheetStep,
-    selectedProjectTag,
-    projectTags,
-    createdProjectTags,
-    isProjectTagEditing,
-    editingProjectTag,
-    editingProjectTagValue,
-    isAddingProjectTag,
-    projectTitle,
-    projectTasks,
-    addedProjects,
-    openedProjectMenuId,
-    scrumToastState,
-    scrumToastMessage,
-    projectTagToastState,
-    projectTagToastMessage,
-    isProjectExitModalOpen,
-    isTodayWithExistingRecord,
-    canAddProject,
-    showProjectAddButton,
-    maxProjectTasks,
-    projectTitlePlaceholder,
-    projectTaskPlaceholder,
-    getIsProjectActionEnabled,
-    setCalendarDraftDate,
-    setEditingProjectTagValue,
-    setProjectTitle,
-    setProjectTasks,
-    setIsAddingProjectTag,
-    setIsProjectExitModalOpen,
-    openProjectSheet,
-    openProjectEditSheet,
-    openCalendarSheet,
-    loadCalendarScrumDates,
-    isScrumDate,
-    isRecordDateLocked,
-    handleCalendarDateClick,
-    closeCalendarSheet,
-    confirmCalendarDate,
-    closeProjectSheet,
-    requestCloseProjectSheet,
-    toggleProjectMenu,
-    deleteProject,
-    toggleSelectedProjectTag,
-    startAddingProjectTag,
-    commitNewProjectTag,
-    startProjectTagEdit,
-    cancelProjectTagEdit,
-    confirmProjectTagEdit,
-    deleteProjectTag,
-    handleProjectSheetHeaderTextClick,
-    handleProjectPrevious,
-    handleProjectNext,
-  } = useDailyScrum();
+  const { toast, date, calendar, projectSheet } = useDailyScrum();
 
   return (
-    <div className="flex min-h-0 flex-1 flex-col">
+    <div className="flex flex-col">
       <Toast
         contents="프로젝트 수 상관없이 총 5개의 작업만 작성 가능해요"
         leftIcon={<MyPageIcon className="text-offwhite-600 size-6" />}
@@ -88,115 +28,113 @@ const Page = () => {
         className="bg-gray-850/60 mt-4 w-full p-3"
       />
 
-      {scrumToastState !== "hidden" && (
+      {toast.scrumToastState !== "hidden" && (
         <Toast
-          contents={scrumToastMessage}
+          contents={toast.scrumToastMessage}
           showCloseButton={false}
           className={cn(
             "fixed bottom-9.5 left-1/2 z-60 -translate-x-1/2 justify-center transition-opacity duration-300",
-            scrumToastState === "fading" ? "opacity-0" : "opacity-100",
+            toast.scrumToastState === "fading" ? "opacity-0" : "opacity-100",
           )}
         />
       )}
 
-      {projectTagToastState !== "hidden" && (
+      {projectSheet.projectTagToastState !== "hidden" && (
         <Toast
-          contents={projectTagToastMessage}
+          contents={projectSheet.projectTagToastMessage}
           variant={
-            projectTagToastMessage === "새로 추가한 태그만 수정할 수 있어요" ? "error" : "success"
+            projectSheet.projectTagToastMessage === "새로 추가한 태그만 수정할 수 있어요"
+              ? "error"
+              : "success"
           }
           showCloseButton={false}
           className={cn(
             "fixed bottom-9.5 left-1/2 z-60 -translate-x-1/2 justify-center transition-opacity duration-300",
-            projectTagToastState === "fading" ? "opacity-0" : "opacity-100",
+            projectSheet.projectTagToastState === "fading" ? "opacity-0" : "opacity-100",
           )}
         />
       )}
 
       <DateSection
-        value={isDateFieldSelected && selectedDate ? formatDate(selectedDate) : ""}
+        value={date.isDateFieldSelected && date.selectedDate ? formatDate(date.selectedDate) : ""}
         placeholder={formatDate(new Date())}
-        selected={isDateFieldSelected}
-        onOpenCalendar={openCalendarSheet}
+        selected={date.isDateFieldSelected}
+        onOpenCalendar={calendar.openCalendarSheet}
       />
 
       <ProjectSection
-        projects={addedProjects}
-        canAddProject={canAddProject}
-        showProjectAddButton={showProjectAddButton}
-        isTodayWithExistingRecord={isTodayWithExistingRecord}
-        openedProjectMenuId={openedProjectMenuId}
-        onOpenProjectSheet={openProjectSheet}
-        onToggleProjectMenu={toggleProjectMenu}
-        onDeleteProject={deleteProject}
-        onOpenProjectEditSheet={openProjectEditSheet}
+        projects={date.addedProjects}
+        canAddProject={projectSheet.canAddProject}
+        showProjectAddButton={projectSheet.showProjectAddButton}
+        isTodayWithExistingRecord={date.isTodayWithExistingRecord}
+        openedProjectMenuId={projectSheet.openedProjectMenuId}
+        onOpenProjectSheet={projectSheet.openProjectSheet}
+        onToggleProjectMenu={projectSheet.toggleProjectMenu}
+        onDeleteProject={projectSheet.deleteProject}
+        onOpenProjectEditSheet={projectSheet.openProjectEditSheet}
       />
 
-      {isCalendarOpen ? (
-        <CalendarSheet
-          isOpen={isCalendarOpen}
-          selectedDate={calendarDraftDate}
-          isScrumDate={isScrumDate}
-          isRecordDateLocked={isRecordDateLocked}
-          doneEnabled={calendarDraftDate !== null}
-          onClose={closeCalendarSheet}
-          onConfirm={confirmCalendarDate}
-          onSelectDate={setCalendarDraftDate}
-          onMonthChange={loadCalendarScrumDates}
-          onCalendarDayClick={handleCalendarDateClick}
-        />
-      ) : null}
+      <CalendarSheet
+        isOpen={calendar.isCalendarOpen}
+        selectedDate={calendar.calendarDraftDate}
+        isScrumDate={calendar.isScrumDate}
+        isRecordDateLocked={calendar.isRecordDateLocked}
+        doneEnabled={calendar.calendarDraftDate !== null}
+        onClose={calendar.closeCalendarSheet}
+        onConfirm={calendar.confirmCalendarDate}
+        onSelectDate={calendar.setCalendarDraftDate}
+        onMonthChange={calendar.loadCalendarScrumDates}
+        onCalendarDayClick={calendar.handleCalendarDateClick}
+      />
 
-      {isProjectSheetOpen ? (
-        <ProjectSheet
-          isOpen={isProjectSheetOpen}
-          mode={projectSheetMode}
-          step={projectSheetStep}
-          selectedProjectTag={selectedProjectTag}
-          projectTags={projectTags}
-          createdProjectTags={createdProjectTags}
-          isProjectTagEditing={isProjectTagEditing}
-          editingProjectTag={editingProjectTag}
-          editingProjectTagValue={editingProjectTagValue}
-          isAddingProjectTag={isAddingProjectTag}
-          projectTitle={projectTitle}
-          projectTasks={projectTasks}
-          projectTitlePlaceholder={projectTitlePlaceholder}
-          projectTaskPlaceholder={projectTaskPlaceholder}
-          canEditProjectTags={createdProjectTags.length > 0}
-          isProjectActionEnabled={getIsProjectActionEnabled()}
-          maxProjectTasks={maxProjectTasks}
-          onClose={requestCloseProjectSheet}
-          onOverlayClick={closeProjectSheet}
-          onHeaderTextClick={handleProjectSheetHeaderTextClick}
-          onSelectProjectTag={toggleSelectedProjectTag}
-          onStartProjectTagEdit={startProjectTagEdit}
-          onCancelProjectTagEdit={cancelProjectTagEdit}
-          onChangeEditingProjectTagValue={setEditingProjectTagValue}
-          onConfirmProjectTagEdit={confirmProjectTagEdit}
-          onDeleteProjectTag={deleteProjectTag}
-          onStartAddingProjectTag={startAddingProjectTag}
-          onCancelAddingProjectTag={() => setIsAddingProjectTag(false)}
-          onCommitNewProjectTag={commitNewProjectTag}
-          onChangeProjectTitle={setProjectTitle}
-          onClearProjectTitle={() => setProjectTitle("")}
-          onChangeProjectTasks={setProjectTasks}
-          onPrevious={handleProjectPrevious}
-          onNext={handleProjectNext}
-        />
-      ) : null}
+      <ProjectSheet
+        isOpen={projectSheet.isProjectSheetOpen}
+        mode={projectSheet.projectSheetMode}
+        step={projectSheet.projectSheetStep}
+        selectedProjectTag={projectSheet.selectedProjectTag}
+        projectTags={projectSheet.projectTags}
+        createdProjectTags={projectSheet.createdProjectTags}
+        isProjectTagEditing={projectSheet.isProjectTagEditing}
+        editingProjectTag={projectSheet.editingProjectTag}
+        editingProjectTagValue={projectSheet.editingProjectTagValue}
+        isAddingProjectTag={projectSheet.isAddingProjectTag}
+        projectTitle={projectSheet.projectTitle}
+        projectTasks={projectSheet.projectTasks}
+        projectTitlePlaceholder={projectSheet.projectTitlePlaceholder}
+        projectTaskPlaceholder={projectSheet.projectTaskPlaceholder}
+        canEditProjectTags={projectSheet.createdProjectTags.length > 0}
+        isProjectActionEnabled={projectSheet.getIsProjectActionEnabled()}
+        maxProjectTasks={projectSheet.maxProjectTasks}
+        onClose={projectSheet.requestCloseProjectSheet}
+        onOverlayClick={projectSheet.dismissProjectSheetOnOverlay}
+        onHeaderTextClick={projectSheet.handleProjectSheetHeaderTextClick}
+        onSelectProjectTag={projectSheet.toggleSelectedProjectTag}
+        onStartProjectTagEdit={projectSheet.startProjectTagEdit}
+        onCancelProjectTagEdit={projectSheet.cancelProjectTagEdit}
+        onChangeEditingProjectTagValue={projectSheet.setEditingProjectTagValue}
+        onConfirmProjectTagEdit={projectSheet.confirmProjectTagEdit}
+        onDeleteProjectTag={projectSheet.deleteProjectTag}
+        onStartAddingProjectTag={projectSheet.startAddingProjectTag}
+        onCancelAddingProjectTag={() => projectSheet.setIsAddingProjectTag(false)}
+        onCommitNewProjectTag={projectSheet.commitNewProjectTag}
+        onChangeProjectTitle={projectSheet.setProjectTitle}
+        onClearProjectTitle={() => projectSheet.setProjectTitle("")}
+        onChangeProjectTasks={projectSheet.setProjectTasks}
+        onPrevious={projectSheet.handleProjectPrevious}
+        onNext={projectSheet.handleProjectNext}
+      />
 
-      {isProjectExitModalOpen && (
+      {projectSheet.isProjectExitModalOpen && (
         <div className="fixed inset-y-0 left-1/2 z-70 w-full max-w-107.5 min-w-93.75 -translate-x-1/2">
           <Modal
-            isOpen={isProjectExitModalOpen}
+            isOpen={projectSheet.isProjectExitModalOpen}
             type="double"
             title="정말 그만두시겠어요?"
             contents="지금 나가면 작성 중인 내용이 없어져요"
             btnLLabel="나가기"
             btnRLabel="머무르기"
-            onBtnLClick={closeProjectSheet}
-            onBtnRClick={() => setIsProjectExitModalOpen(false)}
+            onBtnLClick={projectSheet.confirmAbandonProjectSheet}
+            onBtnRClick={() => projectSheet.setIsProjectExitModalOpen(false)}
           />
         </div>
       )}

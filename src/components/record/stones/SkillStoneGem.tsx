@@ -104,10 +104,9 @@ const SkillStoneGem = ({ selectedSkillIds, isComplete, className }: SkillStoneGe
             <Image
               src={item.src}
               alt={item.label}
-              width={item.width}
-              height={item.height}
-              sizes="52px"
-              className="relative z-10 size-full object-contain drop-shadow-[0_0_0.875rem_rgba(255,255,255,0.24)]"
+              width={item.src.width}
+              height={item.src.height}
+              className="relative z-10 size-full object-contain object-center drop-shadow-[0_0_0.875rem_rgba(255,255,255,0.24)]"
             />
           </div>
         );

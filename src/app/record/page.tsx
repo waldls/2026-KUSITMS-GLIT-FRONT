@@ -1,20 +1,23 @@
 "use client";
 
 import Image from "next/image";
+import { useState } from "react";
 
 import { ChevronRightIcon, StarOneIcon } from "@/assets/icons";
 import recordCharacter from "@/assets/images/record/record_character.png";
 import Tag from "@/components/common/Tag";
 import { useMe } from "@/lib/hooks/user/userClient";
+import { cn } from "@/lib/utils/cn";
 import { navigateRecord } from "@/lib/utils/recordNavigation";
 
 const Page = () => {
   const { data: profile } = useMe();
+  const [isImageLoaded, setIsImageLoaded] = useState(false);
   const nickname = profile?.nickname?.trim();
   const streakDays = profile?.consecutiveRecordDays ?? 0;
 
   return (
-    <div className="flex min-h-0 flex-1 flex-col">
+    <div className="flex flex-col">
       {/* 타이틀 영역 */}
       <div className="flex shrink-0 flex-col items-center pt-4 pb-6">
         <h2 className="head-3 text-center text-gray-100">
@@ -36,15 +39,21 @@ const Page = () => {
 
       {/* 캐릭터 이미지 */}
       <div className="flex shrink-0 justify-center pt-24.25">
-        <Image
-          src={recordCharacter}
-          alt="기록 캐릭터"
-          width={168}
-          height={196}
-          priority
-          sizes="168px"
-          className="h-auto w-full max-w-52.25 object-contain"
-        />
+        <div className="relative aspect-168/196 w-full max-w-52.25 overflow-visible">
+          <Image
+            src={recordCharacter}
+            alt="기록 캐릭터"
+            width={168}
+            height={196}
+            priority
+            sizes="(max-width: 430px) 100vw, 209px"
+            className={cn(
+              "size-full object-contain transition-opacity duration-200",
+              isImageLoaded ? "opacity-100" : "opacity-0",
+            )}
+            onLoad={() => setIsImageLoaded(true)}
+          />
+        </div>
       </div>
 
       {/* 하단 카드 */}

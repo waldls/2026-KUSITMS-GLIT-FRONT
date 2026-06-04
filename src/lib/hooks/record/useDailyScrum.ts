@@ -2,18 +2,16 @@ import { useEffect, useState } from "react";
 
 import { useDailyScrumCalendar } from "@/lib/hooks/record/useDailyScrumCalendar";
 import { useDailyScrumDraft } from "@/lib/hooks/record/useDailyScrumDraft";
-import {
-  type ScrumToastState,
-  useDailyScrumProjectSheet,
-} from "@/lib/hooks/record/useDailyScrumProjectSheet";
+import { useDailyScrumProjectSheet } from "@/lib/hooks/record/useDailyScrumProjectSheet";
 import { parseApiDate } from "@/lib/utils/calendar";
 import { useRecordDraftStore } from "@/store/recordDraftStore";
 
 export type { AddedProject } from "@/store/recordDraftStore";
 
+type ScrumToastState = "hidden" | "visible" | "fading";
+
 const getToday = () => {
   const today = new Date();
-
   return new Date(today.getFullYear(), today.getMonth(), today.getDate());
 };
 
@@ -33,8 +31,6 @@ export const useDailyScrum = () => {
     setScrumToastState("visible");
   };
 
-  const calendarSelectedDate = selectedDateStr ? parseApiDate(selectedDateStr) : getToday();
-
   useEffect(() => {
     if (scrumToastState === "hidden") return;
 
@@ -50,6 +46,7 @@ export const useDailyScrum = () => {
     };
   }, [scrumToastState]);
 
+  const calendarSelectedDate = selectedDateStr ? parseApiDate(selectedDateStr) : getToday();
   const projectSheet = useDailyScrumProjectSheet();
 
   const calendar = useDailyScrumCalendar({
@@ -73,69 +70,19 @@ export const useDailyScrum = () => {
   });
 
   return {
-    selectedDate: draft.selectedDate,
-    isDateFieldSelected,
-    isTodayWithExistingRecord,
-    addedProjects: draft.addedProjects,
-    scrumToastState,
-    scrumToastMessage,
-    isSaving: draft.isSaving,
-    setScrumToastState,
-    calendarDraftDate: calendar.calendarDraftDate,
-    calendarStarDates: calendar.calendarStarDates,
-    isCalendarOpen: calendar.isCalendarOpen,
-    setCalendarDraftDate: calendar.setCalendarDraftDate,
-    openCalendarSheet: calendar.openCalendarSheet,
-    loadCalendarScrumDates: calendar.loadCalendarScrumDates,
-    isScrumDate: calendar.isScrumDate,
-    isStarDate: calendar.isStarDate,
-    isRecordDateLocked: calendar.isRecordDateLocked,
-    handleCalendarDateClick: calendar.handleCalendarDateClick,
-    closeCalendarSheet: calendar.closeCalendarSheet,
-    confirmCalendarDate: calendar.confirmCalendarDate,
-    isProjectSheetOpen: projectSheet.isProjectSheetOpen,
-    projectSheetMode: projectSheet.projectSheetMode,
-    projectSheetStep: projectSheet.projectSheetStep,
-    selectedProjectTag: projectSheet.selectedProjectTag,
-    projectTags: projectSheet.projectTags,
-    createdProjectTags: projectSheet.createdProjectTags,
-    isProjectTagEditing: projectSheet.isProjectTagEditing,
-    editingProjectTag: projectSheet.editingProjectTag,
-    editingProjectTagValue: projectSheet.editingProjectTagValue,
-    isAddingProjectTag: projectSheet.isAddingProjectTag,
-    projectTitle: projectSheet.projectTitle,
-    projectTasks: projectSheet.projectTasks,
-    openedProjectMenuId: projectSheet.openedProjectMenuId,
-    projectTagToastState: projectSheet.projectTagToastState,
-    projectTagToastMessage: projectSheet.projectTagToastMessage,
-    isProjectExitModalOpen: projectSheet.isProjectExitModalOpen,
-    canAddProject: projectSheet.canAddProject,
-    showProjectAddButton: projectSheet.showProjectAddButton,
-    maxProjectTasks: projectSheet.maxProjectTasks,
-    projectTitlePlaceholder: projectSheet.projectTitlePlaceholder,
-    projectTaskPlaceholder: projectSheet.projectTaskPlaceholder,
-    getIsProjectActionEnabled: projectSheet.getIsProjectActionEnabled,
-    setEditingProjectTagValue: projectSheet.setEditingProjectTagValue,
-    setProjectTitle: projectSheet.setProjectTitle,
-    setProjectTasks: projectSheet.setProjectTasks,
-    setIsAddingProjectTag: projectSheet.setIsAddingProjectTag,
-    setIsProjectExitModalOpen: projectSheet.setIsProjectExitModalOpen,
-    openProjectSheet: projectSheet.openProjectSheet,
-    openProjectEditSheet: projectSheet.openProjectEditSheet,
-    closeProjectSheet: projectSheet.closeProjectSheet,
-    requestCloseProjectSheet: projectSheet.requestCloseProjectSheet,
-    closeProjectMenu: projectSheet.closeProjectMenu,
-    commitNewProjectTag: projectSheet.commitNewProjectTag,
-    startProjectTagEdit: projectSheet.startProjectTagEdit,
-    cancelProjectTagEdit: projectSheet.cancelProjectTagEdit,
-    confirmProjectTagEdit: projectSheet.confirmProjectTagEdit,
-    deleteProjectTag: projectSheet.deleteProjectTag,
-    toggleProjectMenu: projectSheet.toggleProjectMenu,
-    deleteProject: projectSheet.deleteProject,
-    toggleSelectedProjectTag: projectSheet.toggleSelectedProjectTag,
-    startAddingProjectTag: projectSheet.startAddingProjectTag,
-    handleProjectSheetHeaderTextClick: projectSheet.handleProjectSheetHeaderTextClick,
-    handleProjectPrevious: projectSheet.handleProjectPrevious,
-    handleProjectNext: projectSheet.handleProjectNext,
+    toast: {
+      scrumToastState,
+      scrumToastMessage,
+      setScrumToastState,
+    },
+    date: {
+      selectedDate: draft.selectedDate,
+      isDateFieldSelected,
+      isTodayWithExistingRecord,
+      addedProjects: draft.addedProjects,
+      isSaving: draft.isSaving,
+    },
+    calendar,
+    projectSheet,
   };
 };

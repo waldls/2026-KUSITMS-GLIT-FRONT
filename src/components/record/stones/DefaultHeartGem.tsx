@@ -10,6 +10,7 @@ interface DefaultHeartGemProps {
   ariaLabel?: string;
   className?: string;
   glowLevel?: number;
+  priority?: boolean;
 }
 
 const DefaultHeartGem = ({
@@ -18,6 +19,7 @@ const DefaultHeartGem = ({
   ariaLabel = "하트 원석",
   className,
   glowLevel = 2,
+  priority = false,
 }: DefaultHeartGemProps) => (
   <div
     className={cn("@container-[size] relative flex size-32 items-center justify-center", className)}
@@ -41,9 +43,11 @@ const DefaultHeartGem = ({
       src={HEART_GEM_ASSETS.default.src}
       alt={ariaHidden ? "" : ariaLabel}
       aria-hidden={ariaHidden}
-      width={HEART_GEM_ASSETS.default.width}
-      height={HEART_GEM_ASSETS.default.height}
-      sizes="128px"
+      width={HEART_GEM_ASSETS.default.src.width}
+      height={HEART_GEM_ASSETS.default.src.height}
+      priority={priority}
+      quality={95}
+      sizes={`${HEART_GEM_ASSETS.default.src.width}px`}
       className="relative z-10 size-full object-contain"
     />
   </div>
