@@ -17,12 +17,14 @@ interface Props {
 const MostRecordSection = ({ topCategories = [], topDetailTags = [] }: Props) => {
   const maxCount = Math.max(...topCategories.map(c => c.count));
   const tops = topCategories.filter(c => c.count === maxCount);
-  const topLabel = tops.map(c => `${CATEGORY_LABEL[c.competency]}(${maxCount}회)`).join(", ");
+  const topLabel = tops
+    .map(c => `${CATEGORY_LABEL[c.competency].replace(/\//g, "⁠/⁠")}⁠(${maxCount}회)`)
+    .join(", ");
   const tags = topDetailTags.slice(0, 3).join(", ");
 
   return (
     <div className="border-linear-100 rounded-8 bg-gray-900 p-4 text-center text-white">
-      <p>
+      <p className="break-keep">
         가장 많이 기록한 영역은 <span className="text-sea-blue-400">{topLabel}</span>이에요.
         <br />
         자주 등장한 활동은 <br />
