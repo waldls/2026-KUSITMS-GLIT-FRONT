@@ -15,8 +15,7 @@ export default defineConfig({
   forbidOnly: !!process.env.CI,
   /* Retry on CI only */
   retries: process.env.CI ? 2 : 0,
-  /* Opt out of parallel tests on CI. */
-  workers: 1,
+  workers: process.env.CI ? 2 : 1,
   timeout: 60_000,
   reporter: [["list"], ["html", { open: "never" }], ["./scripts/playwright-discord-reporter.ts"]],
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */

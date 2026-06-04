@@ -90,7 +90,7 @@ const Page = () => {
         />
       ) : null}
       <div className="scrollbar-hide flex-1 overflow-y-auto px-5 pt-12 pb-6">
-        <p className="head-5 relative z-10 pb-3.5 text-center text-white">
+        <div className="head-5 relative z-10 pb-3.5 text-center text-white">
           {isHeroLoading ? (
             <HomeGreetingSkeleton />
           ) : (
@@ -100,7 +100,7 @@ const Page = () => {
               님의 강점을 확인해보세요
             </>
           )}
-        </p>
+        </div>
         {isHeroLoading ? (
           <HomeCharacterSkeleton className="mx-auto" />
         ) : (
