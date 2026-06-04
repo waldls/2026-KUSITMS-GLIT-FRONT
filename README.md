@@ -187,6 +187,7 @@ pnpm storybook          # 로컬 Storybook 서버 (http://localhost:6006)
 | -------------------------- | -------------------------------------- |
 | `NEXT_PUBLIC_API_BASE_URL` | 백엔드 API 서버 URL                    |
 | `NEXT_PUBLIC_FIREBASE_*`   | Firebase 프로젝트 설정 (FCM 푸시 알림) |
+| `NEXT_PUBLIC_GA_ID`        | Google Analytics 측정 ID               |
 
 ## 🤝 협업 가이드
 
