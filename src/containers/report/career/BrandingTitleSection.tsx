@@ -18,6 +18,8 @@ const BrandingTitleSection = ({ brandingStatement }: BrandingTitleSectionProps) 
         className="absolute right-6 -bottom-7"
         width={93}
         height={115}
+        sizes="93px"
+        priority
       />
       <div className="relative w-40">
         <p className="body-3 text-left break-keep text-gray-100">{brandingStatement}</p>

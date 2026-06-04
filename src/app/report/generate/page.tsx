@@ -2,14 +2,15 @@
 
 import Image from "next/image";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
+import { Suspense, useEffect, useRef, useState } from "react";
 
 import characterLiedown from "@/assets/images/report/character_liedown.png";
+import LoadingScreen from "@/components/common/LoadingScreen";
 import { getStatus, postReports, postRetry } from "@/lib/apis/report/report";
 import { getProgressStep } from "@/lib/utils/report";
 import type { ReportCreateRequest, ReportStatus } from "@/types/report/report";
 
-const Page = () => {
+const GeneratePage = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const type = searchParams.get("type");
@@ -106,7 +107,8 @@ const Page = () => {
           alt="리포트 생성 중"
           width={173}
           height={104}
-          loading="eager"
+          sizes="173px"
+          priority
         />
         <p className="animate-star-complete-copy head-3 pb-1 text-gray-100">{title}</p>
         <p className="animate-star-complete-copy text-typo-tertiary body-2 pb-7">
@@ -117,5 +119,11 @@ const Page = () => {
     </section>
   );
 };
+
+const Page = () => (
+  <Suspense fallback={<LoadingScreen />}>
+    <GeneratePage />
+  </Suspense>
+);
 
 export default Page;

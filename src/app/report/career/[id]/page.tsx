@@ -1,10 +1,7 @@
-"use client";
+import { redirect } from "next/navigation";
 
-import { useParams, useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
-
-import Header from "@/components/common/Header";
 import MoreStep from "@/components/report/MoreStep";
+import ReportDetailHeader from "@/components/report/ReportDetailHeader";
 import BrandingEvidenceSection from "@/containers/report/career/BrandingEvidenceSection";
 import BrandingTitleSection from "@/containers/report/career/BrandingTitleSection";
 import ExperienceHighlightsSection from "@/containers/report/career/ExperienceHighlightsSection";
@@ -12,27 +9,26 @@ import InterviewQuestionsSection from "@/containers/report/career/InvterviewQues
 import NarrativeSummarySection from "@/containers/report/career/NarrativeSummarySection";
 import PatternSection from "@/containers/report/career/PatternSection";
 import StrengthsSection from "@/containers/report/career/StrengthsSection";
-import { getReportId } from "@/lib/apis/report/report";
-import { useMe } from "@/lib/hooks/user/userClient";
-import type { CareerReportDetail } from "@/types/report/report";
+import { getReportById } from "@/lib/apis/report/report.server";
+import { getMe } from "@/lib/apis/user/user.server";
 
-const Page = () => {
-  const router = useRouter();
-  const params = useParams();
-  const { data: me } = useMe();
-  const [data, setData] = useState<CareerReportDetail | null>(null);
+interface PageProps {
+  params: Promise<{ id: string }>;
+}
 
-  useEffect(() => {
-    getReportId(Number(params.id))
-      .then(res => {
-        if (res?.reportType === "CAREER") setData(res);
-        else router.push("/report");
-      })
-      .catch(() => router.push("/report"));
-  }, [params.id, router]);
+const Page = async ({ params }: PageProps) => {
+  const { id } = await params;
 
-  if (!data) return null;
+  let data;
+  try {
+    data = await getReportById(Number(id));
+  } catch {
+    redirect("/report");
+  }
 
+  if (!data || data.reportType !== "CAREER") redirect("/report");
+
+  const me = await getMe();
   const { createdAt, selectedStarCount, content } = data;
   const {
     brandingStatement,
@@ -46,7 +42,7 @@ const Page = () => {
 
   return (
     <div className="flex h-screen w-full flex-col">
-      <Header title="커리어 리포트" onLeftClick={() => router.push("/report")} />
+      <ReportDetailHeader title="커리어 리포트" />
       <div className="scrollbar-hide flex-1 overflow-y-auto px-5 pt-4 pb-20">
         <div className="flex flex-col gap-3">
           <div>

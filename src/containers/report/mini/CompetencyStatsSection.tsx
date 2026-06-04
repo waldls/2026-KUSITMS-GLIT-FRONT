@@ -31,6 +31,7 @@ const CompetencyStatsSection = ({ topCategories = [] }: Props) => {
               ariaLabel={label}
               className="size-9"
               blurClassName="inset-[-10%] blur-[16cqw]"
+              priority
             />
             <p className="body-5 pt-0.75 whitespace-nowrap text-gray-400">{label}</p>
             <p className="body-3 text-gray-100">{count}회</p>

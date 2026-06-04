@@ -12,7 +12,7 @@ const InvterviewQuestionsSection = ({
   return (
     <div className="flex flex-col gap-4">
       {interviewQuestions.map((item, i) => (
-        <div key={i} className="rounded-12 flex-1 bg-gray-300 px-3 py-4">
+        <div key={item.question} className="rounded-12 flex-1 bg-gray-300 px-3 py-4">
           <div className="flex flex-col gap-3">
             <div className="flex flex-col gap-2">
               <p className="body-3 text-black">면접관이 파고들 포인트 {i + 1}</p>
