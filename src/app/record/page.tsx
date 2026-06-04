@@ -51,10 +51,11 @@ const Page = () => {
       <button
         type="button"
         onClick={() => navigateRecord("/record/today-task")}
-        className="rounded-12 mt-6.25 mb-2 flex min-h-40 w-full shrink-0 cursor-pointer flex-col items-start justify-start border-[0.3px] border-solid border-gray-800 bg-[linear-gradient(126deg,rgba(17,17,17,0.20)_6.6%,rgba(173,173,173,0.20)_106.5%)] px-4.5 pt-4 text-left">
+        className="rounded-12 relative mt-6.25 mb-2 flex min-h-40 w-full shrink-0 cursor-pointer flex-col items-start justify-start overflow-hidden border-[0.3px] border-solid border-gray-800 bg-[linear-gradient(126deg,rgba(17,17,17,0.20)_6.6%,rgba(173,173,173,0.20)_106.5%)] px-4.5 pt-4 text-left">
+        <div className="bg-sea-blue-800 pointer-events-none absolute right-0 bottom-0 h-40 w-53.5 translate-x-1/4 translate-y-1/2 rounded-full opacity-40 blur-[85px]" />
         <p className="body-5 mb-0.5 text-gray-100">오늘 한 일을 간단히 기록해요</p>
         <div className="flex items-center gap-1">
-          <h3 className="head-4 text-white">기록 하러가기</h3>
+          <h3 className="head-4 text-white">기록하러 가기</h3>
           <ChevronRightIcon className="size-5 text-white" />
         </div>
       </button>
