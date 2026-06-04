@@ -7,7 +7,8 @@ import ProfileSection from "@/containers/my/profile/ProfileSection";
 import { getMe } from "@/lib/apis/user/user.server";
 
 const ProfileSectionFetcher = async () => {
-  const profile = await getMe();
+  // 서버사이드 API 실패(네트워크 오류 등)는 null로 처리하고 클라이언트 AuthGate에 인증을 위임
+  const profile = await getMe().catch(() => null);
   return <ProfileSection profile={profile} />;
 };
 
