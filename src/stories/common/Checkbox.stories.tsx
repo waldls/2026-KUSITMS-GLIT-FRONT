@@ -29,6 +29,10 @@ export const Disabled: Story = {
   args: { disabled: true },
 };
 
+export const CheckedDisabled: Story = {
+  args: { checked: true, disabled: true },
+};
+
 export const AllStates: Story = {
   args: {},
   render: () => {
@@ -40,6 +44,7 @@ export const AllStates: Story = {
         <Checkbox checked={first} onChange={setFirst} />
         <Checkbox checked={second} onChange={setSecond} />
         <Checkbox disabled />
+        <Checkbox checked disabled />
       </div>
     );
   },

@@ -58,11 +58,14 @@ export const WithRightLabelAndIcon: Story = {
 export const AllVariants: Story = {
   render: () => (
     <div className="flex flex-col">
-      <Header title="타이틀만" />
-      <Header title="완료 텍스트" rightLabel="완료" />
-      <Header title="오른쪽 아이콘" rightIcon={<SettingsIcon className="size-6 text-gray-100" />} />
+      <Header title="Title Only" />
+      <Header title="With Right Label" rightLabel="완료" />
       <Header
-        title="텍스트 + 아이콘"
+        title="With Right Icon"
+        rightIcon={<SettingsIcon className="size-6 text-gray-100" />}
+      />
+      <Header
+        title="With Label And Icon"
         rightLabel="완료"
         rightIcon={<SettingsIcon className="size-6 text-gray-100" />}
       />

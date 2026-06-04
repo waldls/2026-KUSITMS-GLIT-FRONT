@@ -50,7 +50,15 @@ describe("useDailyScrumDraft", () => {
     };
     vi.mocked(getTodayTaskScrums).mockReturnValue(mockSessionData);
     vi.mocked(mapStoredScrumsToAddedProjects).mockReturnValue([
-      { id: 1, titleId: 1, projectId: 1, label: "프로젝트1", title: "제목", tasks: [] },
+      {
+        id: 1,
+        titleId: 1,
+        projectId: 1,
+        label: "프로젝트1",
+        title: "제목",
+        tasks: [],
+        scrumIds: [],
+      },
     ]);
 
     renderHook(() => useDailyScrumDraft(mockParams));

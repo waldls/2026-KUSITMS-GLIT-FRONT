@@ -25,7 +25,7 @@ const meta = {
   },
   decorators: [
     Story => (
-      <div className="w-[335px]">
+      <div className="w-83.75">
         <Story />
       </div>
     ),
@@ -59,9 +59,9 @@ export const Google: Story = {
   },
 };
 
-export const All: Story = {
+export const AllVariants: Story = {
   render: () => (
-    <div className="flex w-[335px] flex-col gap-4">
+    <div className="flex w-83.75 flex-col gap-4">
       <SocialLoginButton
         label="카카오로 시작하기"
         className="bg-[#FEE500] text-black/85"

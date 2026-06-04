@@ -46,3 +46,17 @@ export const MaxContents: Story = {
     contents: "서른한 글자를 초과하는 내용을 입력하면 이 뒷부분이 잘립니다",
   },
 };
+
+export const AllStates: Story = {
+  args: {
+    contents: "내용 입력",
+  },
+  render: () => (
+    <div className="flex flex-col gap-4">
+      <Toast contents="내용 입력" />
+      <Toast contents="변경되었어요" variant="success" />
+      <Toast contents="내용 입력" showLeftIcon={false} />
+      <Toast contents="내용 입력" showCloseButton={false} />
+    </div>
+  ),
+};

@@ -46,3 +46,34 @@ export const StatusOptions: Story = {
     return <SelectionCardGrid options={STATUS_OPTIONS} value={value} onChange={setValue} />;
   },
 };
+
+export const AllVariants: Story = {
+  args: { label: "" },
+  render: () => {
+    const [jobValue, setJobValue] = useState("");
+    const [statusValue, setStatusValue] = useState("");
+    return (
+      <div className="flex flex-col gap-10">
+        <div className="flex flex-col gap-3">
+          <label className="body-5 text-gray-600">Default / Selected</label>
+          <div className="flex gap-3">
+            <SelectionCard {...JOB_OPTIONS[0]} selected={false} onClick={() => {}} />
+            <SelectionCard {...JOB_OPTIONS[0]} selected={true} onClick={() => {}} />
+          </div>
+        </div>
+        <div className="flex flex-col gap-3">
+          <label className="body-5 text-gray-600">Job Options</label>
+          <SelectionCardGrid options={JOB_OPTIONS} value={jobValue} onChange={setJobValue} />
+        </div>
+        <div className="flex flex-col gap-3">
+          <label className="body-5 text-gray-600">Status Options</label>
+          <SelectionCardGrid
+            options={STATUS_OPTIONS}
+            value={statusValue}
+            onChange={setStatusValue}
+          />
+        </div>
+      </div>
+    );
+  },
+};

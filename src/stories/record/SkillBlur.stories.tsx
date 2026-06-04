@@ -24,7 +24,7 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-export const AllBlurs: Story = {
+export const AllVariants: Story = {
   args: { skillId: 1 },
   render: () => (
     <div className="grid grid-cols-5 gap-6">

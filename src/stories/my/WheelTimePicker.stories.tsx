@@ -32,9 +32,35 @@ type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {};
 
+export const Disabled: Story = {
+  args: { disabled: true },
+};
+
 export const Interactive: Story = {
   render: () => {
     const [time, setTime] = useState<TimeValue>(DEFAULT_TIME);
     return <WheelTimePicker value={time} disabled={false} onChange={setTime} />;
+  },
+};
+
+export const AllStates: Story = {
+  render: () => {
+    const [time, setTime] = useState<TimeValue>(DEFAULT_TIME);
+    return (
+      <div className="flex flex-col gap-8">
+        <div className="flex flex-col gap-2">
+          <label className="body-5 text-gray-600">Default</label>
+          <WheelTimePicker value={DEFAULT_TIME} disabled={false} onChange={() => {}} />
+        </div>
+        <div className="flex flex-col gap-2">
+          <label className="body-5 text-gray-600">Interactive</label>
+          <WheelTimePicker value={time} disabled={false} onChange={setTime} />
+        </div>
+        <div className="flex flex-col gap-2">
+          <label className="body-5 text-gray-600">Disabled</label>
+          <WheelTimePicker value={DEFAULT_TIME} disabled={true} onChange={() => {}} />
+        </div>
+      </div>
+    );
   },
 };

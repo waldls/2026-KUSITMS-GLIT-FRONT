@@ -39,7 +39,7 @@ export const Drop: Story = {
   ),
 };
 
-export const All_Variants: Story = {
+export const AllVariants: Story = {
   parameters: { layout: "fullscreen" },
   render: () => (
     <div className="flex items-center justify-center bg-black p-10">

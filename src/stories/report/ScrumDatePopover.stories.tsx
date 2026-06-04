@@ -63,16 +63,13 @@ const InteractiveRender = ({ scrums }: { scrums: DailySelectableRecord[] }) => {
 };
 
 export const OneRecord: Story = {
-  name: "1개",
   render: () => <InteractiveRender scrums={oneRecord} />,
 };
 
 export const TwoRecords: Story = {
-  name: "2개",
   render: () => <InteractiveRender scrums={twoRecords} />,
 };
 
 export const ManyRecords: Story = {
-  name: "4개",
   render: () => <InteractiveRender scrums={manyRecords} />,
 };

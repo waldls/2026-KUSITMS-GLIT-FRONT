@@ -36,36 +36,29 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-// ─── Playground ────────────────────────────────────────────────────────────
-
 export const Playground: Story = {
   decorators: [withWidth],
 };
 
-// ─── 개별 케이스 ────────────────────────────────────────────────────────────
-
 export const Empty: Story = {
-  name: "0% — 비어있음",
+  name: "0% — Empty",
   decorators: [withWidth],
   args: { progressRate: 0, isGeneratable: false },
 };
 
 export const InProgress: Story = {
-  name: "70% — 진행 중",
+  name: "70% — In Progress",
   decorators: [withWidth],
   args: { progressRate: 0.7, isGeneratable: false },
 };
 
 export const Full: Story = {
-  name: "100% — 리포트 생성 가능",
+  name: "100% — Generatable",
   decorators: [withWidth],
   args: { progressRate: 1, isGeneratable: true },
 };
 
-// ─── 전체 변형 모음 ────────────────────────────────────────────────────────
-
 export const AllVariants: Story = {
-  name: "전체 변형 모음",
   parameters: { layout: "fullscreen" },
   render: () => (
     <div className="min-h-screen bg-gray-900 p-10">
@@ -83,7 +76,7 @@ export const AllVariants: Story = {
           <GaugeBar progressRate={0.7} isGeneratable={false} />
         </div>
         <div className="flex flex-col gap-2">
-          <p className="body-5 text-sea-blue-400">100% — 생성 가능</p>
+          <p className="body-5 text-sea-blue-400">100% — Generatable</p>
           <GaugeBar progressRate={1} isGeneratable={true} />
         </div>
       </div>

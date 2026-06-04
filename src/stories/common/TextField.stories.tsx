@@ -15,14 +15,12 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-/** 빈 칸, 포커스 없음 — placeholder·밑줄 gray-800 */
 export const Default: Story = {
   args: {
     placeholder: "내용 입력",
   },
 };
 
-/** 빈 칸, 포커스 없음 + 아이콘 */
 export const DefaultWithIcon: Story = {
   args: {
     placeholder: "검색어를 입력하세요",
@@ -30,7 +28,6 @@ export const DefaultWithIcon: Story = {
   },
 };
 
-/** 입력 후 손 뗌 — 글자·밑줄 gray-500 */
 export const FilledBlurred: Story = {
   args: {
     placeholder: "내용 입력",
@@ -38,7 +35,6 @@ export const FilledBlurred: Story = {
   },
 };
 
-/** 입력 후 손 뗌 + 아이콘 */
 export const FilledBlurredWithIcon: Story = {
   args: {
     placeholder: "비밀번호 입력",
@@ -47,7 +43,6 @@ export const FilledBlurredWithIcon: Story = {
   },
 };
 
-/** 입력 중 (포커스) — 글자·밑줄 gray-300 */
 export const FilledFocused: Story = {
   args: {
     placeholder: "내용 입력",
@@ -55,7 +50,6 @@ export const FilledFocused: Story = {
   },
 };
 
-/** 입력 중 (포커스) + 아이콘 */
 export const FilledFocusedWithIcon: Story = {
   args: {
     placeholder: "비밀번호 입력",
@@ -64,8 +58,7 @@ export const FilledFocusedWithIcon: Story = {
   },
 };
 
-/** 글자수 카운트 */
-export const DefaultWithCount: Story = {
+export const WithCount: Story = {
   args: {
     placeholder: "내용 입력",
     showCount: true,
@@ -73,8 +66,7 @@ export const DefaultWithCount: Story = {
   },
 };
 
-/** 글자수 카운트 + 아이콘 */
-export const DefaultWithCountAndIcon: Story = {
+export const WithCountAndIcon: Story = {
   args: {
     placeholder: "내용 입력",
     rightIcon: <SearchIcon />,
@@ -83,8 +75,17 @@ export const DefaultWithCountAndIcon: Story = {
   },
 };
 
-/** 글자수 카운트 + 에러 */
-export const ErrorStateWithCount: Story = {
+export const Error: Story = {
+  args: {
+    variant: "error",
+    id: "email-error",
+    placeholder: "이메일 입력",
+    errorMessage: "이메일 형식이 올바르지 않습니다",
+    rightIcon: <ErrorIcon />,
+  },
+};
+
+export const ErrorWithCount: Story = {
   args: {
     id: "count-error",
     variant: "error",
@@ -96,8 +97,7 @@ export const ErrorStateWithCount: Story = {
   },
 };
 
-/** 글자수 카운트 + 아이콘 + 에러 */
-export const ErrorStateWithCountAndIcon: Story = {
+export const ErrorWithCountAndIcon: Story = {
   args: {
     id: "count-icon-error",
     variant: "error",
@@ -110,38 +110,26 @@ export const ErrorStateWithCountAndIcon: Story = {
   },
 };
 
-/** 에러 상태 */
-export const ErrorState: Story = {
-  args: {
-    variant: "error",
-    id: "email-error",
-    placeholder: "이메일 입력",
-    errorMessage: "이메일 형식이 올바르지 않습니다",
-    rightIcon: <ErrorIcon />,
-  },
-};
-
-/** 전체 상태 한눈에 보기 */
 export const AllStates: Story = {
   render: () => (
     <div className="mt-12 flex flex-col gap-12">
       <div className="flex flex-col gap-2">
-        <label className="body-5 text-gray-600">빈 칸 (포커스 없음)</label>
+        <label className="body-5 text-gray-600">Default</label>
         <TextField placeholder="내용 입력" />
       </div>
 
       <div className="flex flex-col gap-2">
-        <label className="body-5 text-gray-600">빈 칸 (포커스 없음) + 아이콘</label>
+        <label className="body-5 text-gray-600">Default + Icon</label>
         <TextField placeholder="검색어를 입력하세요" rightIcon={<SearchIcon />} />
       </div>
 
       <div className="flex flex-col gap-2">
-        <label className="body-5 text-gray-600">입력 후 손 뗌 — 글자·밑줄 gray-500</label>
+        <label className="body-5 text-gray-600">Filled</label>
         <TextField placeholder="내용 입력" defaultValue="입력된 텍스트" />
       </div>
 
       <div className="flex flex-col gap-2">
-        <label className="body-5 text-gray-600">입력 후 손 뗌 + 아이콘 — 글자·밑줄 gray-500</label>
+        <label className="body-5 text-gray-600">Filled + Icon</label>
         <TextField
           placeholder="비밀번호 입력"
           defaultValue="mypassword123"
@@ -150,23 +138,7 @@ export const AllStates: Story = {
       </div>
 
       <div className="flex flex-col gap-2">
-        <label className="body-5 text-gray-600">입력 중 (포커스) — 글자·밑줄 gray-300</label>
-        <TextField placeholder="내용 입력" defaultValue="입력된 텍스트" />
-      </div>
-
-      <div className="flex flex-col gap-2">
-        <label className="body-5 text-gray-600">
-          입력 중 (포커스) + 아이콘 — 글자·밑줄 gray-300
-        </label>
-        <TextField
-          placeholder="비밀번호 입력"
-          defaultValue="mypassword123"
-          rightIcon={<ClosedEyeIcon />}
-        />
-      </div>
-
-      <div className="flex flex-col gap-2">
-        <label className="body-5 text-gray-600">에러 상태</label>
+        <label className="body-5 text-gray-600">Error</label>
         <TextField
           id="email-field"
           variant="error"
@@ -177,17 +149,17 @@ export const AllStates: Story = {
       </div>
 
       <div className="flex flex-col gap-2">
-        <label className="body-5 text-gray-600">글자 수 카운트</label>
+        <label className="body-5 text-gray-600">With Count</label>
         <TextField placeholder="내용 입력" showCount maxLength={12} />
       </div>
 
       <div className="flex flex-col gap-2">
-        <label className="body-5 text-gray-600">글자 수 카운트 + 아이콘</label>
+        <label className="body-5 text-gray-600">With Count + Icon</label>
         <TextField placeholder="내용 입력" rightIcon={<SearchIcon />} showCount maxLength={12} />
       </div>
 
       <div className="flex flex-col gap-2">
-        <label className="body-5 text-gray-600">글자 수 카운트 + 에러</label>
+        <label className="body-5 text-gray-600">Error + Count</label>
         <TextField
           id="count-error-field"
           variant="error"
@@ -199,7 +171,7 @@ export const AllStates: Story = {
       </div>
 
       <div className="flex flex-col gap-2">
-        <label className="body-5 text-gray-600">글자 수 카운트 + 아이콘 + 에러</label>
+        <label className="body-5 text-gray-600">Error + Count + Icon</label>
         <TextField
           id="count-icon-error-field"
           variant="error"
