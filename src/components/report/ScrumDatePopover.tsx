@@ -10,11 +10,18 @@ interface ScrumDatePopoverProps {
   selectedIds: Set<number>;
   onToggle: (id: number) => void;
   style?: CSSProperties;
+  placement?: "top" | "bottom";
 }
 
-const ScrumDatePopover = ({ scrums, selectedIds, onToggle, style }: ScrumDatePopoverProps) => (
+const ScrumDatePopover = ({
+  scrums,
+  selectedIds,
+  onToggle,
+  style,
+  placement = "top",
+}: ScrumDatePopoverProps) => (
   <div
-    className="border-linear-100 rounded-8 absolute z-10 flex w-65.5 -translate-y-[calc(100%+8px)] animate-[fadeIn_0.15s_ease] flex-col gap-2 px-4 py-3"
+    className={`border-linear-100 rounded-8 absolute z-10 flex w-65.5 animate-[fadeIn_0.15s_ease] flex-col gap-2 px-4 py-3 ${placement === "top" ? "-translate-y-[calc(100%+8px)]" : ""}`}
     style={style}>
     {scrums.map(scrum => (
       <div
