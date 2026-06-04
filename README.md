@@ -201,7 +201,7 @@ pnpm storybook          # 로컬 Storybook 서버 (http://localhost:6006)
 
 브랜치 전략·커밋 컨벤션·PR 규칙은 [CONTRIBUTING.md](./CONTRIBUTING.md)를 참고해 주세요.
 
-## 🧑🏻‍💻 팀원
+## 👥 팀원
 
 | <img src="https://github.com/yewon20804.png" width="200" height="200"/> | <img src="https://github.com/waldls.png" width="200" height="200"/> | <img src="https://github.com/seyun31.png" width="200" height="200"/> |
 | :---------------------------------------------------------------: | :-----------------------------------------------------------------: | :---------------------------------------------------------------: |
