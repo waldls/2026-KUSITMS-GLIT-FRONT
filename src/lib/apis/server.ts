@@ -2,7 +2,6 @@ import "server-only";
 
 import ky, { isNetworkError } from "ky";
 import { cookies } from "next/headers";
-import { redirect } from "next/navigation";
 
 import { ApiError, type ApiResponse } from "@/types/api";
 
@@ -44,8 +43,7 @@ async function getServerKy() {
       ],
       afterResponse: [
         ({ response }) => {
-          // 서버 컴포넌트에서 401은 토큰 갱신 불가 → 로그인 페이지로 리다이렉트
-          if (response.status === 401) redirect("/auth");
+          if (response.status === 401) throw new ApiError("AUTH_EXPIRED", "Unauthorized");
         },
       ],
     },

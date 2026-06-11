@@ -54,17 +54,11 @@ export default function Providers({ children }: ProvidersProps) {
     return () => window.clearTimeout(timer);
   }, []);
 
-  const authGate = (
-    <AuthGate>
-      <ProvidersContent>{children}</ProvidersContent>
-    </AuthGate>
-  );
+  const content = <ProvidersContent>{children}</ProvidersContent>;
 
-  if (!persister) {
-    return <QueryClientProvider client={queryClient}>{authGate}</QueryClientProvider>;
-  }
-
-  return (
+  const queryProvider = !persister ? (
+    <QueryClientProvider client={queryClient}>{content}</QueryClientProvider>
+  ) : (
     <PersistQueryClientProvider
       client={queryClient}
       persistOptions={{
@@ -74,7 +68,9 @@ export default function Providers({ children }: ProvidersProps) {
             Array.isArray(query.queryKey) && query.queryKey[0] === meQueryKey[0],
         },
       }}>
-      {authGate}
+      {content}
     </PersistQueryClientProvider>
   );
+
+  return <AuthGate>{queryProvider}</AuthGate>;
 }

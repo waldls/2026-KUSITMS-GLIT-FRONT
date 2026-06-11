@@ -1,6 +1,8 @@
 import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 
 import CalendarPageClient from "@/app/calendar/CalendarPageClient";
+
+export const dynamic = "force-dynamic";
 import { getServerQueryClient } from "@/lib/query/getServerQueryClient";
 import {
   calendarDailyPreviewQueryOptions,
