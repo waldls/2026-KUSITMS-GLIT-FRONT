@@ -40,8 +40,8 @@ export default function AuthGate({ children }: AuthGateProps) {
   const isHttps = isClient && window.location.protocol === "https:";
   const canReissue = !!refreshToken || isHttps;
 
-  const shouldRedirect = !isAuthPath && !hasValidToken && !canReissue;
-  const needsReissue = !isAuthPath && !hasValidToken && canReissue;
+  const shouldRedirect = isClient && !isAuthPath && !hasValidToken && !canReissue;
+  const needsReissue = isClient && !isAuthPath && !hasValidToken && canReissue;
 
   useEffect(() => {
     if (!shouldRedirect) {
@@ -71,6 +71,7 @@ export default function AuthGate({ children }: AuthGateProps) {
         .then(tokens => {
           if (!active) return;
           setTokens(tokens.accessToken, tokens.refreshToken);
+          router.refresh();
         })
         .catch(error => {
           if (!active) return;

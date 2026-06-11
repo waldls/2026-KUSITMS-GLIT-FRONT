@@ -8,7 +8,7 @@ import { selectableRecordsQueryOptions } from "@/lib/query/queryOptions";
 import { getCalendarDateInTimeZone, toDateKey } from "@/lib/utils/calendar";
 
 const page = async () => {
-  const info = await getSelectableInfo();
+  const info = await getSelectableInfo().catch(() => null);
   if (!info) return null;
 
   const reportTypeLabel = info.reportType === "MINI" ? "미니" : "커리어";
