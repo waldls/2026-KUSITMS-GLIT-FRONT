@@ -3,12 +3,14 @@
 import dynamic from "next/dynamic";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useEffect, useState, useSyncExternalStore } from "react";
 
 import characterHome from "@/assets/images/home/character_home.webp";
 import characterHomeGlaring from "@/assets/images/home/character_home_glaring.webp";
 import glaringBlur from "@/assets/images/home/glaring_blur.png";
 import CTA from "@/components/common/CTA";
+import Modal from "@/components/common/Modal";
 import NavigationBar from "@/components/common/NavigationBar";
 import HomeCharacterSkeleton from "@/components/common/skeleton/HomeCharacterSkeleton";
 import HomeGreetingSkeleton from "@/components/common/skeleton/HomeGreetingSkeleton";
@@ -16,7 +18,17 @@ import HomeHeatmapSkeleton from "@/components/common/skeleton/HomeHeatmapSkeleto
 import HomeRadarSkeleton from "@/components/common/skeleton/HomeRadarSkeleton";
 import SpeechBubble from "@/components/home/SpeechBubble";
 import { useInvalidateMe, useMe } from "@/lib/hooks/user/userClient";
+import {
+  dismissCalendarGuide,
+  getIsFirstStar,
+  hasDismissedCalendarGuide,
+} from "@/lib/utils/calendarGuide";
 import { cn } from "@/lib/utils/cn";
+import {
+  consumePendingReportModal,
+  subscribePendingReportModal,
+} from "@/lib/utils/recordReportModal";
+import type { ReportModalType } from "@/types/record/record";
 
 const NotificationPermission = dynamic(() => import("@/components/common/NotificationPermission"), {
   ssr: false,
@@ -35,6 +47,7 @@ const RadarChartSection = dynamic(() => import("@/containers/home/RadarChartSect
 const noop = () => () => {};
 
 const Page = () => {
+  const router = useRouter();
   const invalidateMe = useInvalidateMe();
   const { data: me, isPending, isFetching } = useMe();
   const isHeroLoading = !me && (isPending || isFetching);
@@ -42,6 +55,7 @@ const Page = () => {
   const characterWidth = 228;
   const characterHeight = glaring ? 188 : 198;
   const [isCharacterLoaded, setIsCharacterLoaded] = useState(false);
+  const [reportModalType, setReportModalType] = useState<ReportModalType | null>(null);
 
   useEffect(() => {
     setIsCharacterLoaded(false);
@@ -51,19 +65,23 @@ const Page = () => {
     invalidateMe();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-  const isFirstStar = useSyncExternalStore(
-    noop,
-    () => sessionStorage.getItem("isFirstStar") === "true",
-    () => false,
-  );
-  const [dismissed, setDismissed] = useState(
-    () =>
-      typeof window !== "undefined" && sessionStorage.getItem("calendarGuideDismissed") === "true",
-  );
+
+  useEffect(() => {
+    const showPendingReportModal = () => {
+      const pendingReportModalType = consumePendingReportModal();
+      if (pendingReportModalType) setReportModalType(pendingReportModalType);
+    };
+
+    showPendingReportModal();
+
+    return subscribePendingReportModal(showPendingReportModal);
+  }, []);
+  const isFirstStar = useSyncExternalStore(noop, getIsFirstStar, () => false);
+  const [dismissed, setDismissed] = useState(hasDismissedCalendarGuide);
   const showCalendarGuide = isFirstStar && !dismissed;
 
   const handleDismissCalendarGuide = () => {
-    sessionStorage.setItem("calendarGuideDismissed", "true");
+    dismissCalendarGuide();
     setDismissed(true);
   };
 
@@ -155,6 +173,30 @@ const Page = () => {
         activeHrefOverride={showCalendarGuide ? "/calendar" : undefined}
         className="z-20 shrink-0"
         calendarOverlay={showCalendarGuide ? <SpeechBubble /> : null}
+      />
+      <Modal
+        isOpen={reportModalType !== null}
+        type="double"
+        title={
+          reportModalType === "MINI"
+            ? "커리어 미니 리포트를 발행해보세요"
+            : "커리어 리포트를 발행해보세요"
+        }
+        contents={
+          <>
+            지금까지 쌓인 기록으로 만들어진
+            <br />
+            커리어 {reportModalType === "MINI" ? "미니 " : ""}리포트를 확인해보세요
+          </>
+        }
+        btnLLabel="다음에 보기"
+        btnRLabel="리포트 만들기"
+        onBtnLClick={() => setReportModalType(null)}
+        onBtnRClick={() => router.push("/report")}
+        onClose={() => setReportModalType(null)}
+        contentClassName="px-7 py-5"
+        btnLClassName="px-5"
+        btnRClassName="px-5"
       />
     </div>
   );

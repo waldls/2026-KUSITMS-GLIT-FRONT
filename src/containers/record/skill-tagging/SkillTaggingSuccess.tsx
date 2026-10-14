@@ -1,21 +1,17 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 
 import CTA from "@/components/common/CTA";
-import Modal from "@/components/common/Modal";
 import Tag from "@/components/common/Tag";
 import GlowingSkillStone, { type SkillStoneId } from "@/components/record/stones/GlowingSkillStone";
 import { PRIMARY_CATEGORY_MAP } from "@/constants/competency";
 import { SKILL_STONE_ASSETS } from "@/constants/skillStoneAssets";
-import {
-  type AiTaggingResultResponse,
-  getHomeSummary,
-  type ReportModalType,
-} from "@/lib/apis/record/record";
+import { type AiTaggingResultResponse, getHomeSummary } from "@/lib/apis/record/record";
+import { saveIsFirstStar } from "@/lib/utils/calendarGuide";
 import { clearCreatedProjectTagIds } from "@/lib/utils/recordCreatedProjectTags";
+import { savePendingReportModal } from "@/lib/utils/recordReportModal";
 import {
   clearRecordSession,
   clearTodayTaskSubmittedDates,
@@ -73,43 +69,33 @@ function formatDetailTagLabel(tagLabel: string) {
 }
 
 function SkillTaggingSuccess({ results }: { results: AiTaggingResultResponse[] }) {
-  const router = useRouter();
   const primaryCategoryLabels = getPrimaryCategoryLabels(results);
   const detailTagLabels = getDetailTagLabels(results);
   const stoneIds = getStoneIds(results);
   const hasSingleStone = stoneIds.length === 1;
-  const [reportModalType, setReportModalType] = useState<ReportModalType | null>(null);
-  const reportModalTitle =
-    reportModalType === "MINI"
-      ? "커리어 미니 리포트를 발행해보세요"
-      : "커리어 리포트를 발행해보세요";
 
   useEffect(() => {
     finalizeRecordFlow();
   }, []);
 
   useEffect(() => {
-    let ignore = false;
-
     const loadHomeSummary = async () => {
       try {
         const summary = await getHomeSummary();
 
         if (summary?.isFirstStar !== undefined) {
-          window.sessionStorage.setItem("isFirstStar", String(summary.isFirstStar));
+          saveIsFirstStar(summary.isFirstStar);
         }
 
-        if (!ignore && summary?.reportModal?.show && summary.reportModal.type) {
-          setReportModalType(summary.reportModal.type);
+        // 태깅 결과를 먼저 보여주고, 리포트 모달은 홈에서 노출
+        // 홈으로 먼저 이동한 뒤 응답이 와도 홈에 전달되도록 ignore 처리하지 않음
+        if (summary?.reportModal?.show && summary.reportModal.type) {
+          savePendingReportModal(summary.reportModal.type);
         }
       } catch {}
     };
 
     void loadHomeSummary();
-
-    return () => {
-      ignore = true;
-    };
   }, []);
 
   return (
@@ -158,27 +144,6 @@ function SkillTaggingSuccess({ results }: { results: AiTaggingResultResponse[] }
           <CTA>홈으로 돌아가기</CTA>
         </Link>
       </div>
-
-      <Modal
-        isOpen={reportModalType !== null}
-        type="double"
-        title={reportModalTitle}
-        contents={
-          <>
-            지금까지 쌓인 기록으로 만들어진
-            <br />
-            커리어 {reportModalType === "MINI" ? "미니 " : ""}리포트를 확인해보세요
-          </>
-        }
-        btnLLabel="다음에 보기"
-        btnRLabel="리포트 만들기"
-        onBtnLClick={() => setReportModalType(null)}
-        onBtnRClick={() => router.push("/report")}
-        onClose={() => setReportModalType(null)}
-        contentClassName="px-7 py-5"
-        btnLClassName="px-5"
-        btnRClassName="px-5"
-      />
     </section>
   );
 }

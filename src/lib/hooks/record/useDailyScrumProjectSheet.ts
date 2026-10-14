@@ -22,11 +22,17 @@ import {
   removeCreatedProjectTagId,
   removeCreatedProjectTagName,
 } from "@/lib/utils/recordCreatedProjectTags";
+import {
+  hasSeenProjectTagAddGuide,
+  markProjectTagAddGuideSeen,
+} from "@/lib/utils/recordProjectTagGuide";
 import { type AddedProject, useRecordDraftStore } from "@/store/recordDraftStore";
 
 export type { ProjectSheetStep } from "@/lib/utils/record/projectSheetValidation";
 export type ProjectSheetMode = "create" | "edit";
 export type ScrumToastState = "hidden" | "visible" | "fading";
+// idle: 기본, guide: 첫 추가 시 예시 칩 노출, input: 새 태그 입력 중
+export type ProjectTagAddState = "idle" | "guide" | "input";
 
 const alignScrumIds = (scrumIds: (number | null)[] | undefined, taskCount: number) => {
   if (!scrumIds) return Array.from({ length: taskCount }, () => null);
@@ -54,7 +60,7 @@ export const useDailyScrumProjectSheet = () => {
   const [isProjectTagEditing, setIsProjectTagEditing] = useState(false);
   const [editingProjectTag, setEditingProjectTag] = useState<string | null>(null);
   const [editingProjectTagValue, setEditingProjectTagValue] = useState("");
-  const [isAddingProjectTag, setIsAddingProjectTag] = useState(false);
+  const [projectTagAddState, setProjectTagAddState] = useState<ProjectTagAddState>("idle");
   const [projectTitle, setProjectTitle] = useState("");
   const [projectTasks, setProjectTasks] = useState<string[]>([]);
   const [openedProjectMenuId, setOpenedProjectMenuId] = useState<number | null>(null);
@@ -198,7 +204,7 @@ export const useDailyScrumProjectSheet = () => {
     setSelectedProjectTag(project.label);
     setProjectTitle(project.title);
     setProjectTasks(project.tasks);
-    setIsAddingProjectTag(false);
+    setProjectTagAddState("idle");
     setIsProjectTagEditing(false);
     setEditingProjectTag(null);
     setEditingProjectTagValue("");
@@ -207,7 +213,7 @@ export const useDailyScrumProjectSheet = () => {
   };
 
   const closeProjectSheet = () => {
-    setIsAddingProjectTag(false);
+    setProjectTagAddState("idle");
     setIsProjectTagEditing(false);
     setEditingProjectTag(null);
     setEditingProjectTagValue("");
@@ -236,13 +242,13 @@ export const useDailyScrumProjectSheet = () => {
     const trimmedTag = value.trim();
 
     if (trimmedTag.length === 0) {
-      setIsAddingProjectTag(false);
+      setProjectTagAddState("idle");
       return;
     }
 
     if (projectTags.includes(trimmedTag)) {
       setSelectedProjectTag(trimmedTag);
-      setIsAddingProjectTag(false);
+      setProjectTagAddState("idle");
       return;
     }
 
@@ -262,7 +268,7 @@ export const useDailyScrumProjectSheet = () => {
         addCreatedProjectTag({ projectId: createdProjectId, name: trimmedTag });
         setCreatedProjectTagIds(getCreatedProjectTagIds());
         setSelectedProjectTag(createdProject?.name ?? trimmedTag);
-        setIsAddingProjectTag(false);
+        setProjectTagAddState("idle");
       } catch {
         showProjectTagToast("프로젝트 태그를 추가하지 못했어요");
       }
@@ -355,15 +361,25 @@ export const useDailyScrumProjectSheet = () => {
   };
 
   const toggleSelectedProjectTag = (projectTag: string) => {
+    setProjectTagAddState(currentState => (currentState === "guide" ? "idle" : currentState));
     setSelectedProjectTag(currentTag => (currentTag === projectTag ? null : projectTag));
   };
 
   const startAddingProjectTag = () => {
-    if (isAddingProjectTag) return;
+    if (projectTagAddState !== "idle") return;
 
     cancelProjectTagEdit();
     setSelectedProjectTag(null);
-    setIsAddingProjectTag(true);
+    setProjectTagAddState(hasSeenProjectTagAddGuide() ? "input" : "guide");
+  };
+
+  const activateProjectTagGuideInput = () => {
+    markProjectTagAddGuideSeen();
+    setProjectTagAddState("input");
+  };
+
+  const cancelAddingProjectTag = () => {
+    setProjectTagAddState("idle");
   };
 
   const handleProjectSheetHeaderTextClick = () => {
@@ -375,7 +391,7 @@ export const useDailyScrumProjectSheet = () => {
 
     if (createdProjectTags.length > 0) {
       setIsProjectTagEditing(true);
-      setIsAddingProjectTag(false);
+      setProjectTagAddState("idle");
       return;
     }
 
@@ -533,7 +549,7 @@ export const useDailyScrumProjectSheet = () => {
     isProjectTagEditing,
     editingProjectTag,
     editingProjectTagValue,
-    isAddingProjectTag,
+    projectTagAddState,
     projectTitle,
     projectTasks,
     openedProjectMenuId,
@@ -551,7 +567,6 @@ export const useDailyScrumProjectSheet = () => {
     setEditingProjectTagValue,
     setProjectTitle,
     setProjectTasks,
-    setIsAddingProjectTag,
     setIsProjectExitModalOpen,
     openProjectSheet,
     openProjectEditSheet,
@@ -569,6 +584,8 @@ export const useDailyScrumProjectSheet = () => {
     deleteProject,
     toggleSelectedProjectTag,
     startAddingProjectTag,
+    activateProjectTagGuideInput,
+    cancelAddingProjectTag,
     handleProjectSheetHeaderTextClick,
     handleProjectPrevious,
     handleProjectNext,

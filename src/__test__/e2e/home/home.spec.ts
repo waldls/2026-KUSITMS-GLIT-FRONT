@@ -75,10 +75,7 @@ test.describe("알림 권한 요청 (NotificationPermission)", () => {
     await waitForPage(page);
     await page.evaluate(() => localStorage.removeItem("notification_asked"));
 
-    await page
-      .locator("p")
-      .filter({ hasText: /님의 강점을 확인해보세요/ })
-      .click();
+    await page.getByText(/님의 강점을 확인해보세요/).click();
 
     await page.waitForFunction(
       () => !!(window as Window & { __notificationRequested?: boolean }).__notificationRequested,
@@ -109,10 +106,7 @@ test.describe("알림 권한 요청 (NotificationPermission)", () => {
     });
 
     await waitForPage(page);
-    await page
-      .locator("p")
-      .filter({ hasText: /님의 강점을 확인해보세요/ })
-      .click();
+    await page.getByText(/님의 강점을 확인해보세요/).click();
     await page.waitForTimeout(500);
 
     const requested = await page.evaluate(
@@ -139,10 +133,7 @@ test.describe("알림 권한 요청 (NotificationPermission)", () => {
 
     await waitForPage(page);
     await page.evaluate(() => localStorage.removeItem("notification_asked"));
-    await page
-      .locator("p")
-      .filter({ hasText: /님의 강점을 확인해보세요/ })
-      .click();
+    await page.getByText(/님의 강점을 확인해보세요/).click();
     await page.waitForTimeout(500);
 
     const requested = await page.evaluate(
@@ -166,12 +157,62 @@ test.describe("알림 권한 요청 (NotificationPermission)", () => {
     await waitForPage(page);
     await page.evaluate(() => localStorage.removeItem("notification_asked"));
 
-    await page
-      .locator("p")
-      .filter({ hasText: /님의 강점을 확인해보세요/ })
-      .click();
+    await page.getByText(/님의 강점을 확인해보세요/).click();
 
     const asked = await page.evaluate(() => localStorage.getItem("notification_asked"));
     expect(asked).toBe("true");
+  });
+});
+
+test.describe("리포트 생성 모달", () => {
+  const PENDING_REPORT_MODAL_KEY = "pending-report-modal";
+
+  test("기록 완료 후 저장된 리포트 모달이 홈 진입 시 표시된다", async ({ page }) => {
+    await page.addInitScript(key => {
+      window.sessionStorage.setItem(key, "FULL");
+    }, PENDING_REPORT_MODAL_KEY);
+
+    await waitForPage(page);
+
+    await expect(page.getByText("커리어 리포트를 발행해보세요")).toBeVisible();
+    const pendingType = await page.evaluate(
+      key => window.sessionStorage.getItem(key),
+      PENDING_REPORT_MODAL_KEY,
+    );
+    expect(pendingType).toBeNull();
+  });
+
+  test("홈 진입 후 늦게 도착한 리포트 모달도 표시된다", async ({ page }) => {
+    await waitForPage(page);
+    await expect(page.getByText("리포트를 발행해보세요")).toBeHidden();
+
+    await page.evaluate(key => {
+      window.sessionStorage.setItem(key, "MINI");
+      window.dispatchEvent(new Event("pending-report-modal-saved"));
+    }, PENDING_REPORT_MODAL_KEY);
+
+    await expect(page.getByText("커리어 미니 리포트를 발행해보세요")).toBeVisible();
+  });
+
+  test("다음에 보기를 누르면 모달이 닫힌다", async ({ page }) => {
+    await page.addInitScript(key => {
+      window.sessionStorage.setItem(key, "MINI");
+    }, PENDING_REPORT_MODAL_KEY);
+
+    await waitForPage(page);
+    await page.getByRole("button", { name: "다음에 보기" }).click();
+
+    await expect(page.getByText("커리어 미니 리포트를 발행해보세요")).toBeHidden();
+  });
+
+  test("리포트 만들기를 누르면 리포트 페이지로 이동한다", async ({ page }) => {
+    await page.addInitScript(key => {
+      window.sessionStorage.setItem(key, "FULL");
+    }, PENDING_REPORT_MODAL_KEY);
+
+    await waitForPage(page);
+    await page.getByRole("button", { name: "리포트 만들기" }).click();
+
+    await expect(page).toHaveURL(/\/report/);
   });
 });

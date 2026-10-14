@@ -26,6 +26,16 @@ const AI_TAGGING_RESULT = {
   detailTags: ["# E2E"],
 };
 
+type HomeSummaryMock = {
+  isFirstStar: boolean;
+  reportModal: { show: boolean; type: "MINI" | "FULL" | null };
+};
+
+const DEFAULT_HOME_SUMMARY: HomeSummaryMock = {
+  isFirstStar: false,
+  reportModal: { show: false, type: null },
+};
+
 type SetupRecordApiMocksOptions = {
   dailyGroups?: Array<{
     titleId: number;
@@ -129,13 +139,18 @@ export async function setupRecordApiMocks(page: Page, options: SetupRecordApiMoc
     await route.continue();
   });
 
+  await mockHomeSummary(page, DEFAULT_HOME_SUMMARY);
+
+  // 기록 완료 후 홈으로 이동하는 시나리오용
+  await page.route(/\/api\/home\//, async route => {
+    await route.fulfill(fulfillApiSuccess(null));
+  });
+}
+
+// 나중에 등록한 route가 우선 적용되므로 테스트별로 덮어쓸 수 있음
+export async function mockHomeSummary(page: Page, summary: HomeSummaryMock) {
   await page.route("**/api/star-records/home-summary", async route => {
-    await route.fulfill(
-      fulfillApiSuccess({
-        isFirstStar: false,
-        reportModal: { show: false, type: null },
-      }),
-    );
+    await route.fulfill(fulfillApiSuccess(summary));
   });
 }
 

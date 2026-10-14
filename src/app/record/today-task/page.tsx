@@ -97,7 +97,7 @@ const Page = () => {
         isProjectTagEditing={projectSheet.isProjectTagEditing}
         editingProjectTag={projectSheet.editingProjectTag}
         editingProjectTagValue={projectSheet.editingProjectTagValue}
-        isAddingProjectTag={projectSheet.isAddingProjectTag}
+        projectTagAddState={projectSheet.projectTagAddState}
         projectTitle={projectSheet.projectTitle}
         projectTasks={projectSheet.projectTasks}
         projectTitlePlaceholder={projectSheet.projectTitlePlaceholder}
@@ -115,7 +115,8 @@ const Page = () => {
         onConfirmProjectTagEdit={projectSheet.confirmProjectTagEdit}
         onDeleteProjectTag={projectSheet.deleteProjectTag}
         onStartAddingProjectTag={projectSheet.startAddingProjectTag}
-        onCancelAddingProjectTag={() => projectSheet.setIsAddingProjectTag(false)}
+        onActivateProjectTagGuideInput={projectSheet.activateProjectTagGuideInput}
+        onCancelAddingProjectTag={projectSheet.cancelAddingProjectTag}
         onCommitNewProjectTag={projectSheet.commitNewProjectTag}
         onChangeProjectTitle={projectSheet.setProjectTitle}
         onClearProjectTitle={() => projectSheet.setProjectTitle("")}

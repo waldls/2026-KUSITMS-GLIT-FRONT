@@ -10,6 +10,7 @@ import { cn } from "@/lib/utils/cn";
 
 type ProjectSheetMode = "create" | "edit";
 type ProjectSheetStep = "tag" | "title" | "task";
+type ProjectTagAddState = "idle" | "guide" | "input";
 
 interface ProjectSheetProps {
   isOpen: boolean;
@@ -21,7 +22,7 @@ interface ProjectSheetProps {
   isProjectTagEditing: boolean;
   editingProjectTag: string | null;
   editingProjectTagValue: string;
-  isAddingProjectTag: boolean;
+  projectTagAddState: ProjectTagAddState;
   projectTitle: string;
   projectTasks: string[];
   projectTitlePlaceholder: string;
@@ -39,6 +40,7 @@ interface ProjectSheetProps {
   onConfirmProjectTagEdit: () => void;
   onDeleteProjectTag: (projectTag: string) => void;
   onStartAddingProjectTag: () => void;
+  onActivateProjectTagGuideInput: () => void;
   onCancelAddingProjectTag: () => void;
   onCommitNewProjectTag: (value: string) => void;
   onChangeProjectTitle: (value: string) => void;
@@ -58,7 +60,7 @@ const ProjectSheet = ({
   isProjectTagEditing,
   editingProjectTag,
   editingProjectTagValue,
-  isAddingProjectTag,
+  projectTagAddState,
   projectTitle,
   projectTasks,
   projectTitlePlaceholder,
@@ -76,6 +78,7 @@ const ProjectSheet = ({
   onConfirmProjectTagEdit,
   onDeleteProjectTag,
   onStartAddingProjectTag,
+  onActivateProjectTagGuideInput,
   onCancelAddingProjectTag,
   onCommitNewProjectTag,
   onChangeProjectTitle,
@@ -84,6 +87,15 @@ const ProjectSheet = ({
   onPrevious,
   onNext,
 }: ProjectSheetProps) => {
+  const projectTagGuideChip = projectTagAddState === "guide" && (
+    <Chip
+      state="default"
+      onClick={onActivateProjectTagGuideInput}
+      className="border-sea-blue-400 border bg-gray-800 text-gray-400">
+      ex. 졸업 프로젝트
+    </Chip>
+  );
+
   return (
     <BottomSheet
       isOpen={isOpen}
@@ -210,7 +222,8 @@ const ProjectSheet = ({
                 </Chip>
               );
             })}
-            {isAddingProjectTag && (
+            {projectTagGuideChip}
+            {projectTagAddState === "input" && (
               <Chip
                 state="input"
                 confirmOnBlur
@@ -225,7 +238,7 @@ const ProjectSheet = ({
               leftIcon={<PlusIcon />}
               state="default"
               onClick={onStartAddingProjectTag}
-              disabled={isAddingProjectTag}
+              disabled={projectTagAddState !== "idle"}
               className="!disabled:cursor-not-allowed border border-transparent bg-gray-900">
               추가
             </Chip>
@@ -245,7 +258,8 @@ const ProjectSheet = ({
                 {projectTag}
               </Chip>
             ))}
-            {isAddingProjectTag && (
+            {projectTagGuideChip}
+            {projectTagAddState === "input" && (
               <Chip
                 state="input"
                 confirmOnBlur
@@ -260,7 +274,7 @@ const ProjectSheet = ({
               leftIcon={<PlusIcon />}
               state="default"
               onClick={onStartAddingProjectTag}
-              disabled={isAddingProjectTag}
+              disabled={projectTagAddState !== "idle"}
               className="bg-gray-900 ring-0 disabled:cursor-not-allowed">
               추가
             </Chip>
