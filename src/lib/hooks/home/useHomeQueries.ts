@@ -4,12 +4,26 @@ import { useQueries, useQuery } from "@tanstack/react-query";
 
 import { competencyStatsQueryOptions, radarQueryOptions } from "@/lib/query/queryOptions";
 
-export const getLastThreeMonths = (): string[] => {
+const MAX_HEATMAP_MONTHS = 3;
+
+const toMonthKey = (year: number, monthIndex: number) => {
+  const d = new Date(year, monthIndex, 1);
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`;
+};
+
+// 가입 월 ~ 현재 월 범위를 노출하되, 최대 최근 3개월까지만 노출
+export const getHeatmapMonths = (joinedAt?: string | null): string[] => {
   const now = new Date();
-  return Array.from({ length: 3 }, (_, i) => {
-    const d = new Date(now.getFullYear(), now.getMonth() - (2 - i), 1);
-    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`;
-  });
+  const [joinedYear, joinedMonth] = (joinedAt ?? "").split("-").map(Number);
+  const monthsSinceJoined =
+    joinedYear && joinedMonth
+      ? (now.getFullYear() - joinedYear) * 12 + (now.getMonth() + 1 - joinedMonth) + 1
+      : MAX_HEATMAP_MONTHS;
+  const length = Math.min(Math.max(monthsSinceJoined, 1), MAX_HEATMAP_MONTHS);
+
+  return Array.from({ length }, (_, i) =>
+    toMonthKey(now.getFullYear(), now.getMonth() - (length - 1 - i)),
+  );
 };
 
 export const useCompetencyStatsQueries = (months: string[]) =>

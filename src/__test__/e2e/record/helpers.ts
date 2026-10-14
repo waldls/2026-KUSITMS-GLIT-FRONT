@@ -11,6 +11,7 @@ export const E2E_TESTER_PROFILE = {
   userStatus: "ACTIVE",
   consecutiveRecordDays: 5,
   glaring: false,
+  joinedAt: "2026-01-01",
 };
 
 export const E2E_PROJECT_TAGS = [

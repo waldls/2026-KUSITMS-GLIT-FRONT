@@ -9,6 +9,7 @@ const MOCK_USER = {
   userStatus: "취준",
   consecutiveRecordDays: 0,
   glaring: false,
+  joinedAt: "2026-01-01",
 };
 
 const waitForPage = async (page: Page) => {
@@ -35,7 +36,7 @@ test.describe("홈 페이지", () => {
   });
 
   test("강점 확인 안내 문구가 표시된다", async ({ page }) => {
-    await expect(page.locator("p").filter({ hasText: /님의 강점을 확인해보세요/ })).toBeVisible();
+    await expect(page.getByText(/님의 강점을 확인해보세요/)).toBeVisible();
   });
 
   test("기록하러 가기 버튼이 표시된다", async ({ page }) => {

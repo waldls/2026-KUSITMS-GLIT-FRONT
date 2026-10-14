@@ -8,15 +8,16 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import HomeHeatmapSkeleton from "@/components/common/skeleton/HomeHeatmapSkeleton";
 import SwipeIndicator from "@/components/common/SwipeIndicator";
 import Heatmap from "@/components/home/Heatmap";
-import { getLastThreeMonths, useCompetencyStatsQueries } from "@/lib/hooks/home/useHomeQueries";
-
-const months = getLastThreeMonths();
-const initialIndex = months.length - 1;
+import { getHeatmapMonths, useCompetencyStatsQueries } from "@/lib/hooks/home/useHomeQueries";
+import { useMe } from "@/lib/hooks/user/userClient";
 
 const HeatmapSection = () => {
-  const [activeIndex, setActiveIndex] = useState(initialIndex);
-  const statsQueries = useCompetencyStatsQueries(months);
-  const isLoading = statsQueries.some(query => query.isPending);
+  const { data: me, isPending: isMePending } = useMe();
+  const months = getHeatmapMonths(me?.joinedAt);
+  const initialIndex = months.length - 1;
+  const [activeIndex, setActiveIndex] = useState<number | null>(null);
+  const statsQueries = useCompetencyStatsQueries(isMePending ? [] : months);
+  const isLoading = isMePending || statsQueries.some(query => query.isPending);
   const dataList = statsQueries.map(query => query.data ?? null);
 
   if (isLoading) return <HomeHeatmapSkeleton />;
@@ -24,9 +25,10 @@ const HeatmapSection = () => {
   return (
     <div className="flex flex-col gap-2">
       <Swiper
+        key={months.length}
         className="w-full"
         initialSlide={initialIndex}
-        loop
+        loop={months.length >= 3}
         onSlideChange={swiper => setActiveIndex(swiper.realIndex)}>
         {months.map((month, i) => {
           const monthNum = Number(month.split("-")[1]);
@@ -41,7 +43,9 @@ const HeatmapSection = () => {
           );
         })}
       </Swiper>
-      <SwipeIndicator total={months.length} current={activeIndex} />
+      {months.length > 1 && (
+        <SwipeIndicator total={months.length} current={activeIndex ?? initialIndex} />
+      )}
     </div>
   );
 };

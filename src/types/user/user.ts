@@ -10,4 +10,5 @@ export interface UserProfile {
   userStatus: string;
   consecutiveRecordDays: number;
   glaring: boolean;
+  joinedAt: string;
 }

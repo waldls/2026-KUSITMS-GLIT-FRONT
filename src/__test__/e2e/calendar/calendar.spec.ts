@@ -1,6 +1,12 @@
 import { expect, test } from "@playwright/test";
 
-import { fulfillApiSuccess, gotoCalendarPage, MOCK_PREVIEW_SCRUMS, TODAY_KEY } from "./helpers";
+import {
+  EMPTY_DAY_KEY,
+  fulfillApiSuccess,
+  gotoCalendarPage,
+  MOCK_PREVIEW_SCRUMS,
+  TODAY_KEY,
+} from "./helpers";
 
 test.describe("캘린더 페이지", () => {
   test.describe.configure({ mode: "serial" });
@@ -27,9 +33,11 @@ test.describe("캘린더 페이지", () => {
   });
 
   test("기록이 없는 날짜를 선택하면 빈 상태 메시지가 표시되어야 한다", async ({ page }) => {
-    // data-day 속성으로 정확히 현재 월의 6월 3일 버튼을 타겟팅
-    const june3Button = page.locator('td[data-day="2026-06-03"]:not([data-outside]) button');
-    await june3Button.click();
+    // data-day 속성으로 현재 월의 기록 없는 날짜 버튼을 타겟팅
+    const emptyDayButton = page.locator(
+      `td[data-day="${EMPTY_DAY_KEY}"]:not([data-outside]) button`,
+    );
+    await emptyDayButton.click();
 
     await expect(page.getByText("아직 기록이 없어요")).toBeVisible({ timeout: 10_000 });
 

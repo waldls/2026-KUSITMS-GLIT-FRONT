@@ -6,8 +6,30 @@ import { fulfillApiSuccess, setupAuthCookie } from "../helpers";
 
 export { fulfillApiSuccess, setupAuthCookie };
 
-export const TODAY_KEY = "2026-06-05";
-export const TODAY_MONTH_KEY = "2026-06";
+// 캘린더 페이지는 서버에서 Asia/Seoul 기준 오늘 날짜를 계산하므로 테스트도 실제 오늘 기준으로 맞춤
+const getSeoulToday = () => {
+  const [year, month, day] = new Intl.DateTimeFormat("en-CA", { timeZone: "Asia/Seoul" })
+    .format(new Date())
+    .split("-")
+    .map(Number);
+  return new Date(year, month - 1, day);
+};
+
+const toDateKey = (date: Date) =>
+  `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
+
+// 오늘과 같은 달 안에서 오늘로부터 offset만큼 떨어진 날짜 (월 경계를 넘으면 반대 방향으로)
+const getSameMonthDateKey = (offset: number) => {
+  const today = getSeoulToday();
+  const past = new Date(today.getFullYear(), today.getMonth(), today.getDate() - offset);
+  const future = new Date(today.getFullYear(), today.getMonth(), today.getDate() + offset);
+  return toDateKey(past.getMonth() === today.getMonth() ? past : future);
+};
+
+export const TODAY_KEY = toDateKey(getSeoulToday());
+export const TODAY_MONTH_KEY = TODAY_KEY.slice(0, 7);
+export const STAR_DAY_KEY = getSameMonthDateKey(1);
+export const EMPTY_DAY_KEY = getSameMonthDateKey(2);
 
 export const E2E_TESTER_PROFILE = {
   profileImage: null,
@@ -16,18 +38,19 @@ export const E2E_TESTER_PROFILE = {
   userStatus: "ACTIVE",
   consecutiveRecordDays: 3,
   glaring: false,
+  joinedAt: "2026-01-01",
 };
 
 export const MOCK_CALENDAR_DAYS = [
   { date: TODAY_KEY, hasScrums: true, hasStar: false, primaryCategory: null, starCount: 0 },
   {
-    date: "2026-06-04",
+    date: STAR_DAY_KEY,
     hasScrums: true,
     hasStar: true,
     primaryCategory: "PROBLEM_SOLVING",
     starCount: 1,
   },
-  { date: "2026-06-03", hasScrums: false, hasStar: false, primaryCategory: null, starCount: 0 },
+  { date: EMPTY_DAY_KEY, hasScrums: false, hasStar: false, primaryCategory: null, starCount: 0 },
 ];
 
 export const MOCK_PREVIEW_SCRUMS = [
@@ -114,10 +137,6 @@ export async function gotoCalendarPage(
 ) {
   await setupAuthCookie(page);
   await setupCalendarApiMocks(page, mockOptions);
-
-  await page.addInitScript((todayKey: string) => {
-    Object.defineProperty(window, "__E2E_TODAY_KEY__", { value: todayKey });
-  }, TODAY_KEY);
 
   await page.goto(path, { waitUntil: "domcontentloaded" });
 }
