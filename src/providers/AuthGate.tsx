@@ -4,6 +4,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 
 import { reissue } from "@/lib/apis/client";
+import { withAttribution } from "@/lib/utils/attribution";
 import { isTokenExpired } from "@/lib/utils/token";
 import { useAuthStore } from "@/store/authStore";
 import { ApiError } from "@/types/api";
@@ -51,7 +52,7 @@ export default function AuthGate({ children }: AuthGateProps) {
     if (redirectStartedRef.current) return;
     redirectStartedRef.current = true;
     clearTokens();
-    router.replace("/auth");
+    router.replace(withAttribution("/auth"));
   }, [shouldRedirect, clearTokens, router]);
 
   useEffect(() => {
@@ -63,7 +64,7 @@ export default function AuthGate({ children }: AuthGateProps) {
     const redirectToAuth = () => {
       setIsRedirecting(true);
       clearTokens();
-      router.replace("/auth");
+      router.replace(withAttribution("/auth"));
     };
 
     const attemptReissue = (retryCount = 0) => {

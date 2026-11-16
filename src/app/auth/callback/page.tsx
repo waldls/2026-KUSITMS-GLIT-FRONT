@@ -5,6 +5,7 @@ import { Suspense, useEffect, useRef } from "react";
 
 import LoadingScreen from "@/components/common/LoadingScreen";
 import { getStatus } from "@/lib/apis/user/onboarding";
+import { clearAttribution, withAttribution } from "@/lib/utils/attribution";
 import { useAuthStore } from "@/store/authStore";
 
 const CallbackHandler = () => {
@@ -22,15 +23,19 @@ const CallbackHandler = () => {
     const refreshToken = searchParams.get("refresh") ?? undefined;
 
     if (error || !accessToken) {
-      router.replace("/auth");
+      router.replace(withAttribution("/auth"));
       return;
     }
 
     const redirectTo = (path: string) => {
-      router.replace(path);
+      const target = withAttribution(path);
+      // 홈 도착이 가입 플로우의 끝이므로 유입 파라미터를 붙인 뒤 쿠키 삭제
+      if (path === "/") clearAttribution();
+
+      router.replace(target);
       window.setTimeout(() => {
         if (window.location.pathname.startsWith("/auth/callback")) {
-          window.location.replace(path);
+          window.location.replace(target);
         }
       }, 1_500);
     };

@@ -11,6 +11,7 @@ import CTA from "@/components/common/CTA";
 import SwipeIndicator from "@/components/common/SwipeIndicator";
 import { GUIDE_LIST } from "@/constants/my";
 import { usePostOnboardingComplete } from "@/lib/hooks/user/usePostOnboardingComplete";
+import { clearAttribution, withAttribution } from "@/lib/utils/attribution";
 import { useOnboardingStore } from "@/store/onboardingStore";
 
 const Page = () => {
@@ -21,7 +22,16 @@ const Page = () => {
   const { mutate, isPending } = usePostOnboardingComplete();
 
   const handleComplete = () => {
-    mutate({ nickname, jobRole, userStatus }, { onSuccess: () => router.replace("/") });
+    mutate(
+      { nickname, jobRole, userStatus },
+      {
+        onSuccess: () => {
+          // 홈 도착이 가입 플로우의 끝이므로 유입 파라미터를 붙인 뒤 쿠키 삭제
+          router.replace(withAttribution("/"));
+          clearAttribution();
+        },
+      },
+    );
   };
 
   return (

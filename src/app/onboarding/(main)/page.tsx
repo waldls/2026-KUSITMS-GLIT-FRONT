@@ -12,6 +12,7 @@ import SelectionCardGrid from "@/components/onboarding/SelectionCardGrid";
 import { JOB_OPTIONS, STATUS_OPTIONS } from "@/constants/onboarding";
 import { NICKNAME_REGEX } from "@/constants/regex";
 import OnboardingStepHeader from "@/containers/onboarding/OnboardingStepHeader";
+import { withAttribution } from "@/lib/utils/attribution";
 import { getNicknameError } from "@/lib/utils/validation";
 import { useOnboardingStore } from "@/store/onboardingStore";
 
@@ -44,7 +45,7 @@ const Page = () => {
       setStep(prev => (prev + 1) as Step);
     } else {
       setOnboardingData({ nickname, jobRole, userStatus });
-      router.push("/onboarding/guide");
+      router.push(withAttribution("/onboarding/guide"));
     }
   };
 
