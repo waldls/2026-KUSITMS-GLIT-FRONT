@@ -4,6 +4,7 @@ import { GoogleAnalytics } from "@next/third-parties/google";
 import type { Metadata, Viewport } from "next";
 import localFont from "next/font/local";
 
+import MetaPixel from "@/components/common/MetaPixel";
 import Providers from "@/providers/Providers";
 import RouteTransitionProvider from "@/providers/RouteTransitionProvider";
 
@@ -70,6 +71,7 @@ export default function RootLayout({
         </Providers>
       </body>
       {gaId ? <GoogleAnalytics gaId={gaId} /> : null}
+      <MetaPixel />
     </html>
   );
 }
