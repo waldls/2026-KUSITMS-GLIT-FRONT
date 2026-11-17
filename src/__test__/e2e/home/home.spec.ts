@@ -55,12 +55,19 @@ test.describe("홈 페이지", () => {
   });
 });
 
-test.describe("알림 권한 요청 (NotificationPermission)", () => {
-  test("최초 방문 후 화면 클릭 시 알림 권한 요청이 호출된다", async ({ page }) => {
-    await page.addInitScript(() => {
+test.describe("알림 허용 모달 (홈 화면 추가 유저)", () => {
+  type NotificationMockOptions = {
+    standalone: boolean;
+    permission: NotificationPermission;
+    asked?: boolean;
+  };
+
+  // Notification·standalone(display-mode) 모킹, requestPermission 호출 여부는 window에 기록
+  const mockNotification = (page: Page, options: NotificationMockOptions) =>
+    page.addInitScript(({ standalone, permission, asked }) => {
       Object.defineProperty(window, "Notification", {
         value: class {
-          static permission: NotificationPermission = "default";
+          static permission: NotificationPermission = permission;
           static requestPermission = async (): Promise<NotificationPermission> => {
             (window as Window & { __notificationRequested?: boolean }).__notificationRequested =
               true;
@@ -70,97 +77,69 @@ test.describe("알림 권한 요청 (NotificationPermission)", () => {
         configurable: true,
         writable: true,
       });
-    });
 
-    await waitForPage(page);
-    await page.evaluate(() => localStorage.removeItem("notification_asked"));
+      const originalMatchMedia = window.matchMedia.bind(window);
+      window.matchMedia = (query: string) =>
+        query === "(display-mode: standalone)"
+          ? ({ ...originalMatchMedia(query), matches: standalone } as MediaQueryList)
+          : originalMatchMedia(query);
 
-    await page.getByText(/님의 강점을 확인해보세요/).click();
+      if (asked) localStorage.setItem("notification_asked", "true");
+      else localStorage.removeItem("notification_asked");
+    }, options);
 
-    await page.waitForFunction(
+  const wasRequested = (page: Page) =>
+    page.evaluate(
       () => !!(window as Window & { __notificationRequested?: boolean }).__notificationRequested,
-      { timeout: 5000 },
     );
 
-    const requested = await page.evaluate(
-      () => !!(window as Window & { __notificationRequested?: boolean }).__notificationRequested,
-    );
-    expect(requested).toBe(true);
-  });
+  const modalTitle = "커리어 기록 알림을 설정할까요?";
 
-  test("이미 알림을 요청한 경우 재요청하지 않는다", async ({ page }) => {
-    await page.addInitScript(() => {
-      Object.defineProperty(window, "Notification", {
-        value: class {
-          static permission: NotificationPermission = "default";
-          static requestPermission = async (): Promise<NotificationPermission> => {
-            (window as Window & { __notificationRequested?: boolean }).__notificationRequested =
-              true;
-            return "default";
-          };
-        },
-        configurable: true,
-        writable: true,
-      });
-      localStorage.setItem("notification_asked", "true");
-    });
-
+  test("홈 화면 추가 유저가 아니면 모달이 표시되지 않는다", async ({ page }) => {
+    await mockNotification(page, { standalone: false, permission: "default" });
     await waitForPage(page);
-    await page.getByText(/님의 강점을 확인해보세요/).click();
     await page.waitForTimeout(500);
 
-    const requested = await page.evaluate(
-      () => !!(window as Window & { __notificationRequested?: boolean }).__notificationRequested,
-    );
-    expect(requested).toBe(false);
+    await expect(page.getByText(modalTitle)).not.toBeVisible();
   });
 
-  test("알림 권한이 denied이면 요청하지 않는다", async ({ page }) => {
-    await page.addInitScript(() => {
-      Object.defineProperty(window, "Notification", {
-        value: class {
-          static permission: NotificationPermission = "denied";
-          static requestPermission = async (): Promise<NotificationPermission> => {
-            (window as Window & { __notificationRequested?: boolean }).__notificationRequested =
-              true;
-            return "denied";
-          };
-        },
-        configurable: true,
-        writable: true,
-      });
-    });
-
+  test("알림 허용 클릭 시 권한을 요청하고 다시 묻지 않도록 저장한다", async ({ page }) => {
+    await mockNotification(page, { standalone: true, permission: "default" });
     await waitForPage(page);
-    await page.evaluate(() => localStorage.removeItem("notification_asked"));
-    await page.getByText(/님의 강점을 확인해보세요/).click();
+
+    await expect(page.getByText(modalTitle)).toBeVisible();
+    await page.getByRole("button", { name: "알림 허용" }).click();
+
+    await expect(page.getByText(modalTitle)).not.toBeVisible();
+    expect(await wasRequested(page)).toBe(true);
+    expect(await page.evaluate(() => localStorage.getItem("notification_asked"))).toBe("true");
+  });
+
+  test("건너뛰기 클릭 시 권한을 요청하지 않고 다시 묻지 않도록 저장한다", async ({ page }) => {
+    await mockNotification(page, { standalone: true, permission: "default" });
+    await waitForPage(page);
+
+    await page.getByRole("button", { name: "건너뛰기" }).click();
+
+    await expect(page.getByText(modalTitle)).not.toBeVisible();
+    expect(await wasRequested(page)).toBe(false);
+    expect(await page.evaluate(() => localStorage.getItem("notification_asked"))).toBe("true");
+  });
+
+  test("이미 물어본 유저에게는 모달이 표시되지 않는다", async ({ page }) => {
+    await mockNotification(page, { standalone: true, permission: "default", asked: true });
+    await waitForPage(page);
     await page.waitForTimeout(500);
 
-    const requested = await page.evaluate(
-      () => !!(window as Window & { __notificationRequested?: boolean }).__notificationRequested,
-    );
-    expect(requested).toBe(false);
+    await expect(page.getByText(modalTitle)).not.toBeVisible();
   });
 
-  test("첫 클릭 시 notification_asked가 localStorage에 저장된다", async ({ page }) => {
-    await page.addInitScript(() => {
-      Object.defineProperty(window, "Notification", {
-        value: class {
-          static permission: NotificationPermission = "default";
-          static requestPermission = async (): Promise<NotificationPermission> => "granted";
-        },
-        configurable: true,
-        writable: true,
-      });
-    });
-
+  test("알림 권한이 denied이면 모달이 표시되지 않는다", async ({ page }) => {
+    await mockNotification(page, { standalone: true, permission: "denied" });
     await waitForPage(page);
-    await page.evaluate(() => localStorage.removeItem("notification_asked"));
+    await page.waitForTimeout(500);
 
-    await page.getByText(/님의 강점을 확인해보세요/).click();
-
-    const asked = await page.evaluate(() => localStorage.getItem("notification_asked"));
-    expect(asked).toBe("true");
+    await expect(page.getByText(modalTitle)).not.toBeVisible();
   });
 });
 

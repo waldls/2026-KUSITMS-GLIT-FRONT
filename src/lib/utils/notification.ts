@@ -1,3 +1,4 @@
+import { isStandalone } from "@/lib/utils/a2hs";
 import { type Meridiem, normalizeAlarmTime, type TimeValue } from "@/lib/utils/alarmTime";
 import type { AlarmData, DayOfWeek } from "@/types/user/notification";
 
@@ -72,3 +73,23 @@ export const fromAlarmData = (data: AlarmData) => ({
     ? fromNotifyTime(data.notifyTime)
     : ({ hour: 7, minute: 0, meridiem: "Am" } as const satisfies TimeValue),
 });
+
+export const NOTIFICATION_ASKED_KEY = "notification_asked";
+
+// 홈 화면 추가(standalone) 실행 유저 중 아직 알림 권한을 묻지 않은 경우만
+export const shouldAskNotification = (): boolean => {
+  if (typeof window === "undefined" || !isStandalone()) return false;
+  if (!("Notification" in window) || Notification.permission !== "default") return false;
+
+  try {
+    return !window.localStorage.getItem(NOTIFICATION_ASKED_KEY);
+  } catch {
+    return false;
+  }
+};
+
+export const markNotificationAsked = () => {
+  try {
+    window.localStorage.setItem(NOTIFICATION_ASKED_KEY, "true");
+  } catch {}
+};

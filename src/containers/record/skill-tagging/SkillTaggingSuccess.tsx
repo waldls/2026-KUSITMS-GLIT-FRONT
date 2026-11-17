@@ -9,6 +9,7 @@ import GlowingSkillStone, { type SkillStoneId } from "@/components/record/stones
 import { PRIMARY_CATEGORY_MAP } from "@/constants/competency";
 import { SKILL_STONE_ASSETS } from "@/constants/skillStoneAssets";
 import { type AiTaggingResultResponse, getHomeSummary } from "@/lib/apis/record/record";
+import { saveA2hsHasRecord } from "@/lib/utils/a2hs";
 import { saveIsFirstStar } from "@/lib/utils/calendarGuide";
 import { clearCreatedProjectTagIds } from "@/lib/utils/recordCreatedProjectTags";
 import { savePendingReportModal } from "@/lib/utils/recordReportModal";
@@ -76,6 +77,7 @@ function SkillTaggingSuccess({ results }: { results: AiTaggingResultResponse[] }
 
   useEffect(() => {
     finalizeRecordFlow();
+    saveA2hsHasRecord();
   }, []);
 
   useEffect(() => {

@@ -17,13 +17,18 @@ import HomeGreetingSkeleton from "@/components/common/skeleton/HomeGreetingSkele
 import HomeHeatmapSkeleton from "@/components/common/skeleton/HomeHeatmapSkeleton";
 import HomeRadarSkeleton from "@/components/common/skeleton/HomeRadarSkeleton";
 import SpeechBubble from "@/components/home/SpeechBubble";
+import A2hsSheet from "@/containers/home/A2hsSheet";
+import HomeGuideSheet from "@/containers/home/HomeGuideSheet";
 import { useInvalidateMe, useMe } from "@/lib/hooks/user/userClient";
+import { countA2hsVisit, markA2hsShown, shouldShowA2hs } from "@/lib/utils/a2hs";
 import {
   dismissCalendarGuide,
   getIsFirstStar,
   hasDismissedCalendarGuide,
 } from "@/lib/utils/calendarGuide";
 import { cn } from "@/lib/utils/cn";
+import { clearPendingHomeGuide, hasPendingHomeGuide } from "@/lib/utils/homeGuide";
+import { shouldAskNotification } from "@/lib/utils/notification";
 import {
   consumePendingReportModal,
   subscribePendingReportModal,
@@ -31,6 +36,10 @@ import {
 import type { ReportModalType } from "@/types/record/record";
 
 const NotificationPermission = dynamic(() => import("@/components/common/NotificationPermission"), {
+  ssr: false,
+});
+
+const NotificationModal = dynamic(() => import("@/containers/home/NotificationModal"), {
   ssr: false,
 });
 
@@ -80,24 +89,41 @@ const Page = () => {
   const [dismissed, setDismissed] = useState(hasDismissedCalendarGuide);
   const showCalendarGuide = isFirstStar && !dismissed;
 
+  const hasHomeGuide = useSyncExternalStore(noop, hasPendingHomeGuide, () => false);
+  const [homeGuideDone, setHomeGuideDone] = useState(false);
+  const isHomeGuideOpen = hasHomeGuide && !homeGuideDone;
+
+  const [canShowA2hs, setCanShowA2hs] = useState(false);
+  // 리포트 모달·온보딩 카드가 닫힌 뒤 노출
+  const isA2hsOpen = canShowA2hs && reportModalType === null && !isHomeGuideOpen;
+
+  useEffect(() => {
+    countA2hsVisit();
+    setCanShowA2hs(shouldShowA2hs());
+  }, []);
+
+  useEffect(() => {
+    if (isA2hsOpen) markA2hsShown();
+  }, [isA2hsOpen]);
+
+  const [canAskNotification, setCanAskNotification] = useState(false);
+
+  useEffect(() => {
+    setCanAskNotification(shouldAskNotification());
+  }, []);
+
+  const handleStartHomeGuide = () => {
+    clearPendingHomeGuide();
+    setHomeGuideDone(true);
+  };
+
   const handleDismissCalendarGuide = () => {
     dismissCalendarGuide();
     setDismissed(true);
   };
 
-  const handleFirstClick = () => {
-    if (typeof window === "undefined") return;
-    if (!("Notification" in window)) return;
-    if (Notification.permission === "denied") return;
-    if (localStorage.getItem("notification_asked")) return;
-    localStorage.setItem("notification_asked", "true");
-    import("@/components/common/NotificationPermission").then(m =>
-      m.requestNotificationPermission(),
-    );
-  };
-
   return (
-    <div className="relative flex h-full w-full flex-col" onClick={handleFirstClick}>
+    <div className="relative flex h-full w-full flex-col">
       <NotificationPermission />
       {showCalendarGuide ? (
         <button
@@ -174,6 +200,14 @@ const Page = () => {
         className="z-20 shrink-0"
         calendarOverlay={showCalendarGuide ? <SpeechBubble /> : null}
       />
+      <HomeGuideSheet isOpen={isHomeGuideOpen} onStart={handleStartHomeGuide} />
+      <A2hsSheet isOpen={isA2hsOpen} onClose={() => setCanShowA2hs(false)} />
+      {canAskNotification && (
+        <NotificationModal
+          isOpen={reportModalType === null && !isHomeGuideOpen}
+          onClose={() => setCanAskNotification(false)}
+        />
+      )}
       <Modal
         isOpen={reportModalType !== null}
         type="double"

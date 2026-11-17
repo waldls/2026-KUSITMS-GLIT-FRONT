@@ -12,6 +12,7 @@ import SwipeIndicator from "@/components/common/SwipeIndicator";
 import { GUIDE_LIST } from "@/constants/my";
 import { usePostOnboardingComplete } from "@/lib/hooks/user/usePostOnboardingComplete";
 import { clearAttribution, withAttribution } from "@/lib/utils/attribution";
+import { savePendingHomeGuide } from "@/lib/utils/homeGuide";
 import { useOnboardingStore } from "@/store/onboardingStore";
 
 const Page = () => {
@@ -26,6 +27,7 @@ const Page = () => {
       { nickname, jobRole, userStatus },
       {
         onSuccess: () => {
+          savePendingHomeGuide();
           // 홈 도착이 가입 플로우의 끝이므로 유입 파라미터를 붙인 뒤 쿠키 삭제
           router.replace(withAttribution("/"));
           clearAttribution();

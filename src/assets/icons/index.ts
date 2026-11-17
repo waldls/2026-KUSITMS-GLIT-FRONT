@@ -33,6 +33,7 @@ export { default as SettingsIcon } from "@/assets/icons/icon_settings.svg";
 export { default as StarOneIcon } from "@/assets/icons/icon_star_01.svg";
 export { default as StarTwoIcon } from "@/assets/icons/icon_star_02.svg";
 export { default as SuccessIcon } from "@/assets/icons/icon_success.svg";
+export { default as TabsIcon } from "@/assets/icons/icon_tabs.svg";
 export { default as TimeIcon } from "@/assets/icons/icon_time.svg";
 export { default as WorkIcon } from "@/assets/icons/icon_work.svg";
 export { default as WriteIcon } from "@/assets/icons/icon_write.svg";
