@@ -9,6 +9,8 @@ import { useEffect, useState } from "react";
 import { useMe } from "@/lib/hooks/user/userClient";
 import { createQueryClient } from "@/lib/query/createQueryClient";
 import { meQueryKey } from "@/lib/query/queryKeys";
+import { isStandalone } from "@/lib/utils/a2hs";
+import { trackGA } from "@/lib/utils/ga";
 
 import AuthGate from "./AuthGate";
 
@@ -30,6 +32,11 @@ export default function Providers({ children }: ProvidersProps) {
   const [persister, setPersister] = useState<ReturnType<typeof createSyncStoragePersister> | null>(
     null,
   );
+
+  // ProvidersContent는 persister 교체 시 리마운트되므로, 리마운트되지 않는 이곳에서 앱 실행당 1회
+  useEffect(() => {
+    if (isStandalone()) trackGA("pwa_standalone_entry");
+  }, []);
 
   useEffect(() => {
     setPersister(

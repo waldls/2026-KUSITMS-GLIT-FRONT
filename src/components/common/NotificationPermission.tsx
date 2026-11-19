@@ -6,11 +6,13 @@ import { useEffect } from "react";
 import { postDeviceTokens } from "@/lib/apis/auth/deviceToken";
 import { patchNotificationSettings } from "@/lib/apis/user/notification";
 import { getMessagingInstance } from "@/lib/utils/fcm";
+import { trackGA } from "@/lib/utils/ga";
 
 export const requestNotificationPermission = async () => {
   if (!("Notification" in window) || !("serviceWorker" in navigator)) return;
 
   const permission = await Notification.requestPermission();
+  trackGA("notification_permission_result", { result: permission });
   if (permission !== "granted") {
     await patchNotificationSettings({
       isActive: false,

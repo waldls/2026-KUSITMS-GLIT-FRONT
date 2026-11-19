@@ -12,6 +12,7 @@ import SwipeIndicator from "@/components/common/SwipeIndicator";
 import { GUIDE_LIST } from "@/constants/my";
 import { usePostOnboardingComplete } from "@/lib/hooks/user/usePostOnboardingComplete";
 import { clearAttribution, withAttribution } from "@/lib/utils/attribution";
+import { trackGA } from "@/lib/utils/ga";
 import { savePendingHomeGuide } from "@/lib/utils/homeGuide";
 import { trackCompleteRegistration } from "@/lib/utils/metaPixel";
 import { useOnboardingStore } from "@/store/onboardingStore";
@@ -31,6 +32,7 @@ const Page = () => {
           savePendingHomeGuide();
           // 신규 가입자만 온보딩을 거치고, API 성공 시점이라 새로고침·뒤로가기로 중복 전송 안 됨
           trackCompleteRegistration();
+          trackGA("onboarding_completed", { role: jobRole, status: userStatus });
           // 홈 도착이 가입 플로우의 끝이므로 유입 파라미터를 붙인 뒤 쿠키 삭제
           router.replace(withAttribution("/"));
           clearAttribution();

@@ -14,6 +14,7 @@ import GlowingSkillStone, { type SkillStoneId } from "@/components/record/stones
 import SkillBlur from "@/components/record/stones/SkillBlur";
 import { patchCompetencies } from "@/lib/apis/record/scrum";
 import { useSkillPopover } from "@/lib/hooks/record/useSkillPopover";
+import { trackGA } from "@/lib/utils/ga";
 import { navigateRecord } from "@/lib/utils/recordNavigation";
 import {
   loadSelectSkillsState,
@@ -115,6 +116,8 @@ const Page = () => {
 
   const handleDeepLogClick = async () => {
     if (!projects || !isEverySkillSelected || isSavingCompetencies) return;
+
+    trackGA("star_entry_started");
 
     setIsSavingCompetencies(true);
 

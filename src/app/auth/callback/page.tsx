@@ -6,6 +6,7 @@ import { Suspense, useEffect, useRef } from "react";
 import LoadingScreen from "@/components/common/LoadingScreen";
 import { getStatus } from "@/lib/apis/user/onboarding";
 import { clearAttribution, withAttribution } from "@/lib/utils/attribution";
+import { popLoginMethod, trackGA } from "@/lib/utils/ga";
 import { useAuthStore } from "@/store/authStore";
 
 const CallbackHandler = () => {
@@ -50,6 +51,10 @@ const CallbackHandler = () => {
             window.setTimeout(() => reject(new Error("STATUS_TIMEOUT")), 8000);
           }),
         ]);
+
+        const method = popLoginMethod();
+        // 백엔드에 신규 가입 여부가 없어 온보딩 미완료 = 신규로 판단
+        if (!status?.isOnboardingCompleted) trackGA("sign_up", { method });
 
         redirectTo(status?.isOnboardingCompleted ? "/" : "/onboarding");
       } catch {

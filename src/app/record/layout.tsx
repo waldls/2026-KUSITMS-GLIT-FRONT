@@ -16,6 +16,7 @@ import {
   invalidateSelectableRecords,
 } from "@/lib/query/invalidate";
 import { cn } from "@/lib/utils/cn";
+import { trackGA } from "@/lib/utils/ga";
 import { clearCreatedProjectTagIds } from "@/lib/utils/recordCreatedProjectTags";
 import { resolveRecordFlowPath } from "@/lib/utils/recordFlowGuard";
 import {
@@ -23,7 +24,7 @@ import {
   RECORD_ROUTE_CHANGE_EVENT,
   replaceRecordHistory,
 } from "@/lib/utils/recordNavigation";
-import { clearRecordSession } from "@/lib/utils/recordSession";
+import { clearRecordSession, TODAY_TASK_STARTED_SENT_KEY } from "@/lib/utils/recordSession";
 import { useRecordDraftStore } from "@/store/recordDraftStore";
 
 import RecordHomePage from "./page";
@@ -89,6 +90,17 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   const [hasRouteTransition, setHasRouteTransition] = useState(false);
   const [hasVisitedTodayTask, setHasVisitedTodayTask] = useState(pathname === "/record/today-task");
   const keepTodayTaskMounted = hasVisitedTodayTask && (isTodayTask || isDeepLog);
+
+  // 레이아웃은 경로마다 리마운트되므로 기록 세션에 전송 여부를 남겨 플로우당 1회만 전송
+  // (플로우 이탈·완료 시 clearRecordSession으로 초기화)
+  useEffect(() => {
+    if (currentPathname !== "/record/today-task") return;
+    try {
+      if (sessionStorage.getItem(TODAY_TASK_STARTED_SENT_KEY)) return;
+      sessionStorage.setItem(TODAY_TASK_STARTED_SENT_KEY, "1");
+      trackGA("today_task_started");
+    } catch {}
+  }, [currentPathname]);
   const pageAnimationClass =
     hasRouteTransition &&
     (animationDirection === "left" ? "animate-slide-in-left" : "animate-slide-in-right");

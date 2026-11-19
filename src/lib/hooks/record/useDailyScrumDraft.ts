@@ -9,6 +9,7 @@ import {
   type SyncDailyScrumRequest,
 } from "@/lib/apis/record/scrum";
 import { parseApiDate } from "@/lib/utils/calendar";
+import { trackGA } from "@/lib/utils/ga";
 import { normalizeTasks } from "@/lib/utils/record/projectSheetValidation";
 import { clearCreatedProjectTagIds } from "@/lib/utils/recordCreatedProjectTags";
 import {
@@ -499,6 +500,9 @@ export const useDailyScrumDraft = ({
           }
           clearCreatedProjectTagIds();
           window.dispatchEvent(new CustomEvent("record-created-tags-committed"));
+          trackGA("today_task_saved", {
+            task_count: savedProjects.reduce((count, project) => count + project.tasks.length, 0),
+          });
           submitEvent.detail?.onSuccess?.();
         } catch {
           showProjectTagToast("오늘의 작업을 저장하지 못했어요");

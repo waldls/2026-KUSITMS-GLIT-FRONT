@@ -11,6 +11,7 @@ import {
 import { deleteImageId, getImages } from "@/lib/apis/record/starImage";
 import { postSteps } from "@/lib/apis/record/starRecord";
 import { useMe } from "@/lib/hooks/user/userClient";
+import { trackGA } from "@/lib/utils/ga";
 import {
   ANALYZING_STATUS_POLL_LIMIT,
   createStarLogStepHref,
@@ -31,6 +32,10 @@ import {
   uploadStarLogImage,
 } from "@/lib/utils/record/starLog";
 import { navigateRecord } from "@/lib/utils/recordNavigation";
+import type { AiTaggingStatusResponse } from "@/types/record/record";
+
+const getRetryCount = (statuses: (AiTaggingStatusResponse | null)[]) =>
+  Math.max(0, ...statuses.map(status => status?.retryCount ?? 0));
 
 type ImageAttachmentMap = Record<number, StarImageAttachment[]>;
 
@@ -142,6 +147,7 @@ export const useStarLog = () => {
         if (ignore) return;
 
         if (statuses.some(status => status?.status === "FAILED")) {
+          trackGA("ai_tagging_result", { result: "fail", retry_count: getRetryCount(statuses) });
           replaceSkillTaggingView("fail", setViewState);
           return;
         }
@@ -157,6 +163,14 @@ export const useStarLog = () => {
           setAiTaggingResults(
             nextResults.filter((result): result is AiTaggingResultResponse => result !== null),
           );
+          trackGA("ai_tagging_result", {
+            result: "success",
+            tag_count: nextResults.reduce(
+              (count, result) => count + (result?.detailTags?.length ?? 0),
+              0,
+            ),
+            retry_count: getRetryCount(statuses),
+          });
           replaceSkillTaggingView("success", setViewState);
           return;
         }
@@ -189,7 +203,9 @@ export const useStarLog = () => {
 
         await pollAiTagging();
       } catch {
-        if (!ignore) replaceSkillTaggingView("fail", setViewState);
+        if (ignore) return;
+        trackGA("ai_tagging_result", { result: "fail", retry_count: 0 });
+        replaceSkillTaggingView("fail", setViewState);
       }
     };
 
@@ -411,6 +427,7 @@ export const useStarLog = () => {
       saveCompletedStarRecordIds(next);
       return next;
     });
+    trackGA("star_entry_completed", { has_image: currentImageAttachments.length > 0 });
     setCompletedTaskIndex(taskIndex);
     replaceStarLogViewState(isLastTask ? "allComplete" : "taskComplete", stepIndex, setViewState);
   };

@@ -8,6 +8,7 @@ export const STAR_LOG_TASKS_KEY = "star-log-tasks";
 export const STAR_LOG_COMPLETED_STAR_RECORD_IDS_KEY = "star-log-completed-star-record-ids";
 export const SKILL_TAGGING_STATE_KEY = "skill-tagging-state";
 export const SELECT_SKILLS_DRAFT_KEY = "select-skills-draft";
+export const TODAY_TASK_STARTED_SENT_KEY = "ga-today-task-started";
 
 export type SelectSkillsDraft = {
   selectedSkillIds: Record<number, number>;
@@ -255,6 +256,7 @@ export const clearRecordSession = () => {
   window.sessionStorage.removeItem(STAR_LOG_COMPLETED_STAR_RECORD_IDS_KEY);
   window.sessionStorage.removeItem(SKILL_TAGGING_STATE_KEY);
   window.sessionStorage.removeItem(SELECT_SKILLS_DRAFT_KEY);
+  window.sessionStorage.removeItem(TODAY_TASK_STARTED_SENT_KEY);
 };
 
 export const getSelectSkillsDraft = (): SelectSkillsDraft | null => {

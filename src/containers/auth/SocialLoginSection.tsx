@@ -5,6 +5,7 @@ import KakaoLogo from "@/assets/images/auth/kakao-logo.svg";
 import NaverLogo from "@/assets/images/auth/naver-logo.svg";
 import SocialLoginButton from "@/components/auth/SocialLoginButton";
 import { loginWithSocial, SocialProvider } from "@/lib/apis/auth/auth";
+import { saveLoginMethod } from "@/lib/utils/ga";
 
 const SOCIAL_PROVIDERS = [
   {
@@ -29,6 +30,7 @@ const SOCIAL_PROVIDERS = [
 
 const SocialLoginSection = () => {
   const handleLogin = (provider: SocialProvider) => {
+    saveLoginMethod(provider);
     loginWithSocial(provider);
   };
 
