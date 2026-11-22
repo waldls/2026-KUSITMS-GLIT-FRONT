@@ -46,4 +46,29 @@ describe("recordNavigation", () => {
     pushStateSpy.mockRestore();
     dispatchEventSpy.mockRestore();
   });
+
+  it("새 세션(플로우 비활성)에서도 첫 navigateRecord로 today-task에 진입해야 한다", () => {
+    window.history.replaceState(null, "", "/record");
+
+    const pushStateSpy = vi.spyOn(History.prototype, "pushState");
+
+    navigateRecord("/record/today-task");
+
+    expect(pushStateSpy).toHaveBeenCalledWith(null, "", "/record/today-task");
+    expect(window.sessionStorage.getItem("record-flow-active")).toBe("1");
+
+    pushStateSpy.mockRestore();
+  });
+
+  it("새 세션이어도 진행하지 않은 단계로는 건너뛸 수 없어야 한다", () => {
+    window.history.replaceState(null, "", "/record");
+
+    const pushStateSpy = vi.spyOn(History.prototype, "pushState");
+
+    navigateRecord("/record/star-log");
+
+    expect(pushStateSpy).toHaveBeenCalledWith(null, "", "/record/today-task");
+
+    pushStateSpy.mockRestore();
+  });
 });

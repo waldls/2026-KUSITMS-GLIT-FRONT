@@ -12,9 +12,9 @@ import SelectionCardGrid from "@/components/onboarding/SelectionCardGrid";
 import { JOB_OPTIONS, STATUS_OPTIONS } from "@/constants/onboarding";
 import { NICKNAME_REGEX } from "@/constants/regex";
 import OnboardingStepHeader from "@/containers/onboarding/OnboardingStepHeader";
-import { withAttribution } from "@/lib/utils/attribution";
+import { usePostOnboardingComplete } from "@/lib/hooks/user/usePostOnboardingComplete";
+import { clearAttribution, withAttribution } from "@/lib/utils/attribution";
 import { getNicknameError } from "@/lib/utils/validation";
-import { useOnboardingStore } from "@/store/onboardingStore";
 
 type Step = 1 | 2 | 3;
 
@@ -26,7 +26,7 @@ const Page = () => {
   const [jobRole, setJobRole] = useState("");
   const [userStatus, setUserStatus] = useState("");
 
-  const setOnboardingData = useOnboardingStore(state => state.setOnboardingData);
+  const { mutate, isPending } = usePostOnboardingComplete();
 
   const canProceed = useMemo(() => {
     if (step === 1) return NICKNAME_REGEX.test(nickname);
@@ -44,8 +44,17 @@ const Page = () => {
     if (step < 3) {
       setStep(prev => (prev + 1) as Step);
     } else {
-      setOnboardingData({ nickname, jobRole, userStatus });
-      router.push(withAttribution("/onboarding/guide"));
+      mutate(
+        { nickname, jobRole, userStatus },
+        {
+          onSuccess: () => {
+            // 가입 완료 처리(가이드 플래그·픽셀·GA)는 훅에서, 여기선 이동만
+            // 홈 도착이 가입 플로우의 끝이므로 유입 파라미터를 붙인 뒤 쿠키 삭제
+            router.replace(withAttribution("/"));
+            clearAttribution();
+          },
+        },
+      );
     }
   };
 
@@ -112,7 +121,7 @@ const Page = () => {
       </section>
 
       <div className="px-5 pb-10">
-        <CTA disabled={!canProceed} onClick={handleNext}>
+        <CTA disabled={!canProceed || isPending} onClick={handleNext}>
           다음으로
         </CTA>
       </div>

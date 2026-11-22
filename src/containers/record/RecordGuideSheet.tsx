@@ -7,9 +7,9 @@ import { useState } from "react";
 import type { Swiper as SwiperType } from "swiper";
 import { Swiper, SwiperSlide } from "swiper/react";
 
-import guide1 from "@/assets/images/home/guide_1.png";
-import guide2 from "@/assets/images/home/guide_2.png";
-import guide3 from "@/assets/images/home/guide_3.png";
+import guide1 from "@/assets/images/record/guide_1.png";
+import guide2 from "@/assets/images/record/guide_2.png";
+import guide3 from "@/assets/images/record/guide_3.png";
 import BottomSheet from "@/components/common/BottomSheet";
 import Button from "@/components/common/Button";
 import SwipeIndicator from "@/components/common/SwipeIndicator";
@@ -17,12 +17,12 @@ import { GUIDE_LIST } from "@/constants/my";
 
 const VISUALS = [guide1, guide2, guide3];
 
-interface HomeGuideSheetProps {
+interface RecordGuideSheetProps {
   isOpen: boolean;
   onStart: () => void;
 }
 
-const HomeGuideSheet = ({ isOpen, onStart }: HomeGuideSheetProps) => {
+const RecordGuideSheet = ({ isOpen, onStart }: RecordGuideSheetProps) => {
   const [swiper, setSwiper] = useState<SwiperType | null>(null);
   const [currentIndex, setCurrentIndex] = useState(0);
   const isLast = currentIndex === GUIDE_LIST.length - 1;
@@ -49,4 +49,4 @@ const HomeGuideSheet = ({ isOpen, onStart }: HomeGuideSheetProps) => {
   );
 };
 
-export default HomeGuideSheet;
+export default RecordGuideSheet;

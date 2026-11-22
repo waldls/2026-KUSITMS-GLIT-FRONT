@@ -6,15 +6,33 @@ import { useState } from "react";
 import { ChevronRightIcon, StarOneIcon } from "@/assets/icons";
 import recordCharacter from "@/assets/images/record/record_character.png";
 import Tag from "@/components/common/Tag";
+import RecordGuideSheet from "@/containers/record/RecordGuideSheet";
 import { useMe } from "@/lib/hooks/user/userClient";
 import { cn } from "@/lib/utils/cn";
+import { clearPendingRecordGuide, hasPendingRecordGuide } from "@/lib/utils/recordGuide";
 import { navigateRecord } from "@/lib/utils/recordNavigation";
 
 const Page = () => {
   const { data: profile } = useMe();
   const [isImageLoaded, setIsImageLoaded] = useState(false);
+  const [isGuideOpen, setIsGuideOpen] = useState(false);
   const nickname = profile?.nickname?.trim();
   const streakDays = profile?.consecutiveRecordDays ?? 0;
+
+  // 온보딩 직후 첫 기록 진입 시에만 가이드를 먼저 보여줌
+  const handleRecordClick = () => {
+    if (hasPendingRecordGuide()) {
+      setIsGuideOpen(true);
+      return;
+    }
+    navigateRecord("/record/today-task");
+  };
+
+  const handleStartGuide = () => {
+    clearPendingRecordGuide();
+    setIsGuideOpen(false);
+    navigateRecord("/record/today-task");
+  };
 
   return (
     <div className="flex shrink-0 flex-col pb-4.5">
@@ -59,7 +77,7 @@ const Page = () => {
       {/* 하단 카드 */}
       <button
         type="button"
-        onClick={() => navigateRecord("/record/today-task")}
+        onClick={handleRecordClick}
         className="rounded-12 relative mt-6.25 flex min-h-40 w-full shrink-0 cursor-pointer flex-col items-start justify-start overflow-hidden border-[0.3px] border-solid border-gray-800 bg-[linear-gradient(126deg,rgba(17,17,17,0.20)_6.6%,rgba(173,173,173,0.20)_106.5%)] px-4.5 pt-4 text-left">
         <div className="from-sea-blue-800/40 via-sea-blue-800/15 pointer-events-none absolute -right-34 -bottom-41 h-82 w-95 bg-radial-[closest-side] to-transparent" />
         <p className="body-5 mb-0.5 text-gray-100">오늘 한 일을 간단히 기록해요</p>
@@ -68,6 +86,7 @@ const Page = () => {
           <ChevronRightIcon className="size-5 text-white" />
         </div>
       </button>
+      <RecordGuideSheet isOpen={isGuideOpen} onStart={handleStartGuide} />
     </div>
   );
 };
