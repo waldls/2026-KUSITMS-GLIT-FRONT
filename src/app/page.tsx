@@ -122,7 +122,8 @@ const Page = () => {
           onClick={handleDismissCalendarGuide}
         />
       ) : null}
-      <div className="scrollbar-hide flex-1 overflow-y-auto px-5 pt-12 pb-6">
+      {/* isolate: 내부 z-10 요소(슬로건·캐릭터)가 딤 위로 올라오지 않도록 */}
+      <div className="scrollbar-hide isolate flex-1 overflow-y-auto px-5 pt-12 pb-6">
         <div className="head-5 relative z-10 pb-3.5 text-center text-white">
           {isHeroLoading ? (
             <HomeGreetingSkeleton />
@@ -186,7 +187,8 @@ const Page = () => {
       </div>
       <NavigationBar
         activeHrefOverride={showCalendarGuide ? "/calendar" : undefined}
-        className="z-20 shrink-0"
+        // 가이드 중엔 nav 스태킹을 풀어 캘린더 탭만 딤 위로 올림
+        className={cn("shrink-0", !showCalendarGuide && "z-20")}
         calendarOverlay={showCalendarGuide ? <SpeechBubble /> : null}
       />
       <A2hsSheet isOpen={isA2hsOpen} onClose={() => setCanShowA2hs(false)} />

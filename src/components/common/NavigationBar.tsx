@@ -52,6 +52,7 @@ const NavigationBar = ({ activeHrefOverride, calendarOverlay, className }: Navig
             className={cn(
               "relative flex flex-col items-center transition-all duration-300 hover:text-white",
               isActive ? "text-white" : "text-gray-700",
+              isCalendar && calendarOverlay && "z-20",
             )}>
             {isCalendar && calendarOverlay ? (
               <div className="pointer-events-none absolute bottom-full left-1/2 z-30 mb-4 w-max max-w-none -translate-x-1/2">
